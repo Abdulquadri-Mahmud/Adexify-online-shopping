@@ -48,7 +48,7 @@ export default function MenShirt() {
     <div className='relative bg-white p-2 rounded-xl shadow-md '>
       <Link to={`/product-details/${_id}`}>
           <div className="flex justify-center pt-0 md:w-[200px] h-[170px] w-[140px] mx-auto">
-              <img src={image} alt="" className='max-w-full  object-cover object-top'/>
+              <img src={image ? image[0] : image} alt="" className='max-w-full  object-cover object-top'/>
           </div>
           <div className="w-full">
               <h2 className='py-1 font-medium md:text-center truncate'>{name}</h2>

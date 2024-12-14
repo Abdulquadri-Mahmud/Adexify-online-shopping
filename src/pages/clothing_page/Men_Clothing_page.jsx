@@ -392,7 +392,7 @@ export default function Men_Clothing_page() {
                                 <Heading fontWeight={500} mb={2} fontSize={15}>Clothing</Heading>
                             </Box>
                             <Box>
-                                <Link className='text-sm'>
+                                <Link to={'/mens-sportwear'} className='text-sm'>
                                     <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
                                         <Text>Men's Sportswear</Text>
                                     </Box>

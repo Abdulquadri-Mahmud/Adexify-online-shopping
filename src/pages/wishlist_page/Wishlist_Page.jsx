@@ -31,7 +31,7 @@ export default function Wishlist_Page() {
 
     useEffect(() => {
         const fetchData = async () => {
-          const res =  await fetch(`https://adexify-api.vercel.app/api/products/single-products`);
+          const res =  await fetch(`https://adexify-api.vercel.app/api/products/all-products`);
   
           const data = await res.json();
   
@@ -47,19 +47,8 @@ export default function Wishlist_Page() {
         }));
     }
 
-    const {_id, name, image, price,} = product;
-
-    const getCarts = {
-        productID: _id,
-        productName: name,
-        productImage : image,
-        productPrice: price,
-        userId : currentUser._id,
-        quantity: 1
-    }
-
-    const handleCart = () => {
-      dispatch(addToCart(getCarts));
+    const handleCart = (item) => {
+        dispatch(addToCart(item));
     }
 
   return (
@@ -86,7 +75,9 @@ export default function Wishlist_Page() {
                     <TableContainer>
                         <Table variant='simple'>
                             <TableCaption>
-                                <Text className='text-pink-600 font-medium text-sm'>Shop What You Desire On Adexify Now</Text>
+                                <Box bg={'pink.200'} rounded={'sm'} py={2}>
+                                    <Text className='text-pink-600 font-medium text-sm'>Shop What You Desire On Adexify Now</Text>
+                                </Box>
                             </TableCaption>
                             <Thead roundedTop={'md'}>
                                 <Tr className='bg-pink-300'>
@@ -94,7 +85,7 @@ export default function Wishlist_Page() {
                                     <Th fontWeight={500} fontSize={14}>Name</Th>
                                     <Th fontWeight={500} fontSize={14}>Price</Th>
                                     <Th fontWeight={500} fontSize={14}>Delete</Th>
-                                    {/* <Th fontWeight={500} fontSize={14}>Add To Cart</Th> */}
+                                    <Th fontWeight={500} fontSize={14}>Add To Cart</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -104,7 +95,7 @@ export default function Wishlist_Page() {
                                             <Tr>
                                                 <Td>
                                                     <Link to={`/product-details/${item.productID}`}>
-                                                        <img src={item.productImage} alt="" className='rounded-md max-w-[80px] max-h-[80px]'/>
+                                                        <img src={item.productImage ? item.productImage[0] : productImage} alt="" className='rounded-md max-w-[60px] max-h-[60px]'/>
                                                     </Link>
                                                 </Td>
                                                 <Td isTruncated>
@@ -118,9 +109,9 @@ export default function Wishlist_Page() {
                                                         <button className='text-red-500 text-[14px] font-medium text-start' onClick={() => handleRemoveItem(item.productID)}><MdDelete className='text-2xl'/></button>
                                                     </div>
                                                 </Td>
-                                                {/* <Td>
-                                                    <button className="flex justify-center items-center hover:bg-pink-500 duration-200 bg-pink-600 text-white px-2 py-2 rounded-full font-medium" onClick={handleCart}><FaCartShopping /></button>
-                                                </Td> */}
+                                                <Td>
+                                                    <button className="flex justify-center items-center hover:bg-pink-500 duration-200 bg-pink-600 text-white px-2 py-2 rounded-full font-medium" onClick={() => handleCart(item)}><FaCartShopping /></button>
+                                                </Td>
                                             </Tr>
                                         )
                                     })

@@ -154,7 +154,7 @@ export default function Details() {
             <div className="flex gap-2 flex-wrap">
               <div className="2xl:w-[350px] w-[300px]">
                 <div className="w-[300px] flex md:justify-start justify-center">
-                  <img src={image} alt="" ref={displayImage} className='max-w-full object-fill'/>
+                  <img src={image ? image[0] : image} alt="" ref={displayImage} className='max-w-full object-fill'/>
                 </div>
                 <div className="py-2">
                   {

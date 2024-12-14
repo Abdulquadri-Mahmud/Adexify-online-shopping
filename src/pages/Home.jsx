@@ -56,9 +56,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import Slider from "react-slick";
+import Home_category from './Home_category'
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -224,95 +225,9 @@ export default function Home() {
         <Banner/>
         <Jewelleries/>
         <Box>
-          <Box mt={10} mb={10} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
-            <Flex gap={5} flexWrap={'wrap'}>
-                <Box width={'300px'} height={'550px'} bg={'white'} rounded={'md'}>
-                    <Box p={2}>
-                        <Heading fontWeight={500} mb={0} fontSize={18}>Category</Heading>
-                    </Box>
-                    <Link className='text-sm'>
-                        <Box py={2} px={3} className='hover:bg-zinc-200 duration-150'>
-                            <Text>Men's Fashion</Text>
-                        </Box>
-                    </Link>
-                    <Box pt={2}>
-                        <Box  px={3}>
-                            <Heading fontWeight={500} mb={2} fontSize={15}>Clothing</Heading>
-                        </Box>
-                        <Box>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Men's Sportswear</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Fashion Hoodies & Sweatshirts</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Jeans</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Pants</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Shirts</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Underwear</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Shoes</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Sandals</Text>
-                                </Box>
-                            </Link>
-                            <Link className='text-sm'>
-                                <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                    <Text>Socks</Text>
-                                </Box>
-                            </Link>
-                            <Box borderWidth={1} borderTopColor={'gray.200'} borderBottomColor={'gray.200'} borderRight={0} borderLeft={0} py={3} px={3} mt={5}>
-                                <Flex justifyContent={'space-between'} alignItems={'center'}>
-                                    <Text className='flex items-center text-[16px] font-medium'>PRICE (<FaNairaSign className='text-[16px]'/>)</Text>
-                                    <Box px={3} py={1} rounded={'md'} className='flex justify-center items-center bg-pink-300 hover:bg-pink-600 duration-200 hover:text-white text-black font-medium'>
-                                        <Text>APPLY</Text>
-                                    </Box>
-                                </Flex>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Box>
-                <Box flex={1} bg={'white'} rounded={'md'} p={2}>
-                    <Box className="py-3 px-2 grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-3">
-                        {
-                            products.map((product) => (
-                                product.gender === 'male' ? (
-                                <HomeContext.Provider value={product}>
-                                    <Suspense fallback={<Loading/>}>
-                                        <HomeSearchComp key={product._id} product={product}/>
-                                    </Suspense>
-                                </HomeContext.Provider>
-                            ) : ''
-                            ))
-                        }
-                    </Box>
-                </Box>
-            </Flex>
-          </Box>
+            <Box mt={10} mb={10} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
+                <Home_category/>
+            </Box>
         </Box>
         <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} mt={10} bg={'white'} p={3} rounded={'md'}>
           <Box>

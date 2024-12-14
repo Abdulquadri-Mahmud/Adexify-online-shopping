@@ -24,6 +24,7 @@ import Footer from '../../components/footer/Footer';
 
 export default function Carts_Page() {
   const { items } = useSelector((state) => state.cart);
+  
   const [emptyCart, setEmptyCart] = useState(false);
 
   let total = 0;
@@ -129,10 +130,10 @@ export default function Carts_Page() {
                           return (
                             <Tr className='' key={index}>
                               <Td className=''>
-                                <img src={item.productImage} alt="" className='rounded-md max-w-[50px] max-h-[50px]'/>
+                                <img src={item.productImage ? item.productImage[0] : productImage} alt="" className='rounded-md max-w-[50px] max-h-[50px]'/>
                               </Td>
                               <Td className='font-medium text-[14px] truncate'>
-                                {item.productName.slice(0, 20)}...
+                                {item.productName}
                               </Td>
                               <Td className='font-medium'>
                                 <div className="flex justify-center items-center h-full gap-2">

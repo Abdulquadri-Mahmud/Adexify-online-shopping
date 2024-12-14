@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useToast } from '@chakra-ui/react';
 import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
-import { FashionContext } from '../../pages_routes/Fashion';
-import { HomeContext } from '../../pages/Home';
+import { HomeSearchCompContext } from '../../pages/Home_category';
 
 export default function HomeSearchComp() {
-    const product = useContext(HomeContext);
+    const product = useContext(HomeSearchCompContext);
     const toast = useToast({
         position: 'top'
     });
+
     const {_id, deal, quantity, image, name, price, description, oldprice} = product;
     const priceToLocalString = price.toLocaleString();
 
@@ -44,11 +44,12 @@ export default function HomeSearchComp() {
             bgColor: 'pink.600',
         });
     }
+    
   return (
     <div className='relative bg-white p-2 rounded-xl shadow-md addTocartCont'>
         <Link to={`/product-details/${_id}`}>
             <div className="flex justify-center pt-0 md:w-[200px] h-[170px] w-[140px] mx-auto">
-                <img src={image} alt="" className='max-w-full  object-cover object-top'/>
+                <img src={image ? image[0] : image} alt="" className='max-w-full  object-cover object-top'/>
             </div>
             <div className="w-full">
                 <h2 className='py-1 font-medium md:text-center truncate'>{name}</h2>
