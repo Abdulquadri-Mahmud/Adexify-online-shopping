@@ -330,6 +330,9 @@ export default function Details() {
               <h2 className='font-medium text-xl'>Description:</h2>
             </Box>
             <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{description}</ReactMarkdown>
+            <p className="pb-2" dangerouslySetInnerHTML={{
+                __html: description.replace(/\n/g, "<br />").slice(0, 400),
+              }}></p>
           </Box>
         </Box>
       </div>
