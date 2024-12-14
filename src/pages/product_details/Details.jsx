@@ -50,8 +50,6 @@ export default function Details() {
         const data = await res.json();
 
         setProduct(data);
-        console.log(data);
-        
       };
 
       fetchData();
@@ -329,9 +327,9 @@ export default function Details() {
             <Box className="mb-2">
               <h2 className='font-medium text-xl'>Description:</h2>
             </Box>
-            <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{description}</ReactMarkdown>
+            {/* <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{description}</ReactMarkdown> */}
             <p className="pb-2" dangerouslySetInnerHTML={{
-                __html: description.replace(/\n/g, "<br />").slice(0, 400),
+                __html: description ? description.replace(/\n/g, "<br />") : description,
               }}></p>
           </Box>
         </Box>
