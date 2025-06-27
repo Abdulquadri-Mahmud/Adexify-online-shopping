@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { PiGreaterThan } from 'react-icons/pi'
 import Loading from '../../components/loader/Loading'
 import { FaAngleRight } from 'react-icons/fa'
+import Adverts from '../../components/Adverts/Adverts'
 
 export const WomenShirtsContext = createContext();
 export const MenShirtsContext = createContext();
@@ -102,6 +103,7 @@ export default function Shirt() {
                         </Box>
                     </Box>
                 </Box>
+                <Adverts/>
             </Box>
         <Footer/>
     </Box>

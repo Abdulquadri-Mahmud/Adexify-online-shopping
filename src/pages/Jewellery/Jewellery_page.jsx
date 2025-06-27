@@ -46,7 +46,7 @@ return (
               </Flex> 
               <Box mb={'5'}>
                   <Box mt={5} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                      <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-pink-600 text-white py-3 rounded-t-lg px-3'>
+                      <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-green-500 text-white py-3 rounded-t-lg px-3'>
                           <Heading fontWeight={500} fontSize={20}>Women's Shirts</Heading>
                       </Flex>            
                   </Box>
@@ -74,7 +74,7 @@ return (
               </Flex>
               <Box mb={'10'}>
                   <Box mt={5} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                      <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-pink-600 text-white py-3 rounded-t-lg px-3'>
+                      <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-green-500 text-white py-3 rounded-t-lg px-3'>
                           <Heading fontWeight={500} fontSize={20}>Men's Shirts</Heading>
                       </Flex>            
                   </Box>

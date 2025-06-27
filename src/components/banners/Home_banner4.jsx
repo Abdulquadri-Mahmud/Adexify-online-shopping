@@ -83,25 +83,25 @@ export default function Home_banner4() {
     <Box bg={'white'} my={5} p={{md:4, base: 3}} rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box display={{xl: 'block', base: 'none'}}>
             <Flex gap={6} justifyContent={'center'}>
-                <Link to={'/'}>
+                <Link to={'/fashion'}>
                     <Box height={'230px'} width={'200px'}>
                         <Image  rounded={'md'} src="/new-arrival.jpg" alt="" />
                         <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/new-arrival'}>
                     <Box height={'230px'} width={'200px'}>
                         <Image  rounded={'md'} src="/men_fashion.jpg" alt="" />
                         <Text fontSize={'14px'} mt={2} textAlign={'center'}>New Arrival</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/fashion-deals'}>
                     <Box height={'230px'} width={'200px'}>
                         <Image height={'200px'} rounded={'md'} src="/fahsion3.gif" alt="" />
                         <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/greate-deals'}>
                     <Box height={'230px'} width={'200px'}>
                         <Image  rounded={'md'} src="/recommended.gif" alt="" />
                         <Text fontSize={'14px'} mt={2} textAlign={'center'}>Great Deals</Text>

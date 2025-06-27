@@ -114,13 +114,13 @@ export default function TodaysDeal() {
 
   return (
     <Box className='my-10 bg-white rounded-md' maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
-      <Box className='bg-pink-600 py-3 rounded-t-lg px-3 '>
-        <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className="flex justify-between items-center gap-4">
+      <Box className='bg-green-500 py-3 rounded-t-lg px-3 '>
+        <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className="flex justify-between items-center gap-4 ">
             <Heading fontWeight={500} fontSize={{md:20, base: 18}} color={'white'} className='text-xl'>Today's Deals</Heading>
             <Link to={'/'} className='text-[12px] font-medium text-white uppercase flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
         </Box>
       </Box>
-      <div className="">
+      <div className="p-3">
         <Slider {...settings}>
           {
               currentPost.length > 0 && currentPost.map((product) => (

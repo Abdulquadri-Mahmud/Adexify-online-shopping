@@ -70,7 +70,7 @@ export default function Settings() {
                     </Flex>
                 </MenuItem>
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>
-                        <Link to={`/profile/${_id}`} className="text-sm md:text-[16px]">My Order</Link>
+                        {/* <Link to={`/profile/${_id}`} className="text-sm md:text-[16px]">My Order</Link> */}
                     <Link to='/contact' className=''>Contact Us</Link> 
                 </MenuItem>
             </MenuList>

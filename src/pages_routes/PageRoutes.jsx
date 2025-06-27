@@ -41,22 +41,36 @@ import Underwear_page from '../pages/Mens_Clothing/Underwear_page';
 import Men_Shoes_page from '../pages/Mens_Clothing/Men_Shoes_page';
 import Sandals_page from '../pages/Mens_Clothing/Sandals_page';
 import Socks_page from '../pages/Mens_Clothing/Socks_page';
+import ProductsByCategory from '../pages/ProductsByCategory/ProductsByCategory';
+import ScrollToTop from '../components/scroll-to-top/ScrollToTop';
+import SearchPage from '../pages/search_Page/Search_Page';
+import NewArrival from '../pages/NewArrival';
+import FashionDeals from '../pages/FashionDeals';
+import GreateDeals from '../pages/GreateDeals';
 
 export default function PageRoutes() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route element={<Private_Routes/>}>
-          <Route path='/product-details/:proId' element={<Details/>}/>
           <Route path='/profile/:userID' element={<UserProfile/>}/>
-          <Route path='/view-carts' element={<Carts_Page/>}/>
-          <Route path='/view-wishlist' element={<Wishlist_Page/>}/>
-          <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
-          <Route path="/womens-clothing" element={<Women_Clothing_page/>}/>
         </Route>
+        <Route path='/product-details/:proId' element={<Details/>}/>
+
+        <Route path='/view-carts' element={<Carts_Page/>}/>
+        {/* <Route path='/view-wishlist' element={<Wishlist_Page/>}/> */}
+
+        <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
+        <Route path="/womens-clothing" element={<Women_Clothing_page/>}/>
+        <Route path="/category" element={<ProductsByCategory/>}/>
 
         <Route path="/fashion" element={<Fashion/>}/>
+        <Route path="/new-arrival" element={<NewArrival/>}/>
+        <Route path="/fashion-deals" element={<FashionDeals/>}/>
+        <Route path="/greate-deals" element={<GreateDeals/>}/>
+
         <Route path="/shirts" element={<Shirt/>}/>
         <Route path="/bags" element={<Bags_page/>}/>
         <Route path="/shoes" element={<Shoes_page/>}/>
@@ -79,7 +93,8 @@ export default function PageRoutes() {
         <Route path='/mens-shoes' element={<Men_Shoes_page/>}/>
         <Route path='/mens-sandals' element={<Sandals_page/>}/>
         <Route path='/mens-socks' element={<Socks_page/>}/>
-        <Route path='/search' element={<SearchQueryPage/>}/>
+
+        <Route path='/search' element={<SearchPage/>}/>
 
 
         <Route path='/contact' element={<ContactUs/>}/>

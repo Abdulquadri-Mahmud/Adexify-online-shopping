@@ -73,20 +73,11 @@ export default function Fashion() {
   return (
     <Box>
         <Header/>
-        <Box pb={4} className='bg-zinc-200'>
-            <Box className="p-2">
-                <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
-                    <div className="flex gap-1 items-center">
-                        <Link to={'/'} className='text-[13px] text-gray-500'>Home</Link>
-                        <PiGreaterThan className='text-[13px] text-gray-500 pt-1'/>
-                        <Link to={'/fashion'} className='text-[13px] text-gray-500'>Fashion</Link>
-                    </div>
-                </Box>
-            </Box>
-            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} bg={'white'} py={2} mt={3} mb={5}>
+        <Box pb={4} className='bg-zinc-200' pt={5}>
+            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} bg={'white'} py={2} mb={5}>
                 <Heading fontWeight={500} fontSize={20} textAlign={'center'}>Fashion</Heading>
             </Box>
-            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} py={2} mt={3} mb={5} className='bg-pink-600'>
+            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} py={3} mt={3} mb={5} className='bg-green-500'>
                 <Heading color={'white'} fontWeight={500} fontSize={20} textAlign={'center'} className='flex items-center gap-1 justify-center'>CALL TO ORDER 
                     <Link to={'tel:07047594667'}>07047594667</Link>
                 </Heading>
@@ -143,7 +134,7 @@ export default function Fashion() {
                                     </Flex>
                                     <Slider defaultValue={priceRange} min={0} max={100000} step={5} onChange={(value) => setPriceRange(value)}>
                                         <SliderTrack>
-                                            <SliderFilledTrack bg="pink.600" />
+                                            <SliderFilledTrack bg="green.600" />
                                         </SliderTrack>
                                         <SliderThumb boxSize={4} />
                                     </Slider>
@@ -187,17 +178,17 @@ export default function Fashion() {
 
                         {/* Pagination */}
                         <Flex justifyContent="center" alignItems="center" my={4} gap={2}>
-                            <Button onClick={handlePrevPage} disabled={currentPage === 1} bg={'gray.200'} _hover={{ bg: 'pink.400' }}>
+                            <Button onClick={handlePrevPage} disabled={currentPage === 1} bg={'gray.200'} _hover={{ bg: 'green.400' }}>
                                 Prev
                             </Button>
                             {Array.from({ length: totalPages }, (_, index) => (
-                            <Button key={index} onClick={() => handlePageChange(index + 1)} mx={1} bg={currentPage === index + 1 ? 'pink.600' : 'gray.200'}
+                            <Button key={index} onClick={() => handlePageChange(index + 1)} mx={1} bg={currentPage === index + 1 ? 'green.600' : 'gray.200'}
                                 color={currentPage === index + 1 ? 'white' : 'black'}
-                                _hover={{ bg: 'pink.400' }}>
+                                _hover={{ bg: 'green.400' }}>
                                 {index + 1}
                             </Button>
                             ))}
-                            <Button onClick={handleNextPage} disabled={currentPage === totalPages} bg={'gray.200'} _hover={{ bg: 'pink.400' }}>
+                            <Button onClick={handleNextPage} disabled={currentPage === totalPages} bg={'gray.200'} _hover={{ bg: 'green.400' }}>
                                 Next
                             </Button>
                         </Flex>

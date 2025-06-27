@@ -7,6 +7,7 @@ import { FaAngleRight } from 'react-icons/fa'
 
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
+import Adverts from '../../components/Adverts/Adverts'
 
 export const MenBagsContext = createContext();
 
@@ -95,6 +96,7 @@ export default function Bags_page() {
                         </Box>
                     </Box>
                 </Box>
+                <Adverts/>
             </Box>
         <Footer/>
     </Box>

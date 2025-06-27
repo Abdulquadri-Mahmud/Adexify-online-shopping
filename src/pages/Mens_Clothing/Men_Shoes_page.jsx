@@ -6,6 +6,7 @@ import { FaNairaSign } from 'react-icons/fa6';
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
 import Loading from '../../components/loader/Loading';
+import Adverts from '../../components/Adverts/Adverts';
 
 // Create a context to share product data
 export const MenShoesContext = createContext();
@@ -196,6 +197,7 @@ export default function Men_Shoes_page() {
             </Box>
           </Flex>
         </Box>
+        <Adverts/>
       </Box>
       <Footer />
     </Box>

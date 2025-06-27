@@ -41,7 +41,7 @@ export default function FashionComp() {
             description: "Your item has been saved.",
             duration: 5000,
             isClosable: true,
-            bgColor: 'pink.600',
+            bgColor: 'green.600',
         });
     }
     
@@ -55,7 +55,7 @@ export default function FashionComp() {
                 <h2 className='py-1 font-medium md:text-center truncate'>{name}</h2>
             </div>
         </Link>
-        <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-pink-600 active:text-pink-600 focus:text-pink-600 absolute top-2 right-2 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
+        <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-green-600 active:text-green-600 focus:text-green-600 absolute top-2 right-2 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
             <IoHeart className='text-xl'/>
         </button>
         <p className="truncate">{description}</p>
@@ -70,7 +70,7 @@ export default function FashionComp() {
                 )
             }
         </div>
-        <button onClick={handleCart} className='addTocart w-[100%] h-[0px] bg-pink-600 rounded-md mt-3 font-medium flex justify-center items-center text-white'>
+        <button onClick={handleCart} className='addTocart w-[100%] h-[0px] bg-green-600 rounded-md mt-3 font-medium flex justify-center items-center text-white'>
             {/* <FaCartShopping/> */}
             Add To Cart
         </button>

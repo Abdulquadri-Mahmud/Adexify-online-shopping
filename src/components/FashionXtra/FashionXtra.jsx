@@ -12,7 +12,7 @@ function SampleNextArrow(props) {
   
     const { className, style, onClick } = props;
     return (
-      <Box bg={'pink.600'} width={'30px'} height={'30px'} rounded={'full'}
+      <Box bg={'green.600'} width={'30px'} height={'30px'} rounded={'full'}
       right={'1vh'}  
       className={className}
         style={{ ...style, display: "block",
@@ -26,7 +26,7 @@ function SampleNextArrow(props) {
   function SamplePrevArrow(props) {
     const { className, style, onClick } = props;
     return (
-      <Box bg={'pink.600'} width={'30px'} height={'30px'} rounded={'full'}
+      <Box bg={'green.600'} width={'30px'} height={'30px'} rounded={'full'}
         left={'1vh'} zIndex={'10'}
         className={className}
         style={{ ...style, display: "none", 
@@ -111,10 +111,10 @@ export default function FashionXtra() {
 
   return (
     <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-        <Box className='bg-pink-600 py-3 rounded-t-lg px-3 text-white'>
+        <Box className='bg-green-500 py-3 rounded-t-lg px-3 text-white'>
             <Box className="flex justify-between items-center">
                 <Heading fontWeight={500} fontSize={{md:20, base: 18}} className='text-xl '>Fashion Xtra</Heading>
-                <Link to={'/'} className='text-[13px] font-medium uppercase flex items-center text-pink-600'>See All <FaAngleRight className='text-[13px]'/></Link>
+                <Link to={'/'} className='text-[13px] font-medium uppercase flex items-center text-green-600'>See All <FaAngleRight className='text-[13px]'/></Link>
             </Box>
         </Box>
       <Box bg={'white'} p={2} roundedBottom={'md'}>

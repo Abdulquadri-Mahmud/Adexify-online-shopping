@@ -26,7 +26,7 @@ function SampleNextArrow(props) {
   function SamplePrevArrow(props) {
     const { className, style, onClick } = props;
     return (
-      <Box bg={'pink.600'} width={'30px'} height={'30px'} rounded={'full'}
+      <Box bg={'green.500'} width={'30px'} height={'30px'} rounded={'full'}
         left={'1vh'} zIndex={'10'}
         className={className}
         style={{ ...style, display: "none", 
@@ -121,7 +121,7 @@ export default function Bags() {
 
   return (
     <Box mt={7} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className='md:mb-0 mb-0 bg-white rounded-lg'>
-        <Box className='text-white bg-pink-600 py-3 rounded-t-lg px-3'>
+        <Box className='text-white bg-green-500 py-3 rounded-t-lg px-3'>
             <Box className="flex justify-between items-center">
                 <Heading fontWeight={500} fontSize={{md:20, base: 18}} className='text-xl '>Top Bags Collection</Heading>
                 <Link to={'/'} className='text-[13px] font-medium uppercase flex items-center text-white'>See All <FaAngleRight className='text-[13px]'/></Link>

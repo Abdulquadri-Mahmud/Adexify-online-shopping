@@ -30,7 +30,7 @@ export default function Bag() {
           description: "Your item has been saved.",
           duration: 5000,
           isClosable: true,
-          bgColor: 'pink.600',
+          bgColor: 'green.500',
       });
   }
   
@@ -44,7 +44,7 @@ export default function Bag() {
                 <h2 className='py-1 font-medium md:text-center truncate'>{name}</h2>
             </div>
         </Link>
-        <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-pink-600 active:text-pink-600 focus:text-pink-600 absolute top-3 right-3 w-[30px] h-[30px] bg-pink-300 flex justify-center items-center rounded-full">
+        <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-green-500 active:text-green-500 focus:text-green-500 absolute top-3 right-3 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
           <IoHeart className='text-xl'/>
         </button>
         <p className="truncate">{description}</p>
@@ -53,7 +53,7 @@ export default function Bag() {
                 <FaNairaSign/>
                 <span className='font-medium'>{priceToLocalString}</span>
             </p>
-            {/* <button onClick={handleCart} className='w-[30px] h-[30px] bg-pink-600 rounded-full flex justify-center items-center text-white'><FaCartShopping/></button> */}
+            {/* <button onClick={handleCart} className='w-[30px] h-[30px] bg-green-500 rounded-full flex justify-center items-center text-white'><FaCartShopping/></button> */}
         </div>
       </div>
   )

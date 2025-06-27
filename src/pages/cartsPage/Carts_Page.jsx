@@ -1,218 +1,295 @@
-import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Image,
+  Text,
+  VStack,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  Select,
+  NumberInput,
+  NumberInputField,
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { BiLeftArrowAlt } from 'react-icons/bi';
-import { PiGreaterThan } from 'react-icons/pi'
+import { PiGreaterThan } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom'
-import { changeQuantity, deleteProduct } from '../../store/cart/cartsReucer';
 import { CgMathMinus } from 'react-icons/cg';
 import { RiAddFill } from 'react-icons/ri';
 import { FaNairaSign } from 'react-icons/fa6';
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-} from '@chakra-ui/react';
 import { MdDelete } from 'react-icons/md';
+import { Link, useNavigate } from 'react-router-dom';
+
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
+import { changeQuantity, removeItem } from '../../store/cart/cartsReucer';
 
 export default function Carts_Page() {
   const { items } = useSelector((state) => state.cart);
-  
-  const [emptyCart, setEmptyCart] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  // Modal state
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedQty, setSelectedQty] = useState(0);
+
+  // Calculate total and item count
   let total = 0;
-  
-  let dispatch = useDispatch();
+  const itemCount = items.reduce((acc, item) => {
+    return acc + Object.values(item.items || {}).reduce((sum, qty) => sum + qty, 0);
+  }, 0);
 
-  // useEffect()
-  // const mSize = item.productSize.findIndex((it) => it === 'M');
+  // Open modal to select size/qty for no-size items
+  const openSizeModal = (item) => {
+    setSelectedItem(item);
+    setSelectedSize('');
+    setSelectedQty(1);
+    onOpen();
+  };
 
-  const increaseQuantity = (id) => {
-    items.map((item) => {
-      if (id === item.productID) {
-        dispatch(changeQuantity({
-          productID : item.productID,
-          quantity : item.quantity + 1
-        }));
-      }
-    });
-  }
+  // Handle adding size and qty to cart item
+  const handleAddSizeToCart = () => {
+    if (!selectedItem || !selectedSize || selectedQty < 0) return;
 
-  let navigate = useNavigate();
-
-  const decreaseQuantity = (id) => {
-    items.map((item) => {
-      if (id === item.productID) {
-        dispatch(changeQuantity({
-          productID : item.productID,
-          quantity : item.quantity - 1 < 1 ? 1
-           : item.quantity - 1
-        }));
-      }
-    });
-  }
-
-  const handleRemoveItem = (id) => {
-    dispatch(deleteProduct({
-      productID: id,
-    }));
-    if (items.length === 0) {
-      setEmptyCart(true);
-      return;
-    }
-  }
-  useEffect(() => {
-    if (items.length === 0) {
-      setEmptyCart(true);
-      return;
-    }
-  })
+    dispatch(changeQuantity(selectedItem.productID, selectedSize, selectedQty));
+    onClose();
+  };
 
   return (
     <Box>
-      <Header/>
-      <Box pb={10} className='bg-zinc-200'>
-
-        <Box mt={3} className=''>
-          <Box bg={''}>
-            <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className="py-2">
-              <Box className="flex gap-1 items-center">
-                <Link to={'/'} className='text-[13px]'>Home</Link>
-                <PiGreaterThan className='text-[13px] pt-1 text-gray-500'/>
-                <Link to={'/view-carts'} className='text-[13px] text-gray-500'>Shopping Cart</Link>
-              </Box>
+      <Header />
+      <Box pb={10} pt={7} className="bg-zinc-200">
+        <Box>
+          <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'} className="py-2" bg={'white'} py={4} px={6} rounded={'md'}>
+            <Box className="flex gap-1 items-center">
+              <Link to={'/'} className="text-[13px]">
+                Home
+              </Link>
+              <PiGreaterThan className="text-[13px] pt-1 text-gray-500" />
+              <Link to={'/view-carts'} className="text-[13px] text-gray-500">
+                Shopping Cart
+              </Link>
             </Box>
           </Box>
-          <Box bg={'white'} py={3} px={2} rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} mt={4} className=''>
-            <Box className="">
-                <Heading fontSize={{md:30, base: 25}} fontWeight={500} color={'black'}>Shopping Cart</Heading>
-            </Box>
-            <Box mt={4} width={'200px'} py={1} rounded={'md'} className='border border-gray-300' >
-              <Link to={'/fashion'} fontWeight={500} className='text- flex items-center justify-center gap-2'><BiLeftArrowAlt/> Continue Shopping</Link>
+
+          <Box bg={'white'} py={3} px={2} rounded={'md'} maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'} mt={4}>
+            <Heading fontSize={{ md: 30, base: 25 }} fontWeight={500} color={'black'}>
+              Shopping Cart
+            </Heading>
+            <Box mt={4} width={'200px'} py={1} rounded={'md'} className="border border-gray-300">
+              <Link to={'/fashion'} fontWeight={500} className="text- flex items-center justify-center gap-2">
+                <BiLeftArrowAlt /> Continue Shopping
+              </Link>
             </Box>
           </Box>
-          <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
 
-            <Flex justifyContent={'space-between'} flexWrap={{md:'no-wrap', base: 'wrap'}} gap={{md: 5, base: 2}} mt={6}>
-              <Box flex={1} width={{md:'50%', base: '100%'}} bg={'white'} rounded={'md'}>
-                <TableContainer className="">
-                  <Table className='rounded-md'>
-                    <Thead className='bg-pink-300'>
-                      <Tr>
-                        <Th className='font-medium p-[10px] text-center'>Image</Th>
-                        <Th className='font-medium p-[10px] text-center'>Name</Th>
-                        <Th className='font-medium p-[10px] text-center'>Quantity</Th>
-                        <Th className='font-medium p-[10px] text-center'>Size</Th>
-                        <Th className='font-medium p-[10px] text-center'>Items Price</Th>
-                        <Th className='font-medium p-[10px] text-center'>Action</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody className='w-full'>
-                      {
-                        items.length > 0 && items.map((item, index) => {
-                          total += item.productPrice * item.quantity ;
-                          
-                          // check f m exist
-                          // let mSize = item.productSize.findIndex((it) => it === 'M');
-                          // let sSize = item.productSize.findIndex((it) => it === 'S');
-                          
-                          // count the lenght of m we've got
-                          // let sCount = item.productSize.filter((it) => it === 'S').length;
-                          // let mCount = item.productSize.filter((it) => it === 'M').length;
-                          
-                          return (
-                            <Tr className='' key={index}>
-                              <Td className=''>
-                                <img src={item.productImage ? item.productImage[0] : productImage} alt="" className='rounded-md max-w-[50px] max-h-[50px]'/>
-                              </Td>
-                              <Td className='font-medium text-[14px] truncate'>
-                                {item.productName}
-                              </Td>
-                              <Td className='font-medium'>
-                                <div className="flex justify-center items-center h-full gap-2">
-                                  <button type='button' className='rounded-md bg-zinc-200 w-7 h-7 flex justify-center items-center' onClick={() => decreaseQuantity(item.productID)}><CgMathMinus className='text-sm text-black'/></button>
-                                  <span className="" >{item.quantity}</span>
-                                  <button type='button' className='rounded-md bg-zinc-200 w-7 h-7 flex justify-center items-center' onClick={() => increaseQuantity(item.productID)}><RiAddFill className='text-sm text-black'/></button>
-                                </div>
-                              </Td>
-                              <Td className='font-medium '>
-                                <div className="">
-                                  {/* <Text>
-                                    {
-                                      mSize >= 0 ? `M: ${mCount}` : ''
-                                    }
-                                  </Text>
-                                  <Text>
-                                    {
-                                      sSize >= 0 ? `S: ${sCount}` : ''
-                                    }
-                                  </Text> */}
-                                </div>
-                                {/* <div className="flex justify-center flex- items-center h-full gap-1">
-                                  <button type='button' className='rounded-md bg-zinc-200 w-3 h-3 flex justify-center items-center' onClick={() => decreaseQuantity(item.productID)}><CgMathMinus className='text-[13px] text-black'/></button>
-                                  <span className="text-[13px]" >{item.quantity}</span>
-                                  <button type='button' className='rounded-md bg-zinc-200 w-3 h-3 flex justify-center items-center' onClick={() => increaseQuantity(item.productID)}><RiAddFill className='text-[13px] text-black'/></button>
-                                </div> */}
-                              </Td>
-                              <Td className='font-medium w-[20%]'>
-                                <Text fontWeight={500} textAlign={'center'} className='flex items-center justify-center'><FaNairaSign/>{(item.productPrice * item.quantity).toLocaleString()}.00</Text>
-                              </Td>
-                              <Td className='font-medium'>
-                                <div className="flex justify-center items-center">
-                                  <button className='text-red-500 text-[14px] font-medium text-center' onClick={() => handleRemoveItem(item.productID)}><MdDelete className='text-2xl'/></button>
-                                </div>
-                              </Td>
-                            </Tr>
-                          )
-                        })
+          <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'}>
+            <Flex justifyContent={'space-between'} flexWrap={{ md: 'no-wrap', base: 'wrap' }} gap={{ md: 5, base: 2 }} mt={6}>
+              <Box flex={1} bg="white" color={'gray.800'} p={{ lg: 4 }} rounded="md">
+                <VStack spacing={4}>
+                  {items.length === 0 ? (
+                    <Box textAlign="center" py={10}>
+                      <Text color="gray.500" fontSize="lg">
+                        Your cart is empty.
+                      </Text>
+                      <Button mt={4} bg="pink.600" color="white" _hover={{bg: 'pink.700'}} onClick={() => navigate('/fashion')}> 
+                        Go to Shop
+                      </Button>
+                    </Box>
+                  ) : (
+                    items.map((item, index) => {
+                      const sizes = Object.entries(item.items || {});
+
+                      if (sizes.length === 0) {
+                        // Item with no sizes/quantities
+                        return (
+                          <Flex key={`empty-${index}`} bg={'yellow.50'} border="1px solid" borderColor="yellow.200" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
+                            <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productID}`}>
+                              <Image src={item.productImage} boxSize="50px" objectFit="cover" rounded="md"/>
+                              <Box>
+                                <Text fontSize="sm">{item.productName?.slice(0, 20)}...</Text>
+                                <Text fontSize="xs" color="orange.500">
+                                  No size selected yet.
+                                </Text>
+                              </Box>
+                            </Flex>
+
+                            <Flex align="center">
+                              <FaNairaSign />
+                              <Text fontWeight="medium" ml={1}>
+                                {item.productPrice.toLocaleString()}.00
+                              </Text>
+                            </Flex>
+
+                            <Button size="sm" colorScheme="pink" onClick={() => openSizeModal(item)}
+                            >
+                              Select Size
+                            </Button>
+
+                            <Button size="sm" colorScheme="red" onClick={() => dispatch(removeItem(item.productID))}
+                            >
+                              <MdDelete />
+                            </Button>
+                          </Flex>
+                        );
                       }
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-                {
-                  emptyCart && (
-                    <Flex mt={{md:20, base: 15}} pb={6} justifyContent={'center'} height={'70%'} alignItems={'center'}>
-                      <Text fontWeight={500} fontSize={20}>Your Cart Is Empty!</Text>
-                    </Flex>
-                  )
-                }
+
+                      // Item with selected sizes/quantities
+                      return sizes.map(([size, quantity]) => {
+                        const subTotal = item.productPrice * quantity;
+                        total += subTotal;
+
+                        return (
+                          <Flex key={`${index}-${size}`} bg={'gray.100'} border="1px solid" borderColor="gray.300" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}
+                          >
+                            <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productID}`}
+                            >
+                              <Image src={item.productImage} boxSize="50px" objectFit="cover" rounded="md"
+                              />
+                              <Box>
+                                <Text fontSize="sm">{item.productName?.slice(0, 20)}...</Text>
+                                <Text fontSize="xs" color="gray.500">
+                                  Size: {size}
+                                </Text>
+                              </Box>
+                            </Flex>
+
+                            <Flex align="center" gap={2}>
+                              <Button h="30px" w="30px" bg="pink.500" color="white" size="sm" onClick={() =>
+                                  dispatch(changeQuantity(item.productID, size, quantity - 1))
+                                }
+                                isDisabled={quantity <= 1}
+                              >
+                                <CgMathMinus />
+                              </Button>
+                              <Text>{quantity}</Text>
+                              <Button h="30px" w="30px" bg="pink.500" color="white" size="sm" onClick={() =>
+                                  dispatch(changeQuantity(item.productID, size, quantity + 1))
+                                }
+                              >
+                                <RiAddFill />
+                              </Button>
+                            </Flex>
+
+                            <Flex align="center">
+                              <FaNairaSign />
+                              <Text fontWeight="medium" ml={1}>
+                                {subTotal.toLocaleString()}.00
+                              </Text>
+                            </Flex>
+
+                            <Button size={'large'} h={{ md: '35px', base: '30px' }} w={{ md: '35px', base: '30px' }} colorScheme="red" border="1px solid" borderColor="gray.300" onClick={() => dispatch(removeItem(item.productID))}
+                            >
+                              <MdDelete color="white" />
+                            </Button>
+                          </Flex>
+                        );
+                      });
+                    })
+                  )}
+                </VStack>
               </Box>
-              <Box width={{md:'350px', base: '100%'}} height={'350px'} p={{md:3, base:2}} bg={'white'} rounded={'md'}>
-                <Flex justifyContent={'space-between'} alignItems={'center'} pb={3} borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <Heading fontSize={16} fontWeight={500}>Order Summary</Heading>
-                  <Text fontWeight={500} fontSize={15}>Subtotal ({items.length} Item)</Text>
+
+              <Box width={{ md: '350px', base: '100%' }} height={'350px'} p={{ md: 3, base: 2 }} bg={'white'} rounded={'md'}
+              >
+                <Flex justifyContent={'space-between'} alignItems={'center'} pb={3} borderBottomWidth={1} borderBottomColor={'gray.100'}
+                >
+                  <Heading fontSize={16} fontWeight={500}>
+                    Order Summary
+                  </Heading>
+                  <Text fontWeight={500} fontSize={15}>
+                    Subtotal ({itemCount} item{itemCount !== 1 ? 's' : ''})
+                  </Text>
                 </Flex>
                 <Flex justifyContent={'space-between'} alignItems={'center'} py={5} borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <Text fontSize={14} fontWeight={500}>Delivery Changes:</Text>
-                  <Text fontWeight={500} fontSize={'11px'} textAlign={'end'} className='text-gray-400'>Add your Delivery address at checkout to see delivery charges</Text>
+                  <Text fontSize={14} fontWeight={500}>
+                    Delivery Charges:
+                  </Text>
+                  <Text fontWeight={500} fontSize={'11px'} textAlign={'end'} className="text-gray-400">
+                    Add your Delivery address at checkout to see delivery charges
+                  </Text>
                 </Flex>
-                <Flex justifyContent={'space-between'} alignItems={'center'} py={4} borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <Heading fontSize={16} fontWeight={500}>Subtotal</Heading>
+                <Flex justifyContent={'space-between'} alignItems={'center'} py={4} borderBottomWidth={1} borderBottomColor={'gray.100'}
+                >
+                  <Heading fontSize={16} fontWeight={500}>
+                    Subtotal
+                  </Heading>
                   <Box>
-                    <Text fontWeight={500} className='flex items-center'><FaNairaSign/>{total.toLocaleString()}.00</Text>
+                    <Text fontWeight={500} className="flex items-center">
+                      <FaNairaSign />
+                      {total.toLocaleString()}.00
+                    </Text>
                   </Box>
                 </Flex>
-                <Flex justifyContent={'space-between'} alignItems={'center'} py={4} borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <Heading fontSize={16} fontWeight={500}>Total</Heading>
-                  <Text fontWeight={500} className='flex items-center'><FaNairaSign/>{total.toLocaleString()}.00</Text>
+                <Flex justifyContent={'space-between'} alignItems={'center'} py={4} borderBottomWidth={1} borderBottomColor={'gray.100'}
+                >
+                  <Heading fontSize={16} fontWeight={500}>
+                    Total
+                  </Heading>
+                  <Text fontWeight={500} className="flex items-center">
+                    <FaNairaSign />
+                    {total.toLocaleString()}.00
+                  </Text>
                 </Flex>
-                <Text className='text-[12px] text-yellow-600 text-end py-2'>Excluding delivery charges</Text>
+                <Text className="text-[12px] text-yellow-600 text-end py-2">
+                  Excluding delivery charges
+                </Text>
                 <Box borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <button className='bg-pink-600 text-white w-full my-3 rounded-md py-2 font-medium'>Continue to Checkout</button>
+                  <button className="bg-pink-600 text-white w-full my-3 rounded-md py-2 font-medium">
+                    Continue to Checkout
+                  </button>
                 </Box>
               </Box>
             </Flex>
           </Box>
         </Box>
       </Box>
-      <Footer/>
+
+      {/* Modal for selecting size & quantity */}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Select Size & Quantity</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text fontWeight={500}>{selectedItem?.productName}</Text>
+
+            <Select mt={4} placeholder="Select size" onChange={(e) => setSelectedSize(e.target.value)} value={selectedSize}> 
+            <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </Select>
+
+            <NumberInput mt={3} min={0} value={selectedQty} onChange={(val) => setSelectedQty(parseInt(val) || 0)}>
+              <NumberInputField />
+            </NumberInput>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="pink"
+              onClick={handleAddSizeToCart}
+              isDisabled={!selectedSize}
+            >
+              Add to Cart
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Footer />
     </Box>
-  )
+  );
 }

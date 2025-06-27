@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import React, { createContext, Fragment, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { FaSmileBeam } from "react-icons/fa";
@@ -9,7 +9,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlinePolicy } from "react-icons/md";
 import { PiGreaterThan } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, changeQuantity } from '../../store/cart/cartsReucer';
+import { addToCart } from '../../store/cart/cartsReucer';
 import { CgMathMinus } from 'react-icons/cg';
 import { RiAddFill } from 'react-icons/ri';
 import { FaNairaSign } from 'react-icons/fa6';
@@ -20,12 +20,23 @@ import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
+import Adverts from '../../components/Adverts/Adverts';
 
 export const quantityContext = createContext();
 
 export default function Details() {
     const { proId } = useParams();
     const [selectSizeOpt, setSelectSizeOpt] = useState([]);
+    let [isOpen, setIsOpen] = useState(false);
+    let [message, setMessage] = useState(null);
+    const [getCarts, setGetCarts] = useState({
+      productID: '',
+      productName: '',
+      productImage: '',
+      productPrice: '',
+      items: {}, // e.g. { "S": 2, "M": 1 }
+    });
+
 
     const { currentUser } = useSelector((state) => state.user);
     const { currentAdmin } = useSelector((state) => state.admin);
@@ -56,32 +67,77 @@ export default function Details() {
     }, []);
 
     const {_id, name, category, image, price, trackingId, description, oldprice, size, gender} = product;
-    
-    // if (currentUser) {
-    //   adminid = currentUser._id
-    // };
+    // Update state when `product` changes
+    useEffect(() => {
+      if (product) {
+        setGetCarts({
+          productID: product._id || '',
+          productName: product.name || '',
+          productImage: product.image?.length > 0 ? product.image[0] : product.image || [],
+          productPrice: product.price || '',
+          items: {}, // ✅ Preserve this key
+        });
+      }
+    }, [product]); // Runs whenever `product` updates
 
-    let sizeSelected = [];
+    const handleSizeChange = (e) => {
+      const { value, checked } = e.target;
+      setGetCarts((prev) => {
+        const updatedItems = { ...prev.items };
+        if (checked) {
+          updatedItems[value] = 1; // Default quantity
+        } else {
+          delete updatedItems[value];
+        }
+        return { ...prev, items: updatedItems };
+      });
+    };
 
-    const getCarts = {
-        productID: _id,
-        productName: name,
-        productImage : image,
-        productPrice: price,
-        productSize: selectSizeOpt,
-        quantity: 1
-    }
+    const updateQuantity = (size, change) => {
+      setGetCarts((prev) => {
+        const currentQty = prev.items[size] || 1;
+        const newQty = currentQty + change;
+        const updatedItems = { ...prev.items };
+
+        if (newQty < 1) {
+          delete updatedItems[size];
+        } else {
+          updatedItems[size] = newQty;
+        }
+
+        return { ...prev, items: updatedItems };
+      });
+    };
+
 
     const handleCart = () => {
+      // Case: Product has sizes
+      if (Array.isArray(size) && size.length > 0) {
+        if (!getCarts.items || Object.keys(getCarts.items).length === 0) {
+          setMessage('Please select a cloth size!');
+          setIsOpen(true);
+          return;
+        }
+      }
+
+      // Case: No sizes OR sizes are selected
       dispatch(addToCart(getCarts));
-    }
+      toast({
+        title: 'Added to cart!',
+        description: 'Your selection has been added successfully.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setIsOpen(false);
+    };
 
     const getWishlist = {
       productID: _id,
       productName: name,
       productImage : image,
       productPrice: price,
-      productSize: sizeSelected,
+      productSize: [],
       quantity: 1
     }
 
@@ -95,46 +151,17 @@ export default function Details() {
       });
     }
 
-    const increaseQuantity = () => {
-      items.map((item) => {
-        if (_id === item.productID) {
-          dispatch(changeQuantity({
-            productID : item.productID,
-            quantity : item.quantity + 1
-          }));
-        }
-      });
-    }
-
-    let navigate = useNavigate();
-
-    const decreaseQuantity = () => {
-      items.map((item) => {
-        if (_id === item.productID) {
-          dispatch(changeQuantity({
-            productID : item.productID,
-            quantity : item.quantity - 1 < 1 ? navigate('/')
-             : item.quantity - 1
-          }));
-        }
-      });
-    }
-
     const handleClick = (img) => {
       displayImage.current.src = img;
     }
-    
-    const handleSize = (value) => {
-      setSelectSizeOpt([...selectSizeOpt,value]);
-    }
-    
+
   return (
     <Box>
       <Header/>
 
       <div className='bg-zinc-200 md:mb-0 mb-16'>
-        <Box className=" p-2">
-          <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
+        <Box className=" p-2" mt={7}>
+          <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mt={2} mx={'auto'} bg={'white'} py={4} px={6} rounded={'md'}>
             <div className="flex gap-1 items-center">
               <Link to={'/'} className='text-[13px] text-gray-500'>Home</Link>
               <PiGreaterThan className='text-[13px] text-gray-500 pt-1'/>
@@ -147,22 +174,22 @@ export default function Details() {
             {/* <Heading fontSize={{md:30, base: 25}} fontWeight={500} color={'black'}>{category}</Heading> */}
           </Box>
         </Box>
-        <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className="md:p-4 p-2 flex justify-center gap-2 flex-wrap">
+        <Box maxW={{'2xl' : '80%', xl : '96%', lg : '100%', base: '97%'}} mx={'auto'} className="md:p-4 p-2 flex justify-center gap-2 flex-wrap">
           <div className="flex-1 relative bg-white md:p-4 p-2 rounded-md">
             <div className="flex gap-2 flex-wrap">
               <div className="2xl:w-[350px] w-[300px]">
                 <div className="w-[300px] flex md:justify-start justify-center">
-                  <img src={image ? image[0] : image} alt="" ref={displayImage} className='max-w-full object-fill'/>
+                  <img src={image ? image[0] : image} alt="" ref={displayImage} className='max-w-full h-[300px] object-fill rounded'/>
                 </div>
                 <div className="py-2">
                   {
                     image !== undefined ? (
-                      <div className='flex items-center gap-2'>
+                      <div className='flex items-center justify-center flex-wrap gap-2'>
                         {
                           image.length > 0 && image.map((img) => {
                             return (
-                              <div className="">
-                                <img src={img} onClick={() => handleClick(img)} className='max-w-14' alt="" />
+                              <div className="cursor-pointer">
+                                <img src={img} onMouseEnter={() => handleClick(img)} className='max-w-12 rounded' alt="" />
                               </div>
                             )
                           })
@@ -214,61 +241,22 @@ export default function Details() {
                       )
                     }
                   </div>
-                  <Box>
-                    <Text className='uppercase font-medium mb-4'>Variation Avalaible</Text>
-                    <Flex alignItems={'center'} flexWrap={'wrap'} gap={2}>
-                      {
-                        size !== undefined ? (
-                          <>
-                          {
-                            size.length > 0 && size.map((sz) => {
-                              return (
-                                <button onClick={() => handleSize(sz)} className='rounded-md hover:bg-pink-600 hover:text-white active:bg-pink-600 focus:bg-pink-600 p-1 px-3 border border-zinc-300'>{sz}</button>
-                              )
-                            })
-                          }
-                          </>
-                        ) : ''
-                      }
-                    </Flex>
-                  </Box>
                 </div>
-                <div className="border-b-[1px] border-b-gray-300 py-3">
-                  <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-                    <Box className="flex items-center gap-2">
-                      <Text className='text-sm'>Quantity: </Text>
-                      <Box className="flex gap-2 items-center">
-                        <button type='button' className='bg-zinc-300 w-7 h-7 rounded-md flex justify-center items-center' onClick={decreaseQuantity}><CgMathMinus className='text-sm'/></button>
-                        <span className="" ref={logQuantity}>
-                          {
-                            items.map((item) => (
-                              <>
-                                {
-                                  _id === item.productID && (
-                                    <>
-                                      {item.quantity}
-                                    </>
-                                  )
-                                }
-                              </>
-                            ))
-                          }
-                        </span>
-                        <button type='button' className='bg-zinc-300 w-7 h-7 rounded-md flex justify-center items-center' onClick={increaseQuantity}><RiAddFill className='text-sm'/></button>
-                      </Box>
-                    </Box>
-                    
-                    <div className="bg-pink-200 px-2 rounded-md mt-5">
-                      <p className='text-sm font-medium text-center'>Call us for Bulk Purchase</p>
-                      <div className="flex justify-center items-center text-pink-600 font-medium">
-                        <IoMdCall/>
-                        <Link to={'tell:07047594667'} className='text-center'>07047594667</Link>
-                      </div>
+                <div className="border-b-[1px] border-b-gray-300">
+                  <div className="bg-pink-200 px-2 py-2 rounded-md mt-3">
+                    <p className='text-sm font-medium text-center'>Call us for Bulk Purchase</p>
+                    <div className="flex justify-center items-center text-pink-600 font-medium">
+                      <IoMdCall/>
+                      <Link to={'tell:07047594667'} className='text-center'>07047594667</Link>
                     </div>
                   </div>
+
+                  {/* Add to cart */}
                   <div className=" mt-5 flex justify-between items-center">
                     <button className="bg-pink-600 text-white px-5 py-2 rounded-md w-[100%] font-medium" onClick={handleCart}>Add To Cart</button>
                   </div>
+
+                  {/* Add to wishlist */}
                   <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-pink-600 active:text-pink-600 focus:text-pink-600 absolute top-3 right-3 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
                     <IoHeart className='text-xl'/>
                   </button>
@@ -322,8 +310,54 @@ export default function Details() {
             </div>
           </div>
         </Box>
+        {isOpen && (
+          <Box position="fixed" top="0" left="0" w="100vw" h="100vh" bg="blackAlpha.700" display="flex" alignItems="center" justifyContent="center" zIndex="50" p={4}>
+            <Box bg="gray.100" color="gray.800" borderRadius="lg" p={8} maxW="lg" w="100%" position="relative" mt={{ '2xl': 0, xl: 28 }}>
+              <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>
+                Select Size & Quantity
+              </Text>
+
+              <Box bg="white" p={4} borderRadius="md">
+                <Stack spacing={4} mb={4}>
+                  {Array.isArray(size) && size.map((s) => (
+                    <Flex key={s} align="center" justify="space-between" bg="gray.200" borderRadius="md" p={2}>
+                      <Flex align="center" gap={2}>
+                        <input
+                          type="checkbox"
+                          id={s}
+                          value={s}
+                          onChange={handleSizeChange}
+                          checked={!!getCarts.items[s]}
+                        />
+                        <label htmlFor={s}>{s}</label>
+                      </Flex>
+
+                      {getCarts.items[s] && (
+                        <Flex align="center" gap={2}>
+                          <Button size="sm" onClick={() => updateQuantity(s, -1)}>-</Button>
+                          <Text>{getCarts.items[s]}</Text>
+                          <Button size="sm" onClick={() => updateQuantity(s, 1)}>+</Button>
+                        </Flex>
+                      )}
+                    </Flex>
+                  ))}
+                </Stack>
+
+                <Button type="button" width="100%" bg="green.600" color="white" borderRadius="full" onClick={handleCart} _hover={{ bg: "pink.700" }} fontWeight="medium" py={2}>
+                  Confirm Selection
+                </Button>
+              </Box>
+
+              <Button onClick={() => setIsOpen(false)} mt={4} bg="red.600" color="white" _hover={{ bg: "red.700" }} w="100%" borderRadius="md">
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {/* Products details */}
         <Box py={4} px={3}>
-          <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} bg={'white'} py={4} px={3} rounded={'md'} className="my-6">
+          <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} bg={'white'} py={4} px={3} rounded={'md'} className="my-6">
             <Box className="mb-2">
               <h2 className='font-medium text-xl'>Description:</h2>
             </Box>
@@ -334,6 +368,8 @@ export default function Details() {
           </Box>
         </Box>
       </div>
+      {/* advert content and footer */}
+      <Adverts/>
       <Footer/>
     </Box>
   )

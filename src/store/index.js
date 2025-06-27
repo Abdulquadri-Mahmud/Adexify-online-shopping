@@ -2,13 +2,13 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducers from "./userReducers";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
-import cartsReucer from "./cart/cartsReucer";
 import Wishlists from "./wishlists/Wishlists";
 import adminReducer from "./adminReducer";
+import { cartReducer } from "./cart/cartsReucer";
 
 const rootReducer = combineReducers({
     user: userReducers,
-    cart: cartsReucer,
+    cart: cartReducer,
     wishlist : Wishlists,
     admin: adminReducer
 });
