@@ -59,7 +59,7 @@ export default function Hero() {
       <Box bg={'white'} p={3} rounded={'md'} className='flex gap-3 flex-nowrap' height={{'xl':'61vh', base:'74vh'}} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box overflow={'hidden'} width={{md:'60%', base: '100%'}}>
             <Slider {...settings}>
-              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/hero1.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
+              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/hero2.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
                 <Flex justifyContent={{md:'center', base: 'center'}} alignItems={'center'} gap={3} className='flex-wrap' p={{md:0, base: 0}} maxW={{md: '100%', base: '100%'}} mx={'auto'} height={'100%'}>
                   <Flex gap={3} flexDir={'column'} color={'black'} className='p-3 md:py-7 rounded-md '>
                     <div className="flex items-center">
@@ -70,12 +70,14 @@ export default function Hero() {
                       <Text fontFamily={''} className='text-center font-medium text-white'>We are here to save your time and money</Text>
                     </div>
                     <Flex justifyContent={{md:'center', base: 'center'}}>
-                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>Start Shopping</Button>
+                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>
+                        <Link className='/fashion'>Start Shopping</Link>
+                      </Button>
                     </Flex>
                   </Flex>
                 </Flex>
               </Box>
-              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/bg1.gif'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
+              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/hero.png'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
                 <Flex justifyContent={{md:'center', base: 'center'}} alignItems={'center'} gap={3} className='flex-wrap' p={{md:0, base: 0}} maxW={{md: '90%', base: '100%'}} mx={'auto'} height={'100%'}>
                   <Flex gap={3} flexDir={'column'} color={'black'} className='p-3 md:py-7 rounded-md '>
                     <div className="flex items-center">
@@ -86,12 +88,14 @@ export default function Hero() {
                       <Text fontFamily={''} className='text-center font-medium text-white'>We are here to save your time and money</Text>
                     </div>
                     <Flex justifyContent={{md:'center', base: 'center'}}>
-                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>Start Shopping</Button>
+                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>
+                        <Link className='/fashion'>Start Shopping</Link>
+                      </Button>
                     </Flex>
                   </Flex>
                 </Flex>
               </Box>
-              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'right'} bgSize={'cover'} bgImage={'/hero.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-300'>
+              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'right'} bgSize={'cover'} bgImage={'/new-arrivals.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-300'>
                 <Flex justifyContent={{md:'center', base: 'center'}} alignItems={'center'} gap={3} className='flex-wrap' p={{md:0, base: 0}} maxW={{md: '90%', base: '100%'}} mx={'auto'} height={'100%'}>
                   <Flex gap={3} flexDir={'column'} color={'black'} className='p-3 md:py-7 rounded-md '>
                     <div className="flex items-center">
@@ -102,7 +106,9 @@ export default function Hero() {
                       <Text fontFamily={''} className='text-center font-medium text-white'>We are here to save your time and money</Text>
                     </div>
                     <Flex justifyContent={{md:'center', base: 'center'}}>
-                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>Start Shopping</Button>
+                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>
+                        <Link className='/fashion'>Start Shopping</Link>
+                      </Button>
                     </Flex>
                   </Flex>
                 </Flex>

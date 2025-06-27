@@ -34,7 +34,7 @@ function SampleNextArrow(props) {
   function SamplePrevArrow(props) {
     const { className, style, onClick } = props;
     return (
-      <Box bg={'pink.300'} width={'30px'} height={'30px'} rounded={'full'}
+      <Box bg={'green.500'} width={'30px'} height={'30px'} rounded={'full'}
         left={'1vh'} zIndex={'10'}
         className={className}
         style={{ ...style, display: "none", 
@@ -129,7 +129,7 @@ export default function Women_Clothing_page() {
                 </Box>
             </Box>
 
-            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} py={2} mt={3} mb={5} className='bg-pink-600'>
+            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} py={2} mt={3} mb={5} className='bg-green-500'>
                 <Heading color={'white'} fontWeight={500} fontSize={20} textAlign={'center'} className='flex items-center gap-1 justify-center'>CALL TO ORDER 
                     <Link to={'tel:07047594667'}>07047594667</Link>
                 </Heading>
@@ -186,9 +186,9 @@ export default function Women_Clothing_page() {
                 </Box>
             </Box>
             <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-pink-600 text-white py-3 rounded-t-lg px-3'>
+                <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-green-500 text-white py-3 rounded-t-lg px-3'>
                     <Heading fontWeight={500} fontSize={20}>Top Picks</Heading>
-                    <Link className='text-pink-600 font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
+                    <Link className='text-green-500 font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
                 </Flex>            
             </Box>
             <Box bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} p={3} roundedBottom={'md'}>
@@ -229,7 +229,7 @@ export default function Women_Clothing_page() {
             </Box>
             <Box mb={'5'}>
                 <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-pink-600 text-white py-3 rounded-t-lg px-3'>
+                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-green-500 text-white py-3 rounded-t-lg px-3'>
                         <Heading fontWeight={500} fontSize={20}>Top Shirts</Heading>
                         <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
                     </Flex>            
@@ -254,7 +254,7 @@ export default function Women_Clothing_page() {
             </Box>
             <Box mb={'5'}>
                 <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} className='py-4 rounded-t-lg px-3 bg-pink-600'>
+                    <Flex justifyContent={'space-between'} alignItems={'center'} className='py-4 rounded-t-lg px-3 bg-green-500'>
                         <Heading fontWeight={500} fontSize={20} color={'white'}>Top Jewelleries</Heading>
                         <Link className='text-white font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
                     </Flex>            
@@ -297,7 +297,7 @@ export default function Women_Clothing_page() {
             </Box>
             <Box mb={'10'}>
                 <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-pink-600 text-white py-3 rounded-t-lg px-3'>
+                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-green-500 text-white py-3 rounded-t-lg px-3'>
                         <Heading fontWeight={500} fontSize={20}>Top Clothes</Heading>
                         <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
                     </Flex>            
@@ -322,7 +322,7 @@ export default function Women_Clothing_page() {
             </Box>
             <Box mb={'10'}>
                 <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-pink-600 text-white py-3 rounded-t-lg px-3'>
+                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-green-500 text-white py-3 rounded-t-lg px-3'>
                         <Heading fontWeight={500} fontSize={20}>Top Shoes</Heading>
                         <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
                     </Flex>            
@@ -411,7 +411,7 @@ export default function Women_Clothing_page() {
                                 <Box borderWidth={1} borderTopColor={'gray.200'} borderBottomColor={'gray.200'} borderRight={0} borderLeft={0} py={3} px={3} mt={5}>
                                     <Flex justifyContent={'space-between'} alignItems={'center'}>
                                         <Text className='flex items-center text-[16px] font-medium'>PRICE (<FaNairaSign className='text-[16px]'/>)</Text>
-                                        <Box px={3} py={1} rounded={'md'} className='flex justify-center items-center bg-pink-300 hover:bg-pink-600 duration-200 hover:text-white text-black font-medium'>
+                                        <Box px={3} py={1} rounded={'md'} className='flex justify-center items-center bg-green-500 hover:bg-green-500 duration-200 hover:text-white text-black font-medium'>
                                             <Text>APPLY</Text>
                                         </Box>
                                     </Flex>

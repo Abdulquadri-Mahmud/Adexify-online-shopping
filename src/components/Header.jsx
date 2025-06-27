@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Image, useColorModeValue } from '@chakra-ui/react';
 import React, { createContext, useEffect, useState } from 'react'
 import { FaFacebookF, FaInstagram, FaSmileBeam, FaTwitter } from 'react-icons/fa';
 import { IoLogoYoutube } from 'react-icons/io';
@@ -55,7 +55,7 @@ export default function Header() {
     
   return (
     <div className="sticky top-0 z-20 bg-white">
-        <Box className='bg-green-500 hidden md:block'>
+        <Box className='bg-green-600 hidden md:block'>
             <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}  className="relative flex justify-between items-center px-2 md:px-6 text-white">
                 <div className="flex items-center">
                     <IoMdCall/>
@@ -73,23 +73,16 @@ export default function Header() {
             </Box>
         </Box>
         <Box top={0} position={'sticky'} className='bg-white text-white'>
-            <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '100%'}} mx={'auto'}  className='flex justify-between items-center py-3 md:px-6 px-2 md:bg-white bg-green-500'>
-                <Link to={'/'}>
-                    <div className="flex items-center md:text-black">
+            <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '100%'}} mx={'auto'}  className='flex justify-between items-center py-2 md:px-6 px-2 md:bg-white bg-green-600'>
+                <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
+                    <Image src='/Logo.png' alt='logo' w={'150px'}/>
+                    {/* <div className="flex items-center md:text-black">
                         <FaSmileBeam className='md:text-2xl text-2xl animate text-green-600'/>
                         <h1 className='md:text-3xl text-2xl font-medium uppercase md:text-gray-800 text-white'>Ade<span className="text-">X</span>ify</h1>
-                    </div>
+                    </div> */}
                 </Link>
                 <div className="w-[30%] rounded hidden md:block">
                     <SearchInputField/>
-                    {/* <form className='w-[100%] relative'>
-                        <form className="">
-                            <input type="text" placeholder='Search for products'  className=' text-white font-semibold rounded-sm border-none outline-none p-[8px] bg-zinc-100 w-[100%]'/>
-                            <Box className="bg-green-500 absolute top-0 right-0 flex justify-center items-center w-[45px] h-full rounded-r-sm cursor-pointer ">
-                                <Icon as={MdSearch} color={useColorModeValue('white', 'black')} fontSize={23}/>
-                            </Box>
-                        </form>
-                    </form> */}
                 </div>
                 <div className="flex items-center">
                     <div className="hidden md:block">
@@ -135,7 +128,7 @@ export default function Header() {
             </Box>
         </Box>
         <div className="hidde md:block text-black ">
-            <Box maxW={{'2xl' : '50%', xl : '80%', lg : '100%', base: '100%'}} mx={'auto'} roundedTop={'0px'} className="flex md:justify-center justify-between flex-wrap px-2 items-center gap-4 sm:gap-5 py-3 md:bg-green-50 md:text-black">
+            <Box maxW={{'2xl' : '50%', xl : '60%', lg : '100%', base: '100%'}} mx={'auto'} roundedTop={'10'} className="flex md:justify-center justify-between flex-wrap px-2 items-center gap-4 sm:gap-5 py-3 md:bg-green-50 md:text-black">
                 <div className="">
                     <All_category/>
                 </div>

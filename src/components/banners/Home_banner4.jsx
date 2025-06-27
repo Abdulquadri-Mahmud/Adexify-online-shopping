@@ -116,37 +116,37 @@ export default function Home_banner4() {
             </Flex>
         </Box>
         <Box display={{xl: 'none', base: 'block'}}>
-            <Slider {...settings}>
+          <Slider {...settings}>
+            <Link to={'/'}>
+              <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
+                  <Image  rounded={'md'} src="/new-arrival.jpg" alt="" />
+                  <Text fontSize={'14px'} mt={2} textAlign={'center'}>New Arrival</Text>
+              </Box>
+              </Link>
+              <Link to={'/'}>
+                <Box height={{xl:'230px',md:'200px', base: '100%'}} width={{md:'200px', base: '150px'}}>
+                    <Image  rounded={'md'} src="/men_fashion.jpg" alt="" />
+                </Box>
+              </Link>
               <Link to={'/'}>
                 <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                    <Image  rounded={'md'} src="/new-arrival.jpg" alt="" />
-                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>New Arrival</Text>
+                    <Image height={'150px'} rounded={'md'} src="/fahsion3.gif" alt="" />
+                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
                 </Box>
-                </Link>
-                <Link to={'/'}>
-                  <Box height={{xl:'230px',md:'200px', base: '100%'}} width={{md:'200px', base: '150px'}}>
-                      <Image  rounded={'md'} src="/men_fashion.jpg" alt="" />
-                  </Box>
-                </Link>
-                <Link to={'/'}>
-                  <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                      <Image height={'150px'} rounded={'md'} src="/fahsion3.gif" alt="" />
-                      <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
-                  </Box>
-                </Link>
-                <Link to={'/'}>
-                  <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                      <Image  rounded={'md'} src="/recommended.gif" alt="" />
-                      <Text fontSize={'14px'} mt={2} textAlign={'center'}>Great Deals</Text>
-                  </Box>
-                </Link>
-                <Link to={'/'}>
-                  <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                      <Image  rounded={'md'} src="/specia-offer.png" alt="" />
-                      <Text fontSize={'14px'} mt={2} textAlign={'center'}>Special Offter</Text>
-                  </Box>
-                </Link>
-            </Slider>
+              </Link>
+              <Link to={'/'}>
+                <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
+                    <Image  rounded={'md'} src="/recommended.gif" alt="" />
+                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>Great Deals</Text>
+                </Box>
+              </Link>
+              <Link to={'/'}>
+                <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
+                    <Image  rounded={'md'} src="/specia-offer.png" alt="" />
+                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>Special Offter</Text>
+                </Box>
+              </Link>
+          </Slider>
         </Box>
     </Box>
   )
