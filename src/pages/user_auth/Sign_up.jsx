@@ -117,9 +117,9 @@ export default function Sign_up() {
       <Header/>
         <Box className='bg-zinc-100 md:py-10 pt-6 pb-20 flex justify-center items-center px-2'>
             <Box bg={'white'} px={3} py={6} rounded={'md'} maxW={{md: '50%',base:'100%'}} mx={'auto'} className="xl:mt-0 mt-5 xl:px-5">
-                <Box className="flex items-center justify-center mx-auto bg-pink-200 py-1 px-2 rounded-2xl w-[140px]">
-                    <MdOutlineShoppingCart className='md:text-xl animate text-pink-600'/>
-                    <h1 className='md:text-xl font-medium uppercase'>Ade<span className="text-pink-600">X</span>ify</h1>
+                <Box className="flex items-center justify-center mx-auto bg-green-200 py-1 px-2 rounded-2xl w-[140px]">
+                    <MdOutlineShoppingCart className='md:text-xl animate text-green-600'/>
+                    <h1 className='md:text-xl font-medium uppercase'>Ade<span className="text-green-600">X</span>ify</h1>
                 </Box>
                 <Box className="mt-5">
                     <Heading textAlign={'center'} fontWeight={500} fontSize={{md:30, base: 25}}>Welcome Back</Heading>
@@ -186,17 +186,17 @@ export default function Sign_up() {
                             {
                                 loading ? (
                                     <Flex justifyContent={'center'} alignItems={'center'} gap={2}>
-                                        <Spinner color='pink.600' />
-                                        <Text color={'pink.600'}>Loading...</Text>
+                                        <Spinner color='green.600' />
+                                        <Text color={'green.600'}>Loading...</Text>
                                     </Flex>
                                 ) : 'Sign Up'
                             }
                         </button>
                     </Box>
                     <Box className="flex justify-center items-center">
-                        <p className="w-[100px] p-[1px] bg-pink-300"></p>
+                        <p className="w-[100px] p-[1px] bg-green-300"></p>
                         <p className="text-gray-400 text-sm">Or Login With</p>
-                        <p className="w-[100px] p-[1px] bg-pink-300"></p>
+                        <p className="w-[100px] p-[1px] bg-green-300"></p>
                     </Box>
                     <Box className="mx-auto w-full">
                         <button className='bg-slate-800 text-white w-full py-3 rounded-lg flex items-center justify-center gap-2 font-medium'><FaGoogle className='text-red-500'/> Google</button>
