@@ -102,7 +102,7 @@ export default function Carts_Page() {
                       <Text color="gray.500" fontSize="lg">
                         Your cart is empty.
                       </Text>
-                      <Button mt={4} bg="pink.600" color="white" _hover={{bg: 'pink.700'}} onClick={() => navigate('/fashion')}> 
+                      <Button mt={4} bg="green.600" color="white" _hover={{bg: 'green.700'}} onClick={() => navigate('/fashion')}> 
                         Go to Shop
                       </Button>
                     </Box>
@@ -131,7 +131,7 @@ export default function Carts_Page() {
                               </Text>
                             </Flex>
 
-                            <Button size="sm" colorScheme="pink" onClick={() => openSizeModal(item)}
+                            <Button size="sm" colorScheme="green" onClick={() => openSizeModal(item)}
                             >
                               Select Size
                             </Button>
@@ -165,7 +165,7 @@ export default function Carts_Page() {
                             </Flex>
 
                             <Flex align="center" gap={2}>
-                              <Button h="30px" w="30px" bg="pink.500" color="white" size="sm" onClick={() =>
+                              <Button h="30px" w="30px" bg="green.500" color="white" size="sm" onClick={() =>
                                   dispatch(changeQuantity(item.productID, size, quantity - 1))
                                 }
                                 isDisabled={quantity <= 1}
@@ -173,7 +173,7 @@ export default function Carts_Page() {
                                 <CgMathMinus />
                               </Button>
                               <Text>{quantity}</Text>
-                              <Button h="30px" w="30px" bg="pink.500" color="white" size="sm" onClick={() =>
+                              <Button h="30px" w="30px" bg="green.500" color="white" size="sm" onClick={() =>
                                   dispatch(changeQuantity(item.productID, size, quantity + 1))
                                 }
                               >
@@ -245,7 +245,7 @@ export default function Carts_Page() {
                   Excluding delivery charges
                 </Text>
                 <Box borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <button className="bg-pink-600 text-white w-full my-3 rounded-md py-2 font-medium">
+                  <button className="bg-green-600 text-white w-full my-3 rounded-md py-2 font-medium">
                     Continue to Checkout
                   </button>
                 </Box>
@@ -279,7 +279,7 @@ export default function Carts_Page() {
 
           <ModalFooter>
             <Button
-              colorScheme="pink"
+              colorScheme="green"
               onClick={handleAddSizeToCart}
               isDisabled={!selectedSize}
             >

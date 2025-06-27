@@ -6,12 +6,17 @@ import { FaAngleRight } from 'react-icons/fa';
 import { PiGreaterThan } from 'react-icons/pi';
 
 export const Women_ClothingContext = createContext();
-export const Hoodie_Sweater2_Context = createContext();
 export const Female_Context = createContext();
+export const TopShirts_Context = createContext();
+export const TopShoes_Context = createContext();
+export const TopJewellery_Context = createContext();
+export const TopBags_Context = createContext();
 
 const Women_Clothing = React.lazy(() => import('../../components/clothing/Women_Clothing.jsx'));
-const Hoodie_Sweater2 = React.lazy(() => import('../../hoodies&sweater/Hoodie_Sweater2.jsx'));
-const Females = React.lazy(() => import('../../components/genders/Females.jsx'));
+const TopShirts = React.lazy(() => import('../../components/shirt/TopShirts.jsx'));
+const TopShoes = React.lazy(() => import('../../components/Shoes/TopShoes.jsx'));
+const TopJewellery = React.lazy(() => import('../../components/JeweComp/TopJewellery.jsx'));
+const TopBags = React.lazy(() => import('../../components/Bags/TopBags.jsx'));
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -51,6 +56,7 @@ import Header from '../../components/Header.jsx';
 import Loading from '../../components/loader/Loading.jsx';
 import Adverts from '../../components/Adverts/Adverts.jsx';
 import Footer from '../../components/footer/Footer.jsx';
+import WomenCategory from '../Bottom_Categories/WomenCategory.jsx';
 // import Females from '';
 
 export default function Women_Clothing_page() {
@@ -136,7 +142,7 @@ export default function Women_Clothing_page() {
             </Box>
             
             <Box bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} p={3} rounded={'md'} p={2} mt={4}>
-                <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '300px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'top'} bgBlendMode={'multiply'} className='bg-slate-400' bgImage={'/banner.jpg'} position={'relative'}>
+                <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '300px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'top'} bgBlendMode={'multiply'} className='bg-slate-400' bgImage={'/hero3.jpg'} position={'relative'}>
                     <Box position={'absolute'}>
                         <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
                         <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Women's Fahion</Heading>
@@ -239,12 +245,12 @@ export default function Women_Clothing_page() {
                         <Slider {...settings}>
                             {
                                 products.map((product) => (
-                                    product.gender === 'female' && product.category === 'Shirt' ? (
-                                    <Hoodie_Sweater2_Context.Provider value={product}>
+                                    product.gender === 'female' && product.category === 'Bags' ? (
+                                    <TopBags_Context.Provider value={product}>
                                         <Suspense fallback={<Loading/>}>
-                                            <Hoodie_Sweater2 product={product}/>
+                                            <TopBags product={product}/>
                                         </Suspense>
-                                    </Hoodie_Sweater2_Context.Provider>
+                                    </TopBags_Context.Provider>
                                 ) : ''
                                 ))
                             }
@@ -265,11 +271,11 @@ export default function Women_Clothing_page() {
                             {
                                 products.map((product) => (
                                     product.gender === 'female' && product.category === 'Jewellery' ? (
-                                    <Hoodie_Sweater2_Context.Provider value={product}>
+                                    <TopJewellery_Context.Provider value={product}>
                                         <Suspense fallback={<Loading/>}>
-                                            <Hoodie_Sweater2 product={product}/>
+                                            <TopJewellery product={product}/>
                                         </Suspense>
-                                    </Hoodie_Sweater2_Context.Provider>
+                                    </TopJewellery_Context.Provider>
                                 ) : ''
                                 ))
                             }
@@ -307,12 +313,12 @@ export default function Women_Clothing_page() {
                         <Slider {...settings}>
                             {
                                 products.map((product) => (
-                                    product.gender === 'female' && product.category === 'Shirts' ? (
-                                    <Hoodie_Sweater2_Context.Provider value={product}>
+                                    product.gender === 'female' && product.category === 'Shirt' ? (
+                                    <TopShirts_Context.Provider value={product}>
                                         <Suspense fallback={<Loading/>}>
-                                            <Hoodie_Sweater2 product={product}/>
+                                            <TopShirts product={product}/>
                                         </Suspense>
-                                    </Hoodie_Sweater2_Context.Provider>
+                                    </TopShirts_Context.Provider>
                                 ) : ''
                                 ))
                             }
@@ -333,11 +339,11 @@ export default function Women_Clothing_page() {
                             {
                                 products.map((product) => (
                                     product.gender === 'female' && product.category === 'Shoes' ? (
-                                    <Hoodie_Sweater2_Context.Provider value={product}>
+                                    <TopShoes_Context.Provider value={product}>
                                         <Suspense fallback={<Loading/>}>
-                                            <Hoodie_Sweater2 product={product}/>
+                                            <TopShoes product={product}/>
                                         </Suspense>
-                                    </Hoodie_Sweater2_Context.Provider>
+                                    </TopShoes_Context.Provider>
                                 ) : ''
                                 ))
                             }
@@ -347,95 +353,8 @@ export default function Women_Clothing_page() {
             </Box>
     
             {/* <Home_banner4/> */}
-            <Box mb={10} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
-                <Flex gap={5} flexWrap={'wrap'}>
-                    <Box width={{md:'300px', base: '100%'}} height={'550px'} bg={'white'} roundedBottom={'md'}>
-                        <Box p={2}>
-                            <Heading fontWeight={500} mb={0} fontSize={18}>Category</Heading>
-                        </Box>
-                        <Link className='text-sm'>
-                            <Box py={2} px={3} className='hover:bg-zinc-200 duration-150'>
-                                <Text>Men's Fashion</Text>
-                            </Box>
-                        </Link>
-                        <Box pt={2}>
-                            <Box  px={3}>
-                                <Heading fontWeight={500} mb={2} fontSize={15}>Clothing</Heading>
-                            </Box>
-                            <Box>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Men's Sportswear</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Fashion Hoodies & Sweatshirts</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Jeans</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Pants</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Shirts</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Underwear</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Shoes</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Sandals</Text>
-                                    </Box>
-                                </Link>
-                                <Link className='text-sm'>
-                                    <Box py={2} px={8} className='hover:bg-zinc-200 duration-150'>
-                                        <Text>Socks</Text>
-                                    </Box>
-                                </Link>
-                                <Box borderWidth={1} borderTopColor={'gray.200'} borderBottomColor={'gray.200'} borderRight={0} borderLeft={0} py={3} px={3} mt={5}>
-                                    <Flex justifyContent={'space-between'} alignItems={'center'}>
-                                        <Text className='flex items-center text-[16px] font-medium'>PRICE (<FaNairaSign className='text-[16px]'/>)</Text>
-                                        <Box px={3} py={1} rounded={'md'} className='flex justify-center items-center bg-green-500 hover:bg-green-500 duration-200 hover:text-white text-black font-medium'>
-                                            <Text>APPLY</Text>
-                                        </Box>
-                                    </Flex>
-                                </Box>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box flex={1} bg={'white'} rounded={'md'} p={2}>
-                        <Box className="py-3 px-2 grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-2 grid-cols-2 gap-3">
-                            {
-                                products.map((product) => (
-                                    product.gender === 'female' ? (
-                                    <Female_Context.Provider value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <Females product={product}/>
-                                        </Suspense>
-                                    </Female_Context.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Box>
-                    </Box>
-                </Flex>
-            </Box>
+            
+            <WomenCategory/>
             <Adverts/>
         </Box>
         <Footer/>

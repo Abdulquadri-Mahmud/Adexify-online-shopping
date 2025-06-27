@@ -56,7 +56,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import Slider from "react-slick";
-import Home_category from './Home_category'
+import Home_category from './Bottom_Categories/Home_category'
 import Adverts from '../components/Adverts/Adverts'
 
 export default function Home() {

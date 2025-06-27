@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useToast } from '@chakra-ui/react';
 import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
-import { HomeSearchCompContext } from '../../pages/Home_category';
+import { HomeSearchCompContext } from '../../pages/Bottom_Categories/Home_category';
 
 export default function HomeSearchComp() {
     const product = useContext(HomeSearchCompContext);

@@ -15,7 +15,7 @@ export default function Men_Clothing() {
         position: 'top'
     }); 
 
-    const priceToLocalString = product.price.toLocaleString();
+    const priceToLocalString = product.price?.toLocaleString();
 
     const { currentUser } = useSelector((state) => state.user);
 

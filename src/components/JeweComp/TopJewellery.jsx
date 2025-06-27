@@ -1,15 +1,15 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
-import { FaCartShopping, FaNairaSign } from 'react-icons/fa6';
+import { FaNairaSign } from 'react-icons/fa6';
 import { IoHeart } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToast } from '@chakra-ui/react';
-import { Women_ClothingContext } from '../../pages/clothing_page/Women_Clothing_page';
 import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
+import { TopJewellery_Context } from '../../pages/clothing_page/Women_Clothing_page';
 
-export default function Women_Clothing() {
-  const product = useContext(Women_ClothingContext);
+export default function TopJewellery() {
+    const product = useContext(TopJewellery_Context);
   
     const toast = useToast({
         position: 'top'

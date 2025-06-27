@@ -31,16 +31,6 @@ import Shirt from '../pages/shirts/Shirt';
 import Bags_page from '../pages/Bags/Bags_page';
 import Shoes_page from '../pages/Bags/Shoes/Shoes_page';
 import Jewellery_page from '../pages/Jewellery/Jewellery_page';
-import Mens_sportwear from '../pages/Mens_Clothing/Mens_sportwear';
-import SearchQueryPage from '../pages/Search';
-import Hoodies_sweatshirt_page from '../pages/Mens_Clothing/Hoodies_sweatshirt_page';
-import Jeans_page from '../pages/Mens_Clothing/Jeans_page';
-import Pants_page from '../pages/Mens_Clothing/Pants_page';
-import Shirts_page from '../pages/Mens_Clothing/Shirts_page';
-import Underwear_page from '../pages/Mens_Clothing/Underwear_page';
-import Men_Shoes_page from '../pages/Mens_Clothing/Men_Shoes_page';
-import Sandals_page from '../pages/Mens_Clothing/Sandals_page';
-import Socks_page from '../pages/Mens_Clothing/Socks_page';
 import ProductsByCategory from '../pages/ProductsByCategory/ProductsByCategory';
 import ScrollToTop from '../components/scroll-to-top/ScrollToTop';
 import SearchPage from '../pages/search_Page/Search_Page';
@@ -82,17 +72,6 @@ export default function PageRoutes() {
         <Route path='/signup' element={<Sign_up/>}/>
         <Route path='/forgot-password' element={<User_forgotten_password/>}/>
         <Route path='/user/forgot-password/reset-password/:token' element={<User_reset_password/>}/>
-
-        {/* mens fashion */}
-        <Route path='/mens-sportwear' element={<Mens_sportwear/>}/>
-        <Route path='/mens-hoodies-sweatshirt' element={<Hoodies_sweatshirt_page/>}/>
-        <Route path='/mens-jeans' element={<Jeans_page/>}/>
-        <Route path='/mens-pants' element={<Pants_page/>}/>
-        <Route path='/mens-shirts' element={<Shirts_page/>}/>
-        <Route path='/mens-underwear' element={<Underwear_page/>}/>
-        <Route path='/mens-shoes' element={<Men_Shoes_page/>}/>
-        <Route path='/mens-sandals' element={<Sandals_page/>}/>
-        <Route path='/mens-socks' element={<Socks_page/>}/>
 
         <Route path='/search' element={<SearchPage/>}/>
 
