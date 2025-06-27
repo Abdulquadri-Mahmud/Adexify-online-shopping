@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Image, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Image, Text, useColorModeValue } from '@chakra-ui/react';
 import React, { createContext, useEffect, useState } from 'react'
 import { FaFacebookF, FaInstagram, FaSmileBeam, FaTwitter } from 'react-icons/fa';
 import { IoLogoYoutube } from 'react-icons/io';
@@ -76,10 +76,6 @@ export default function Header() {
             <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '100%'}} mx={'auto'}  className='flex justify-between items-center py-2 md:px-6 px-2 md:bg-white bg-green-600'>
                 <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
                     <Image src='/Logo.png' alt='logo' w={'150px'}/>
-                    {/* <div className="flex items-center md:text-black">
-                        <FaSmileBeam className='md:text-2xl text-2xl animate text-green-600'/>
-                        <h1 className='md:text-3xl text-2xl font-medium uppercase md:text-gray-800 text-white'>Ade<span className="text-">X</span>ify</h1>
-                    </div> */}
                 </Link>
                 <div className="w-[30%] rounded hidden md:block">
                     <SearchInputField/>
@@ -88,13 +84,15 @@ export default function Header() {
                     <div className="hidden md:block">
                         <Link to={'/view-carts'}>
                             <div className="bg-white text-black flex justify-between gap-2 p-1 px-3 rounded-md">
-                                <Box className='flex items-center gap-2 font-medium'>
-                                    <Icon as={BsCart4} color={'black'}/>
-                                    <p>My Cart</p>
-                                </Box>
-                                <div className="bg-white px-2 font-medium text-black rounded-full">
-                                    <p className='bg-green-500 px-2 rounded-full text-white'>{cartLength}</p>
-                                </div>
+                                <Flex gap={0} alignItems={'center'}>
+                                    <Text fontWeight={600} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'green.500'}>My Cart</Text>
+                                    <Box bg={'green.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
+                                        <BsCart4 />
+                                        <Box bg={'green.500'} p={2} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-3 right-0 text-sm">
+                                            <Text fontWeight={'600'}>{cartLength}</Text>
+                                        </Box>
+                                    </Box>
+                                </Flex>
                             </div>
                         </Link>
                     </div>
@@ -111,7 +109,7 @@ export default function Header() {
                             currentUser ? (
                                 <Settings/>
                             ) : (
-                                <Flex gap={2} ml={2}>
+                                <Flex gap={1} ml={2}>
                                     <Link to={'/signin'} className='text-[14px]'>Signin</Link>
                                     <span>/</span>
                                     <Link to={'/signup'} className='text-[14px]'>Signup</Link>
