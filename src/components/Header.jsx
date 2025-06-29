@@ -40,14 +40,117 @@ const Navs = () => {
   }, []);
 
   return (
-    <Box p={0} display="flex" gap={4}>
-      {categories.map((category) => (
-        <Link key={category} to={`/category?category=${category}`}>
-          {category}
-        </Link>
-      ))}
-    </Box>
+    <Box display={{ md: 'block', base: 'none' }} width="100%">
+        <Box px={2} display="flex" alignItems="center" overflowX="auto" whiteSpace="nowrap" gap={4} css={{
+            scrollbarWidth: 'thin', // Firefox
+            scrollbarColor: '#c0c0c0 transparent', // Firefox
+
+            '&::-webkit-scrollbar': {
+                height: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+                background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                background: '#b83280',
+                borderRadius: '10px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+                background: '#fbb6ce',
+            },
+        }}>
+            <Box w="100px">
+                <All_category />
+            </Box>
+
+            <Link to="/" style={{ fontSize: '15px', display: 'inline-block' }}>
+                Home
+            </Link>
+            <Link to="/fashion" style={{ fontSize: '15px', display: 'inline-block' }}>
+                Fashions
+            </Link>
+            <Link to="/womens-clothing" style={{ fontSize: '15px', display: 'inline-block' }}>
+                Women's Fashion
+            </Link>
+            <Link to="/mens-clothing" style={{ fontSize: '15px', display: 'inline-block' }}>
+                Men's Fashion
+            </Link>
+
+            {categories.map((category) => (
+            <Link key={category} to={`/category?category=${category}`} style={{ fontSize: '15px', display: 'inline-block' }}> 
+                {category}
+            </Link>
+            ))}
+        </Box>
+        </Box>
+
   );
+};
+
+// Mobile screen mene
+const MobileNav = () => {
+    return (
+        <div className="block md:hidden text-black ">
+            <Flex maxW={{'2xl' : '50%', xl : '60%', lg : '100%', base: '100%'}} mx={'auto'} roundedTop={'10'} className="flex md:justify-center px-2 items-center gap-4 sm:gap-5 py-3 md:bg-gray-50 md:text-black">
+                <Box w={'100px'} className="" >
+                    <All_category/>
+                </Box>
+                <Flex justifyContent={'space-between'} alignItems={'center'} flex={1} mx={'auto'} className="hidden md:flex">
+                    <div className="md:hidden block">
+                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                            <Link to={'/'}>
+                                <MdHomeFilled className='text-lg'/>
+                            </Link>
+                            <Link to={'/'} className='text-[10px]'>Home</Link>
+                        </div>
+                    </div>
+
+                    <div className="md:hidden block">
+                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                            <Link to={'/womens-clothing'}>
+                                <GrUserFemale className='text-lg'/>
+                            </Link>
+                            <Link to={'/womens-clothing'} className='text-[10px]'>Women</Link>
+                        </div>
+                    </div>
+                    
+                    <div className="md:hidden block">
+                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                            <Link to={'/mens-clothing'}>
+                                <IoManOutline className='text-lg'/>
+                            </Link>
+                            <Link to={'/mens-clothing'} className='text-[10px]'>Men</Link>
+                        </div>
+                    </div>
+                    <div className="md:hidden block">
+                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                            <Link to={'/category?category=Shirt'}>
+                                <RiTShirt2Line className='text-lg'/>
+                            </Link>
+                            <Link to={'/category?category=Shirt'} className='text-[10px]'>Shirts</Link>
+                        </div>
+                    </div>
+                    
+                    <div className="md:hidden block">
+                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                            <Link to={'/category?category=Bags'}>
+                                <BiSolidShoppingBags className='text-lg'/>
+                            </Link>
+                            <Link to={'/category?category=Bags'} className='text-[10px]'>Bags</Link>
+                        </div>
+                    </div>
+                    <div className="md:hidden block remove">
+                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                            <Link to={'/category?category=Shoes'}>
+                                <GiConverseShoe className='text-lg'/>
+                            </Link>
+                            <Link to={'/category?category=Shoes'} className='text-[10px]'>Shoes</Link>
+                        </div>
+                    </div>
+                </Flex>
+            </Flex>
+        </div>
+    )
 };
 
 export default function Header() {
@@ -140,75 +243,10 @@ export default function Header() {
                 </div>
             </Box>
         </Box>
-        <div className="hidde md:block text-black ">
-            <Flex maxW={{'2xl' : '50%', xl : '60%', lg : '100%', base: '100%'}} mx={'auto'} roundedTop={'10'} className="flex md:justify-center px-2 items-center gap-4 sm:gap-5 py-3 md:bg-gray-50 md:text-black">
-                <div className="">
-                    <All_category/>
-                </div>
-                <Flex jusce>
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/'}>
-                                <MdHomeFilled className='text-lg'/>
-                            </Link>
-                            <Link to={'/'} className='text-[10px]'>Home</Link>
-                        </div>
-                    </div>
-
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/womens-clothing'}>
-                                <GrUserFemale className='text-lg'/>
-                            </Link>
-                            <Link to={'/womens-clothing'} className='text-[10px]'>Women</Link>
-                        </div>
-                    </div>
-                    
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/mens-clothing'}>
-                                <IoManOutline className='text-lg'/>
-                            </Link>
-                            <Link to={'/mens-clothing'} className='text-[10px]'>Men</Link>
-                        </div>
-                    </div>
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/category?category=Shirt'}>
-                                <RiTShirt2Line className='text-lg'/>
-                            </Link>
-                            <Link to={'/category?category=Shirt'} className='text-[10px]'>Shirts</Link>
-                        </div>
-                    </div>
-                    
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/category?category=Bags'}>
-                                <BiSolidShoppingBags className='text-lg'/>
-                            </Link>
-                            <Link to={'/category?category=Bags'} className='text-[10px]'>Bags</Link>
-                        </div>
-                    </div>
-                    <div className="md:hidden block remove">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/category?category=Shoes'}>
-                                <GiConverseShoe className='text-lg'/>
-                            </Link>
-                            <Link to={'/category?category=Shoes'} className='text-[10px]'>Shoes</Link>
-                        </div>
-                    </div>
-                    <div className="hidden md:block">
-                        <div className="flex justify-center items-center gap-5 font-">
-                            {/* <Link to={'/'} className='text-[15px]'>Home</Link>
-                            <Link to={'/fashion'} className='text-[15px]'>Fashions</Link>
-                            <Link to={'/womens-clothing'} className='text-[15px]'>Women's Fashion</Link>
-                            <Link to={'/mens-clothing'} className='text-[15px]'>Men's Fashion</Link>
-                            <Navs/> */}
-                        </div>
-                    </div>
-                </Flex>
-            </Flex>
-        </div>
+        <Box py={2} roundedTop={'xl'} bg={'gray.50'} maxW={{'2xl' : '50%', xl : '60%', lg : '100%', base: '100%'}} mx={'auto'}>
+            <Navs/>
+            <MobileNav/>
+        </Box>
     </div>
   )
 }
