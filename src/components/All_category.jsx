@@ -68,14 +68,7 @@ export default function All_category() {
                             <Link to={'/'} className='bg-white rounded-md flex items-center gap-2'>
                                 <Image src='/Logo.png' alt='logo' w={'150px'}/>
                             </Link>
-                            {currentUser && (
-                                <Link to={`/profile/${currentUser._id}`} className='md:block'>
-                                    <Box className='flex items-center gap-1'>
-                                        <Text>Hi {currentUser.firstname}</Text>
-                                        <FaHandSparkles className='text-pink-600' />
-                                    </Box>
-                                </Link>
-                            )}
+                            
                             <div className="pr-6">
                                 <Link to={'/view-carts'}>
                                     <Flex gap={0} alignItems={'center'}>
@@ -92,13 +85,32 @@ export default function All_category() {
                         </Box>
                     </DrawerHeader>
                     <DrawerBody>
+                        {currentUser && (
+                                <Link to={`/profile/${currentUser._id}`} className='md:block'>
+                                    <Flex justifyContent={'center'} fontWeight={'600'} pb={3} className='flex items-center gap-1'>
+                                        <Text className='capitalize' >Hi {currentUser.firstname}</Text>
+                                        <FaHandSparkles className='text-pink-600' />,
+                                        <Text>Wlecome to Adexify!</Text>
+                                    </Flex>
+                                </Link>
+                            )}
                         {!currentUser && (
                             <Flex justifyContent={'space-between'} alignItems={'center'} mt={2} borderBottom={'1px solid #e2e8f0'} pb={3}>
-                                <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'black'} color={'white'} _hover={{ bg: 'gray.800' }}>
+                                <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'gray.800'} color={'white'} _hover={{ bg: 'gray.800' }}>
                                     <Link to={'/signup'}>Signup</Link>
                                 </Flex>
                                 <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'pink.500'} color='white' _hover={{bg: ''}}>
                                     <Link to={'/signin'}>Signin</Link>
+                                </Flex>
+                            </Flex>
+                        )}
+                        {currentUser && (
+                            <Flex justifyContent={'space-between'} alignItems={'center'} mt={2} borderBottom={'1px solid #e2e8f0'} pb={3}>
+                                <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'gray.800'} color={'white'} _hover={{ bg: 'gray.800' }}>
+                                    <Link to={`/profile/${currentUser._id}`}>My Account</Link>
+                                </Flex>
+                                <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'pink.500'} color='white' _hover={{bg: ''}}>
+                                    <Link to={'/view-wislist'}>My WishLists</Link>
                                 </Flex>
                             </Flex>
                         )}

@@ -91,63 +91,59 @@ const Navs = () => {
 const MobileNav = () => {
     return (
         <div className="block md:hidden text-black ">
-            <Flex maxW={{'2xl' : '50%', xl : '60%', lg : '100%', base: '100%'}} mx={'auto'} roundedTop={'10'} className="flex md:justify-center px-2 items-center gap-4 sm:gap-5 py-3 md:bg-gray-50 md:text-black">
-                <Box w={'100px'} className="" >
-                    <All_category/>
-                </Box>
-                <Flex justifyContent={'space-between'} alignItems={'center'} flex={1} mx={'auto'} className="hidden md:flex">
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/'}>
-                                <MdHomeFilled className='text-lg'/>
-                            </Link>
-                            <Link to={'/'} className='text-[10px]'>Home</Link>
-                        </div>
+            <Flex justifyContent={'space-between'} alignItems={'center'} flex={1} mx={'auto'} className="hidden md:flex">
+                <All_category/>
+                <div className="md:hidden block">
+                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                        <Link to={'/'}>
+                            <MdHomeFilled className='text-lg'/>
+                        </Link>
+                        <Link to={'/'} className='text-[10px]'>Home</Link>
                     </div>
+                </div>
 
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/womens-clothing'}>
-                                <GrUserFemale className='text-lg'/>
-                            </Link>
-                            <Link to={'/womens-clothing'} className='text-[10px]'>Women</Link>
-                        </div>
+                <div className="md:hidden block">
+                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                        <Link to={'/womens-clothing'}>
+                            <GrUserFemale className='text-lg'/>
+                        </Link>
+                        <Link to={'/womens-clothing'} className='text-[10px]'>Women</Link>
                     </div>
-                    
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/mens-clothing'}>
-                                <IoManOutline className='text-lg'/>
-                            </Link>
-                            <Link to={'/mens-clothing'} className='text-[10px]'>Men</Link>
-                        </div>
+                </div>
+                
+                <div className="md:hidden block">
+                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                        <Link to={'/mens-clothing'}>
+                            <IoManOutline className='text-lg'/>
+                        </Link>
+                        <Link to={'/mens-clothing'} className='text-[10px]'>Men</Link>
                     </div>
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/category?category=Shirt'}>
-                                <RiTShirt2Line className='text-lg'/>
-                            </Link>
-                            <Link to={'/category?category=Shirt'} className='text-[10px]'>Shirts</Link>
-                        </div>
+                </div>
+                <div className="md:hidden block">
+                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                        <Link to={'/category?category=Shirt'}>
+                            <RiTShirt2Line className='text-lg'/>
+                        </Link>
+                        <Link to={'/category?category=Shirt'} className='text-[10px]'>Shirts</Link>
                     </div>
-                    
-                    <div className="md:hidden block">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/category?category=Bags'}>
-                                <BiSolidShoppingBags className='text-lg'/>
-                            </Link>
-                            <Link to={'/category?category=Bags'} className='text-[10px]'>Bags</Link>
-                        </div>
+                </div>
+                
+                <div className="md:hidden block">
+                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                        <Link to={'/category?category=Bags'}>
+                            <BiSolidShoppingBags className='text-lg'/>
+                        </Link>
+                        <Link to={'/category?category=Bags'} className='text-[10px]'>Bags</Link>
                     </div>
-                    <div className="md:hidden block remove">
-                        <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                            <Link to={'/category?category=Shoes'}>
-                                <GiConverseShoe className='text-lg'/>
-                            </Link>
-                            <Link to={'/category?category=Shoes'} className='text-[10px]'>Shoes</Link>
-                        </div>
+                </div>
+                <div className="md:hidden block remove">
+                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                        <Link to={'/category?category=Shoes'}>
+                            <GiConverseShoe className='text-lg'/>
+                        </Link>
+                        <Link to={'/category?category=Shoes'} className='text-[10px]'>Shoes</Link>
                     </div>
-                </Flex>
+                </div>
             </Flex>
         </div>
     )

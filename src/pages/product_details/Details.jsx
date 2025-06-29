@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Image, Stack, Text, useDisclosure } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Heading, Icon, Image, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import React, { createContext, Fragment, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { FaSmileBeam } from "react-icons/fa";
@@ -60,7 +60,7 @@ export default function Details() {
       fetchData();
     }, []);
 
-    const {_id, name, category, image, price, trackingId, description, oldprice, size, gender} = product;
+    const {_id, name, category, image, price, trackingId, stock, description, oldprice, size, gender} = product;
     // Update state when `product` changes
     useEffect(() => {
       if (product) {
@@ -201,39 +201,47 @@ export default function Details() {
                   <Heading fontSize={{md:23, base: 16}} fontWeight={500} color={'gray.800'}>{name}</Heading>
                   <div className="mt-3">
                     <p className='text-sm text-gray-500 my-1'>Product Code: <span className='text-gray-600 text-[13px]'>{trackingId}</span></p>
-                    <div className="flex items-center gap-2">
-                      <FaStar className='text-yellow-500'/>
-                      <FaStar className='text-yellow-500'/>
-                      <FaStar className='text-yellow-500'/>
-                      <FaStar className='text-yellow-500'/>
-                      <FaStar className='text-yellow-500'/>
-                      <p className='text-sm text-gray-500'>11 Reviews</p>
-                    </div>
+                    {/* Optional: Reviews Section */}
+                    <Box display="flex" alignItems="center" gap={2}>
+                      {[...Array(5)].map((_, i) => (
+                          <Icon as={FaStar} key={i} color="yellow.400" />
+                      ))}
+                      <Text fontSize="sm" color="gray.500">20,00 Reviews</Text>
+                    </Box>
+
                     <p className='text-sm text-gray-500 pt-2'>Brand: <span className='text-gray-600 text-[13px]'></span></p>
                   </div>
-                  <div className="py-3">
-                    <div className="flex items-center">
-                      {
-                        price !== undefined ? (
-                          <>
-                            <FaNairaSign className='text-xl'/>
-                            <Heading fontSize={{md:30, base: 25}}>{price.toLocaleString()}.00</Heading>
-                            {
-                              oldprice && (
-                                <p className="text-[16px] text-gray-400 font-medium pt-1 line-through flex items-center pl-3"><FaNairaSign className='text-[16px]'/>{oldprice}</p>
-                              )
-                            }
-                          </>
-                        ): ''
-                      }
-                      {/* old price */}
-                    </div>
-                    {
-                      oldprice && (
-                        <p className="text-[13px] text-pink-400 font-medium pt-3">You save up to {oldprice - price}</p>
-                      )
-                    }
-                  </div>
+                  <Box className="py-3">
+                    <Box display="flex" alignItems="center" gap={3}>
+                      {price !== undefined && (
+                        <>
+                          <Heading as="h2" fontSize={{ base: "2xl", lg: "3xl" }} fontWeight="medium" display="flex" alignItems="center">
+                            <FaNairaSign style={{ fontSize: '1.5rem' }} />
+                            {price.toLocaleString()}
+                          </Heading>
+
+                          {oldprice && (
+                              <Text fontSize="sm" color="gray.400" fontWeight="normal" pt={2} textDecoration="line-through" display="flex" alignItems="center">
+                                  <FaNairaSign style={{ fontSize: '0.875rem' }} />
+                                  {oldprice}
+                              </Text>
+                          )}
+
+                          {oldprice && (
+                              <Badge bg={'gray.50'} fontSize="sm" px={2} py={1} border="1px" borderColor="red.500" borderRadius="sm" color="pink.500" fontWeight="medium" display="flex" alignItems="center">
+                                  {((oldprice - price) / oldprice * 100).toFixed(2)}% OFF
+                              </Badge>
+                          )}
+
+                          {stock && (
+                              <Text fontSize="sm" px={2} py={1} color="white" bgGradient="linear(to-r, pink.600, red.500)" borderRadius="sm" fontWeight="normal">
+                              Only {stock} left
+                              </Text>
+                          )}
+                        </>
+                      )}
+                    </Box>
+                </Box>
                 </div>
                 <div className="border-b-[1px] border-b-gray-300">
                   <div className="bg-pink-200 px-2 py-2 rounded-md mt-3">
@@ -355,7 +363,7 @@ export default function Details() {
               <h2 className='font-medium text-xl'>Description:</h2>
             </Box>
             {/* <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{description}</ReactMarkdown> */}
-            <p className="pb-2" dangerouslySetInnerHTML={{
+            <p className="pb-2 text-sm" dangerouslySetInnerHTML={{
                 __html: description ? description.replace(/\n/g, "<br />") : description,
               }}></p>
           </Box>

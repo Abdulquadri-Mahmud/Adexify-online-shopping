@@ -33,6 +33,7 @@ import NewArrival from '../pages/NewArrival';
 import FashionDeals from '../pages/FashionDeals';
 import GreateDeals from '../pages/GreateDeals';
 import Fashion from '../pages/Fashion';
+import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
 
 export default function PageRoutes() {
   return (
@@ -46,7 +47,7 @@ export default function PageRoutes() {
         <Route path='/product-details/:proId' element={<Details/>}/>
 
         <Route path='/view-carts' element={<Carts_Page/>}/>
-        {/* <Route path='/view-wishlist' element={<Wishlist_Page/>}/> */}
+        <Route path='/view-wishlist' element={<Wishlist_Page/>}/>
 
         <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
         <Route path="/womens-clothing" element={<Women_Clothing_page/>}/>
