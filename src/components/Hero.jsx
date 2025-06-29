@@ -1,5 +1,5 @@
 import React from 'react'
-import { Flex, Image, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Icon, Image, useColorModeValue } from '@chakra-ui/react';
 import { Box, Text, Heading, Button} from '@chakra-ui/react';
 
 import "slick-carousel/slick/slick.css";
@@ -9,6 +9,15 @@ import Slider from "react-slick";
 
 import { Link } from 'react-router-dom';
 import { MdOutlineShoppingCart } from 'react-icons/md';
+import { FaShoppingBag } from "react-icons/fa";
+
+function StartShoppingButton() {
+  return (
+    <Button size="lg" px={8} py={6} fontSize="lg" bg="pink.500" color="white" leftIcon={<Icon as={FaShoppingBag} />} _hover={{ bg: "pink.600", transform: "scale(1.05)" }} _active={{ bg: "pink.700" }} transition="all 0.3s ease" rounded="full" shadow="md">
+      <Link className='/fashion'>Start Shopping Now</Link>
+    </Button>
+  );
+}
 
 function SampleNextArrow(props) {
   
@@ -56,7 +65,7 @@ export default function Hero() {
     
   return (
     <Box pt={5}>
-      <Box bg={'white'} p={3} rounded={'md'} className='flex gap-3 flex-nowrap' height={{'xl':'61vh', base:'74vh'}} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
+      <Box bg={'white'} p={{md: 3, base: '2'}} rounded={'md'} className='flex gap-3 flex-nowrap' height={{'xl':'61vh', base:'74vh'}} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box overflow={'hidden'} width={{md:'60%', base: '100%'}}>
             <Slider {...settings}>
               <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/hero2.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
@@ -70,9 +79,7 @@ export default function Hero() {
                       <Text fontFamily={''} className='text-center font-medium text-white'>We are here to save your time and money</Text>
                     </div>
                     <Flex justifyContent={{md:'center', base: 'center'}}>
-                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>
-                        <Link className='/fashion'>Start Shopping</Link>
-                      </Button>
+                      <StartShoppingButton/>
                     </Flex>
                   </Flex>
                 </Flex>
@@ -88,9 +95,7 @@ export default function Hero() {
                       <Text fontFamily={''} className='text-center font-medium text-white'>We are here to save your time and money</Text>
                     </div>
                     <Flex justifyContent={{md:'center', base: 'center'}}>
-                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>
-                        <Link className='/fashion'>Start Shopping</Link>
-                      </Button>
+                      <StartShoppingButton/>
                     </Flex>
                   </Flex>
                 </Flex>
@@ -106,9 +111,7 @@ export default function Hero() {
                       <Text fontFamily={''} className='text-center font-medium text-white'>We are here to save your time and money</Text>
                     </div>
                     <Flex justifyContent={{md:'center', base: 'center'}}>
-                      <Button bg={'green.500'} color={'white'} border={'none'} outline={'none'} _hover={{bg:'green.500', color: 'white'}} transitionDuration={'0.3s'} className='uppercase bg-green-500 text-white font-medium px-6 py-2 rounded-md'>
-                        <Link className='/fashion'>Start Shopping</Link>
-                      </Button>
+                      <StartShoppingButton/>
                     </Flex>
                   </Flex>
                 </Flex>
@@ -121,14 +124,14 @@ export default function Hero() {
                 <Link to={'/mens-clothing'}>
                   <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/img2.png'} bgPos={'center'} bgSize={'contain'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
                       {/* <Image height={'100%'}  rounded={'md'} src="/new-arrival.jpg" alt="" /> */}
-                      <Box className='bg-green-500 px-5 rounded-md py-1'>
+                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
                         <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Men's Fashion</Text>
                       </Box>
                   </Box>
                 </Link>
                 <Link to={'/womens-clothing'}>
                     <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/w-cloth.jpg'} bgPos={'center'} bgSize={'cover'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      <Box className='bg-green-500 px-5 rounded-md py-1'>
+                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
                         <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Women's Fashion</Text>
                       </Box>
                     </Box>
@@ -137,14 +140,14 @@ export default function Hero() {
               <Box className='flex gap-3'>
                 <Link to={'/category?category=Shoes'}>
                     <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/sneaker.gif'} bgPos={'center'} bgSize={'cover'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      <Box className='bg-green-500 px-5 rounded-md py-1'>
+                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
                         <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Shoes</Text>
                       </Box>
                     </Box>
                 </Link>
                 <Link to={'/category?category=Jewellery'}>
                     <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/jewellery.gif'} bgPos={'center'} bgSize={'cover'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      <Box className='bg-green-500 px-5 rounded-md py-1'>
+                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
                         <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Jewellery</Text>
                       </Box>
                     </Box>

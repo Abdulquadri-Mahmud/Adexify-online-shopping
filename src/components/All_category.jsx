@@ -54,7 +54,7 @@ export default function All_category() {
 
     return (
         <div className="">
-            <Button bg={'transparent'} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-green-600">
+            <Button bg={'transparent'} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-600">
                 <HiOutlineMenuAlt2 className='text-xl' />
                 <h2 className="md:text-[15px] hidden md:block text-[10px] font-normal">Browse All</h2>
                 <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">Categories</h2>
@@ -72,17 +72,17 @@ export default function All_category() {
                                 <Link to={`/profile/${currentUser._id}`} className='md:block'>
                                     <Box className='flex items-center gap-1'>
                                         <Text>Hi {currentUser.firstname}</Text>
-                                        <FaHandSparkles className='text-green-600' />
+                                        <FaHandSparkles className='text-pink-600' />
                                     </Box>
                                 </Link>
                             )}
                             <div className="pr-6">
                                 <Link to={'/view-carts'}>
                                     <Flex gap={0} alignItems={'center'}>
-                                        <Text fontWeight={500} fontSize={'sm'} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'green.500'}>My Cart</Text>
-                                        <Box bg={'green.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
+                                        <Text fontWeight={500} fontSize={'sm'} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'pink.500'}>My Cart</Text>
+                                        <Box bg={'pink.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
                                             <BsCart4 />
-                                            <Box bg={'green.500'} p={2} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-3 right-0 text-sm">
+                                            <Box bg={'pink.500'} p={2} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-3 right-0 text-sm">
                                                 <Text fontWeight={'600'}>{cartLength}</Text>
                                             </Box>
                                         </Box>
@@ -97,7 +97,7 @@ export default function All_category() {
                                 <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'black'} color={'white'} _hover={{ bg: 'gray.800' }}>
                                     <Link to={'/signup'}>Signup</Link>
                                 </Flex>
-                                <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'green.500'} color='white' _hover={{bg: ''}}>
+                                <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'pink.500'} color='white' _hover={{bg: ''}}>
                                     <Link to={'/signin'}>Signin</Link>
                                 </Flex>
                             </Flex>
@@ -106,8 +106,8 @@ export default function All_category() {
                             <Text mb={{ md: 0, base: 5 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
                             <div className="flex justify-start flex-col items-start gap-1">
                                 {categories.map((category, index) => (
-                                    <Box key={index} className='py-3 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'green.50' }}>
-                                        <Link to={`/category?category=${category}`} className='text-md hover:text-green-500 duration-200 text-[14px]'>
+                                    <Box key={index} className='py-3 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
+                                        <Link to={`/category?category=${category}`} className='text-md hover:text-pink-500 duration-200 text-[14px]'>
                                             {category}
                                         </Link>
                                     </Box>

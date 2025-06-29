@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { FaNairaSign } from 'react-icons/fa6';
 import { IoHeart } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
-import { useToast } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Image, Text, useToast, VStack } from '@chakra-ui/react';
 import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
 import { TopJewellery_Context } from '../../pages/clothing_page/Women_Clothing_page';
@@ -11,65 +11,113 @@ import { TopJewellery_Context } from '../../pages/clothing_page/Women_Clothing_p
 export default function TopJewellery() {
     const product = useContext(TopJewellery_Context);
   
-    const toast = useToast({
-        position: 'top'
-    });
-    const {_id,image, name, price, description, oldprice} = product;
-    const priceToLocalString = price.toLocaleString();
-
-    const { currentUser } = useSelector((state) => state.user);
-
-    let dispatch = useDispatch();
-
-    const getCarts = {
-        productID: _id,
-        productName: name,
-        productImage : image,
-        productPrice: price,
-        // userId : currentUser._id,
-        quantity: 1
-    }
-
-    const handleCart = () => {
-      dispatch(addToCart(getCarts));
-    }
-
-    const handleWishlistItem = () => {
-        dispatch(addWishlist(getCarts));
-        
+    const dispatch = useDispatch();
+    const toast = useToast();
+    
+    // Handle Add to Cart
+    const handleCart = (product) => {
+        dispatch(
+            addToCart({
+            productID: product._id,
+            productName: product.name,
+            productImage: product.image?.[0],
+            productPrice: product.price,
+            items: {},
+            })
+        );
         toast({
-            description: "Your item has been saved.",
-            duration: 5000,
+            title: 'Added to cart!',
+            description: 'Your selection has been added successfully.',
+            status: 'success',
+            duration: 3000,
             isClosable: true,
-            bgColor: 'pink.600',
         });
-    }
-  return (
-    <div className='relative bg-white p-2 rounded-xl shadow-md '>
-      <Link to={`/product-details/${_id}`}>
-          <div className="flex justify-center pt-0 md:w-[200px] h-[170px] w-[140px] mx-auto">
-              <img src={image ? image[0] : image} alt="" className='max-w-full  object-cover object-top'/>
-          </div>
-          <div className="w-full">
-              <h2 className='py-1 font-medium md:text-center truncate'>{name}</h2>
-          </div>
-      </Link>
-      <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-pink-600 active:text-pink-600 focus:text-pink-600 absolute top-2 right-2 w-[30px] h-[30px] bg-pink-300 flex justify-center items-center rounded-full">
-          <IoHeart className='text-xl'/>
-      </button>
-      <p className="truncate">{description}</p>
-      <div className="flex justify-between items-center mt-2">
-          <p className='flex items-center'>
-              <FaNairaSign/>
-              <span className='font-medium'>{priceToLocalString}.00</span>
-          </p>
-          {
-              oldprice && (
-                  <p className="text-[14px] text-gray-400 font-medium pt-1 line-through flex items-center pl-3"><FaNairaSign className='text-[14px]'/>{oldprice}</p>
-              )
-          }
-          {/* <button onClick={handleCart} className='w-[30px] h-[30px] bg-pink-600 rounded-full flex justify-center items-center text-white'><FaCartShopping/></button> */}
-      </div>
-    </div>
+    };
+
+    // Handle Add to Wishlist
+    const handleWishlistItem = (product) => {
+        dispatch(
+            addWishlist({
+            productID: product._id,
+            productName: product.name,
+            productImage: product.image?.[0],
+            productPrice: product.price,
+            quantity: 1,
+            })
+        );
+        toast({
+            title: 'Added to wishlist.',
+            description: 'Your selection has been added successfully.',
+            status: 'info',
+            duration: 3000,
+            isClosable: true,
+        });
+    };
+
+    // Fix focus inside aria-hidden slick slides (react-slick)
+    useEffect(() => {
+    const interval = setInterval(() => {
+        const hiddenSlides = document.querySelectorAll('[aria-hidden="true"]');
+        hiddenSlides.forEach((slide) => {
+        slide.querySelectorAll('a, button, input, [tabindex]').forEach((el) => {
+            el.setAttribute('tabindex', '-1');
+        });
+        });
+
+        const visibleSlides = document.querySelectorAll('[aria-hidden="false"]');
+        visibleSlides.forEach((slide) => {
+        slide.querySelectorAll('[tabindex="-1"]').forEach((el) => {
+            el.removeAttribute('tabindex');
+        });
+        });
+    }, 300); // Check frequently in case carousel slides
+
+    return () => clearInterval(interval);
+    }, []);
+
+    return (
+    <Box px={1}>
+        <Box borderWidth="1px" borderRadius="xl" className="bg-white p-2 rounded-xl shadow-md relative">
+            <VStack spacing={2} align="stretch">
+                <Link to={`/product-details/${product._id}`}>
+                <Image mx="auto" src={product.image?.[0] || 'https://via.placeholder.com/150'} alt={product.name} width={'100%'} objectFit="cover" borderRadius="md"/>
+                </Link>
+
+                <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
+                    <IoHeart className="text-xl text-white hover:text-gray-600" />
+                </button>
+
+                <Box>
+                    <Text fontWeight="500" isTruncated>
+                        {product.name}
+                    </Text>
+                    <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
+                        {product.category}
+                    </Badge>
+                    <Text my={2} fontSize="sm" color="gray.600" isTruncated>
+                        {product.description}
+                    </Text>
+
+                    <Flex justifyContent={'space-between'}>
+                        <Text display="flex" alignItems="center">
+                        <FaNairaSign />
+                        <span className="font-medium">{product.price.toLocaleString()}.00</span>
+                        </Text>
+            
+                        {product.oldprice && (
+                        <Text fontSize="sm" color="gray.400" textDecoration="line-through">
+                            <FaNairaSign className="inline-block text-sm" />
+                            {product.oldprice}
+                        </Text>
+                        )}
+                    </Flex>
+
+                    <Button _hover={{ bg: 'pink.800' }} onClick={() => handleCart(product)} w="full" mt={3} bg="pink.500" color="white">
+                        Add To Cart
+                    </Button>
+                </Box>
+            </VStack>
+        </Box>
+    </Box>
   )
 }

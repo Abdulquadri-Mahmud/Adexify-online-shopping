@@ -81,40 +81,40 @@ export default function Home_banner2() {
     };
 
   return (
-    <Box bg={'white'} my={5} p={2} rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
+    <Box bg={'white'} my={5} p={2} rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box display={{xl: 'block', base: 'none'}}>
             <Flex justifyContent={'center'} gap={{'2xl':5, md:3}}>
-                <Link to={'/'}>
+                <Link to={'/category?category=Shirt'}>
                     <Box width={{'2xl':'210px', md:'190px'}}>
                         <Image  rounded={'md'} src="/shirt.jpg" alt="" />
                         <Text textAlign={'center'}>Shirt</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Pants'}>
                     <Box width={{'2xl':'210px', md:'190px'}}>
                         <Image  rounded={'md'} src="/pants.jpg" alt="" />
                         <Text textAlign={'center'}>Pant</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Sportwear'}>
                     <Box width={{'2xl':'210px', md:'190px'}}>
                         <Image  rounded={'md'} src="/sportsweat.jpg" alt="" />
                         <Text textAlign={'center'}>Sportwear</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Jeans'}>
                     <Box width={{'2xl':'210px', md:'190px'}}>
                         <Image  rounded={'md'} src="/Jean.jpg" alt="" />
                         <Text textAlign={'center'}>Jeans</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Underwear'}>
                     <Box width={{'2xl':'210px', md:'190px'}}>
                         <Image  rounded={'md'} src="/UNDERWEAR.jpg" alt="" />
                         <Text textAlign={'center'}>Underwear</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Shirt'}>
                     <Box width={{'2xl':'210px', md:'190px'}}>
                         <Image  rounded={'md'} src="/sweatshirt.jpg" alt="" />
                         <Text textAlign={'center'}>Hoodies & Sweatshirt</Text>
@@ -124,37 +124,37 @@ export default function Home_banner2() {
         </Box>
         <Box display={{xl: 'none', lg: 'block'}}>
             <Slider {...settings}>
-                <Link to={'/'}>
+                <Link to={'/category?category=Shirt'}>
                     <Box>
                         <Image  rounded={'md'} src="/shirt.jpg" alt="" />
                         <Text textAlign={'center'}>Shirt</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Pants'}>
                     <Box>
                         <Image  rounded={'md'} src="/pants.jpg" alt="" />
                         <Text textAlign={'center'}>Pant</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Sportwear'}>
                     <Box>
                         <Image  rounded={'md'} src="/sportsweat.jpg" alt="" />
                         <Text textAlign={'center'}>Sportwear</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Jeans'}>
                     <Box>
                         <Image  rounded={'md'} src="/Jean.jpg" alt="" />
                         <Text textAlign={'center'}>Jeans</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Underwear'}>
                     <Box>
                         <Image  rounded={'md'} src="/UNDERWEAR.jpg" alt="" />
                         <Text textAlign={'center'}>Underwear</Text>
                     </Box>
                 </Link>
-                <Link to={'/'}>
+                <Link to={'/category?category=Shirt'}>
                     <Box>
                         <Image  rounded={'md'} src="/sweatshirt.jpg" alt="" />
                         <Text textAlign={'center'}>Hoodies & Sweatshirt</Text>

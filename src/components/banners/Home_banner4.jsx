@@ -80,7 +80,7 @@ export default function Home_banner4() {
     ]
 };
   return (
-    <Box bg={'white'} my={5} p={{md:4, base: 3}} rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
+    <Box bg={'white'} my={5} p={{md:4, base: 3}} rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box display={{xl: 'block', base: 'none'}}>
             <Flex gap={6} justifyContent={'center'}>
                 <Link to={'/fashion'}>

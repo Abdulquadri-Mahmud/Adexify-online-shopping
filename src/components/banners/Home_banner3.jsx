@@ -51,7 +51,7 @@ export default function Home_banner3() {
     };
 
   return (
-    <Box bg={'white'} my={5} p={2} rounded={'md'} maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
+    <Box bg={'white'} my={5} p={2} rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box display={{md: 'block', base: 'none'}}>
             <Flex gap={{md:6, base: 2}}>
                 <Box width={'50%'}>

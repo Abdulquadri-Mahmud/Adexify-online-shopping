@@ -11,7 +11,7 @@ function SampleNextArrow(props) {
   
     const { className, style, onClick } = props;
     return (
-      <Box bg={'pink.600'} width={'30px'} height={'30px'} rounded={'full'}
+      <Box bg={'gray.300'} width={'30px'} height={'30px'} rounded={'full'}
       right={'1vh'}  
       className={className}
         style={{ ...style, display: "block",
@@ -91,7 +91,7 @@ export default function TodaysDeal() {
           {
             breakpoint: 768,
             settings: {
-              slidesToShow: 4,
+              slidesToShow: 3,
               slidesToScroll: 1,
             }
           },
@@ -113,18 +113,18 @@ export default function TodaysDeal() {
   };
 
   return (
-    <Box className='my-10 bg-white rounded-md' maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}>
-      <Box className='bg-green-500 py-3 rounded-t-lg px-3 '>
-        <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className="flex justify-between items-center gap-4 ">
-            <Heading fontWeight={500} fontSize={{md:20, base: 18}} color={'white'} className='text-xl'>Today's Deals</Heading>
-            <Link to={'/'} className='text-[12px] font-medium text-white uppercase flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
+    <Box className='my-10 bg-white rounded-md' maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
+      <Box className='bg-white-500 py-3 rounded-t-lg px-3 '>
+        <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} pb={3} mx={'auto'} className="flex justify-between items-center gap-4 ">
+            <Heading fontWeight={500} fontSize={{md:20, base: 18}} color={'gray.800'} className='text-xl'>Today's Deals</Heading>
+            <Link to={'/'} className='text-[12px] font-medium text-gray.800 uppercase flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
         </Box>
       </Box>
-      <div className="p-3">
+      <div className="p-">
         <Slider {...settings}>
           {
               currentPost.length > 0 && currentPost.map((product) => (
-                  <TodaysDealsProductsContext.Provider value={product}>
+                  <TodaysDealsProductsContext.Provider key={product?._id} value={product}>
                     <Suspense fallback={<Loading/>}>
                       <TodaysDealsProducts product={product}/>
                     </Suspense>

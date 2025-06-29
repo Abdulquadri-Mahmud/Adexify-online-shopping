@@ -18,15 +18,12 @@ import { useToast } from '@chakra-ui/react'
 import { IoHeart } from 'react-icons/io5';
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
-import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
 import Adverts from '../../components/Adverts/Adverts';
 
 export const quantityContext = createContext();
 
 export default function Details() {
     const { proId } = useParams();
-    const [selectSizeOpt, setSelectSizeOpt] = useState([]);
     let [isOpen, setIsOpen] = useState(false);
     let [message, setMessage] = useState(null);
     const [getCarts, setGetCarts] = useState({
@@ -37,16 +34,13 @@ export default function Details() {
       items: {}, // e.g. { "S": 2, "M": 1 }
     });
 
-
-    const { currentUser } = useSelector((state) => state.user);
     const { currentAdmin } = useSelector((state) => state.admin);
     const { items } = useSelector((state) => state.cart);
+
     const toast = useToast({
       position: 'top',
       bg: 'green.600',
     });
-
-    const logQuantity = useRef(null);
     
     const [product, setProduct] = useState([]);
 
@@ -186,9 +180,9 @@ export default function Details() {
                     image !== undefined ? (
                       <div className='flex items-center justify-center flex-wrap gap-2'>
                         {
-                          image.length > 0 && image.map((img) => {
+                          image.length > 0 && image.map((img, index) => {
                             return (
-                              <div className="cursor-pointer">
+                              <div key={index} className="cursor-pointer">
                                 <img src={img} onMouseEnter={() => handleClick(img)} className='max-w-12 rounded' alt="" />
                               </div>
                             )

@@ -1,12 +1,12 @@
-import React from 'react'
+// import React from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from '../pages/Home';
-import Header from '../components/Header';
-import BottomNav from '../bottom_nav/BottomNav';
+// import Header from '../components/Header';
+// import BottomNav from '../bottom_nav/BottomNav';
 import Details from '../pages/product_details/Details';
 import Signin from '../pages/user_auth/Signin';
 import Sign_up from '../pages/user_auth/Sign_up';
-import Footer from '../components/footer/Footer';
+// import Footer from '../components/footer/Footer';
 import Private_Routes from '../components/private_routes/Private_Routes';
 import ContactUs from '../pages/ContactUs';
 import UserProfile from '../pages/profile/UserProfile';
@@ -14,7 +14,7 @@ import Womens_Wear from '../pages/Womens_Wear';
 import Mens_Wear from '../pages/Mens_Wear';
 import NotFound from '../pages/NotFound';
 import Carts_Page from '../pages/cartsPage/Carts_Page';
-import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
+// import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
 import Men_Clothing_page from '../pages/clothing_page/Men_Clothing_page';
 import Women_Clothing_page from '../pages/clothing_page/Women_Clothing_page';
 import Admin_Login from './admin/Admin_Login';
@@ -26,17 +26,13 @@ import User_reset_password from './user/User_reset_password';
 import Create_products from './admin/create_products/Create_products';
 import Update_product from './admin/create_products/Update_product';
 import Items from './admin/Dashboards/Items';
-import Fashion from './Fashion';
-import Shirt from '../pages/shirts/Shirt';
-import Bags_page from '../pages/Bags/Bags_page';
-import Shoes_page from '../pages/Bags/Shoes/Shoes_page';
-import Jewellery_page from '../pages/Jewellery/Jewellery_page';
 import ProductsByCategory from '../pages/ProductsByCategory/ProductsByCategory';
 import ScrollToTop from '../components/scroll-to-top/ScrollToTop';
 import SearchPage from '../pages/search_Page/Search_Page';
 import NewArrival from '../pages/NewArrival';
 import FashionDeals from '../pages/FashionDeals';
 import GreateDeals from '../pages/GreateDeals';
+import Fashion from '../pages/Fashion';
 
 export default function PageRoutes() {
   return (
@@ -60,11 +56,6 @@ export default function PageRoutes() {
         <Route path="/new-arrival" element={<NewArrival/>}/>
         <Route path="/fashion-deals" element={<FashionDeals/>}/>
         <Route path="/greate-deals" element={<GreateDeals/>}/>
-
-        <Route path="/shirts" element={<Shirt/>}/>
-        <Route path="/bags" element={<Bags_page/>}/>
-        <Route path="/shoes" element={<Shoes_page/>}/>
-        <Route path="/jewellery" element={<Jewellery_page/>}/>
         
         <Route path="/womenswear" element={<Womens_Wear/>}/>
         <Route path="/menswear" element={<Mens_Wear/>}/>

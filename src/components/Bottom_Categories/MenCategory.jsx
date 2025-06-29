@@ -62,7 +62,7 @@ export default function MenCategory() {
 
   return (
     <Box>
-      <Box p={4} rounded={'md'}>
+      <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'} rounded={'md'}>
         <Flex gap={3} flexWrap="wrap">
           <Box width={{ md: '300px', base: '100%' }} height={'500px'} bg={'white'} rounded={'md'}>
             <Box p={2}>
@@ -70,7 +70,7 @@ export default function MenCategory() {
             </Box>
             {categories.map((category, index) => (
               <Link key={index} to={`/category?category=${category}`} className="text-sm">
-                <Box py={2} px={8} className="hover:bg-green-200 rounded duration-150">
+                <Box py={2} px={8} className="hover:bg-gray-200 rounded duration-150">
                   <Text>{category}</Text>
                 </Box>
               </Link>
@@ -84,7 +84,7 @@ export default function MenCategory() {
               </Flex>
               <Slider defaultValue={priceRange} min={0} max={1000000} step={5} onChange={(value) => setPriceRange(value)}>
                 <SliderTrack>
-                  <SliderFilledTrack bg="green.600" />
+                  <SliderFilledTrack bg="gray.600" />
                 </SliderTrack>
                 <SliderThumb boxSize={4} />
               </Slider>
@@ -121,12 +121,12 @@ export default function MenCategory() {
                       </Link>
                       <Box p={3}>
                         <Text fontSize="md" fontWeight={500} isTruncated>{product.name}</Text>
-                        <Badge bg="green.200" fontSize="10px" p={1} px={2} color="gray.800">
+                        <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
                           {product.category}
                         </Badge>
                         <Text fontSize="sm" color="gray.500" noOfLines={1} mt={1}>{product.description}</Text>
                         <Flex justifyContent="space-between" mt={2}>
-                          <Flex align="center" color="green.600" fontWeight="bold">
+                          <Flex align="center" color="gray.600" fontWeight="bold">
                             <FaNairaSign />
                             <Text>{product.price.toLocaleString()}</Text>
                           </Flex>
@@ -146,19 +146,19 @@ export default function MenCategory() {
             )}
 
             <Flex justifyContent="center" alignItems="center" my={4} gap={2}>
-              <Button onClick={handlePrevPage} disabled={currentPage === 1} bg={'gray.200'} _hover={{ bg: 'green.400' }}>
+              <Button onClick={handlePrevPage} disabled={currentPage === 1} bg={'gray.200'} _hover={{ bg: 'gray.400' }}>
                 Prev
               </Button>
               {Array.from({ length: totalPages }, (_, index) => (
                 <Button key={index} onClick={() => handlePageChange(index + 1)} mx={1}
-                  bg={currentPage === index + 1 ? 'green.600' : 'gray.200'}
+                  bg={currentPage === index + 1 ? 'gray.600' : 'gray.200'}
                   color={currentPage === index + 1 ? 'white' : 'black'}
-                  _hover={{ bg: 'green.400' }}
+                  _hover={{ bg: 'gray.400' }}
                 >
                   {index + 1}
                 </Button>
               ))}
-              <Button onClick={handleNextPage} disabled={currentPage === totalPages} bg={'gray.200'} _hover={{ bg: 'green.400' }}>
+              <Button onClick={handleNextPage} disabled={currentPage === totalPages} bg={'gray.200'} _hover={{ bg: 'gray.400' }}>
                 Next
               </Button>
             </Flex>

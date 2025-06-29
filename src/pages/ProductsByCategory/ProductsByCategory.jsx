@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Heading,
   Text,
-  Spinner,
   SimpleGrid,
   Image,
   VStack,
@@ -12,17 +11,45 @@ import {
   Button,
   Select,
   GridItem,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
-import ShirtsBanner from "../clothing_page/Categories_Banner/ShirtsBanner";
 import { IoHeart } from "react-icons/io5";
-import { FaCartShopping, FaNairaSign } from "react-icons/fa6";
+import { FaNairaSign } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { addWishlist } from "../../store/wishlists/Wishlists";
 import Adverts from "../../components/Adverts/Adverts";
 import { addToCart } from "../../store/cart/cartsReucer";
+import FashionCategory from "../../components/Bottom_Categories/FashionCategory";
+import FemaleSalesBanner from "../../components/banners/FemaleSalesBanner";
+import ProductByCategroyBanner from "../clothing_page/Categories_Banner/ProductByCategroyBanner";
+import MaleSalesBanner from "../../components/banners/MaleSalesBanner";
+
+const SuggestedSection = () => {
+  return (
+    <Box mb={8} maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx="auto" bg={useColorModeValue('white', 'gray.800')} p={{ base: 4, md: 6 }} mt={6} rounded="2xl">
+      <Heading fontSize={{ base: 'xl', md: '2xl' }} color="gray.800" borderBottom="1px solid" borderColor="gray.300" pb={3} mb={4} position="relative" _after={{
+          content: '""',
+          position: 'absolute',
+          bottom: '-2px',
+          left: 0,
+          width: '50px',
+          height: '4px',
+          bgGradient: 'linear(to-r, pink.500, gray.800)',
+        }}>
+        You may also like
+      </Heading>
+
+      <Box bg={useColorModeValue('gray.100', 'gray.700')} p={{ base: 3, md: 4 }} rounded="lg" boxShadow="md" transition="all 0.3s" _hover={{ transform: 'scale(1.01)', boxShadow: 'xl' }}>
+        <FemaleSalesBanner/>
+        <MaleSalesBanner/>
+      </Box>
+    </Box>
+  );
+};
+
 
 const ProductsByCategory = () => {
   const [searchParams] = useSearchParams();
@@ -109,7 +136,7 @@ const ProductsByCategory = () => {
       description: "Added to wishlist.",
       duration: 3000,
       isClosable: true,
-      bg: "green.400",
+      bg: "gray.400",
     });
   };
 
@@ -156,10 +183,11 @@ const ProductsByCategory = () => {
     <Box bg={''} className="bg-zinc-200">
       <Header />
       {/* {category === "Shirt" && <ShirtsBanner category={category} />} */}
-      <ShirtsBanner category={category} />
+      <ProductByCategroyBanner category={category} />
+      
       <Box maxW={{md:"95%", base: 'full'}} mx="auto" my={6} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
-        <Box bg={'green.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={'wrap'}>
-          <Heading size="lg" color={'gray.800'}>Browse Products in "<Text as={'span'} color={'green.600'}>{category}</Text>"</Heading>
+        <Box bg={'gray.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={'wrap'}>
+          <Heading size="lg" color={'gray.800'}>Browse Products in "<Text as={'span'} color={'pink.500'}>{category}</Text>"</Heading>
 
           {/* Price Filter */}
           <Box >
@@ -191,7 +219,7 @@ const ProductsByCategory = () => {
         {error && <Text color="red.500">{error}</Text>}
 
         {/* Product Grid */}
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 3, lg: 5 }} spacing={2}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3, lg: 4, xl: 5, '2xl': 6 }} spacing={2}>
           {currentItems.map((product) => (
             <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
               <VStack spacing={2} align="stretch">
@@ -199,13 +227,13 @@ const ProductsByCategory = () => {
                   <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} boxSize="150px" objectFit="cover" borderRadius="md"/>
                 </Link>
 
-                <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-green-200 flex justify-center items-center rounded-full">
-                  <IoHeart className="text-xl text-white hover:text-green-600" />
+                <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
+                  <IoHeart className="text-xl text-white hover:text-gray-600" />
                 </button>
 
                 <Box>
                   <Text fontWeight="500" isTruncated>{product.name}</Text>
-                  <Badge bg="green.200" fontSize="10px" p={1} px={2} color="gray.800">
+                  <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
                     {product.category}
                   </Badge>
                   <Text fontSize="sm" color="gray.600" isTruncated>
@@ -223,7 +251,7 @@ const ProductsByCategory = () => {
                     </Text>
                   )}
 
-                  <Button _hover={{bg: 'green.800'}} onClick={() => handleCart(product)} w="full" mt={3} bg="green.600" color="white">
+                  <Button _hover={{bg: 'pink.800'}} onClick={() => handleCart(product)} w="full" mt={3} bg="pink.500" color="white">
                     Add To Cart
                   </Button>
                 </Box>
@@ -234,14 +262,14 @@ const ProductsByCategory = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <Box mt={8} bg={'green.500'} maxW={'md'} mx={'auto'} py={3} rounded={'lg'} display="flex" justifyContent="center" gap={4}>
-            <Button bg={'white'} onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} isDisabled={currentPage === 1}>
+          <Box mt={8} maxW={'sm'} mx={'auto'} py={3} rounded={'lg'} display="flex" justifyContent="center" gap={4} className="bg-pink-200">
+            <Button bg={'pink.500'} _hover={{bg:'pink.800'}} color={'white'} onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} isDisabled={currentPage === 1}>
               Prev
             </Button>
             <Text color={'white'} alignSelf="center">
               Page {currentPage} of {totalPages}
             </Text>
-            <Button bg={'white'}
+            <Button bg={'pink.500'} _hover={{bg:'pink.800'}} color={'white'}
               onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
               isDisabled={currentPage === totalPages}
             >
@@ -250,6 +278,12 @@ const ProductsByCategory = () => {
           </Box>
         )}
       </Box>
+
+      {/* Also interested */}
+      <SuggestedSection/>
+      
+      <FashionCategory/>
+      
       <Box mb={12}>
         <Adverts/>
       </Box>

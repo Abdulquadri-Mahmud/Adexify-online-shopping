@@ -1,8 +1,5 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Menu, MenuButton, MenuItem, MenuList, useColorModeValue } from '@chakra-ui/react';
-import React from 'react';
-import { FaUser } from 'react-icons/fa';
-import { RiUserSettingsLine } from "react-icons/ri";
+
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 

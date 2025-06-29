@@ -118,11 +118,11 @@ export default function Mens_wear() {
   };
 
   return (
-    <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-5 md:mb-0 mb-0 bg-white rounded-lg'>
-      <Box className='text-white bg-green-500 py-3 rounded-t-lg px-3 '>
+    <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='my-5 md:mb-0 mb-0 bg-white rounded-lg'>
+      <Box borderBottomWidth={'1px'} borderBottom={'solid gray.300'} pb={3} className='text-white bg-white py-3 rounded-t-lg px-3 '>
         <Box className="flex justify-between items-center">
-            <Heading fontWeight={500} fontSize={{md:20, base: 18}} className='text-xl '>Men's Fashion</Heading>
-            <Link to={'/'} className='text-[13px] font-medium uppercase flex items-center text-white'>See All <FaAngleRight className='text-[13px]'/></Link>
+            <Heading fontWeight={500} fontSize={{md:20, base: 18}} className='text-xl text-gray-800 '>Men's Fashion</Heading>
+            <Link to={'/'} className='text-[13px] font-medium uppercase flex items-center text-gray-800'>See All <FaAngleRight className='text-[13px]'/></Link>
         </Box>
       </Box>
       <div className="">

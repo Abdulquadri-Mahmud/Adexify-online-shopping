@@ -34,6 +34,9 @@ import { changeQuantity, removeItem } from '../../store/cart/cartsReucer';
 
 export default function Carts_Page() {
   const { items } = useSelector((state) => state.cart);
+
+  console.log('item:', items);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

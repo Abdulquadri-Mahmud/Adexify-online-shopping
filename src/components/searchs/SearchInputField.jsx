@@ -61,8 +61,8 @@ const SearchInputField = () => {
   return (
     <Box position="relative" ref={ref}>
       <form onSubmit={handleSearch} style={{ display: 'flex' }} className="relative">
-        <Input value={query} py={2} onChange={handleChange} placeholder="Search for products" className=' text-gray-800 font-semibold rounded-sm border-none outline-none p-[8px] bg-zinc-200 w-[100%]'/>
-        <Button type="submit" color={'white'} bg={'bg.green.500'} className="bg-green-500 absolute top-0 right-0 flex justify-center items-center w-[45px] h-full cursor-pointer rounded-r-md rounded-l-0" >
+        <Input value={query} py={2} onChange={handleChange} roundedLeft={'md'} roundedRight={'0'} _focus={{outline: 'none', border: 'none'}} placeholder="Search for products" className=' text-gray-800 font-semibold round border-none outline-none p-[10px] bg-zinc-200 w-[100%]'/>
+        <Button type="submit" color={'white'} bg={'pink.500'} roundedLeft={'0'} roundedRight={'md'} className="absolute top-0 right-0 flex justify-center items-center w-[45px] h-full cursor-pointer" >
           <Icon as={MdSearch} color={useColorModeValue('white', 'black')} fontSize={23}/>
         </Button>
       </form>
