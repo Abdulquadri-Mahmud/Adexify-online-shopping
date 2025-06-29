@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, Box, Button, Flex, Heading, Spinner, Text } from '@chakra-ui/react'
+import { Alert, AlertDescription, AlertIcon, Box, Button, Flex, Heading, Image, Spinner, Text } from '@chakra-ui/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaSmileBeam } from 'react-icons/fa'
 import { MdOutlineShoppingCart } from 'react-icons/md'
@@ -116,17 +116,18 @@ export default function Sign_up() {
     <Box>
       <Header/>
         <Box className='bg-zinc-100 md:py-10 pt-6 pb-20 flex justify-center items-center px-2'>
-            <Box bg={'white'} px={3} py={6} rounded={'md'} maxW={{md: '50%',base:'100%'}} mx={'auto'} className="xl:mt-0 mt-5 xl:px-5">
-                <Box className="flex items-center justify-center mx-auto bg-green-200 py-1 px-2 rounded-2xl w-[140px]">
-                    <MdOutlineShoppingCart className='md:text-xl animate text-green-600'/>
-                    <h1 className='md:text-xl font-medium uppercase'>Ade<span className="text-green-600">X</span>ify</h1>
-                </Box>
+            <Box bg={'white'} px={3} py={6} rounded={'md'} maxW={{md: 'md',base:'100%'}} mx={'auto'} className="xl:mt-0 mt-5 xl:px-5">
+                <Flex justifyContent={'center'}>
+                    <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
+                        <Image src='/Logo.png' alt='logo' w={{md:'100px', base:'100px'}}/>
+                    </Link>
+                </Flex>
                 <Box className="mt-5">
                     <Heading textAlign={'center'} fontWeight={500} fontSize={{md:30, base: 25}}>Welcome Back</Heading>
                     <p className='text-center text-gray-400 text-[13px] mt-1'>Start shopping what you desire on ADEXIFY</p>
                 </Box>
-                <form className='flex w-full flex-col gap-5 mt-5' onSubmit={handleSubmit}>
-                    <Flex flexWrap={{md: 'nowrap', base: 'wrap'}} gap={{md:5, base: 5}}>
+                <form className='flex w-full flex-col gap-3 mt-5' onSubmit={handleSubmit}>
+                    <Flex flexWrap={{md: 'nowrap', base: 'wrap'}} gap={{md:2, base: 5}}>
                         <Box className="relative w-full">
                             <input onChange={handleChange} id='firstname' ref={firstname} type="text" className='placeholder:text-gray-400 outline-none border-none font-medium bg-slate-200 w-full p-3 rounded-lg pl-10' placeholder='First Name' />
                             <Box className="absolute top-4 left-3">
@@ -146,7 +147,7 @@ export default function Sign_up() {
                             <MdEmail/>
                         </Box>                    
                     </Box>
-                    <Flex flexWrap={{md: 'nowrap', base: 'wrap'}} gap={{md:5, base: 5}}>
+                    <Flex flexWrap={{md: 'nowrap', base: 'wrap'}} gap={{md:2, base: 5}}>
                         <Box className="relative w-full">
                             <input onChange={handleChange} id='phone' ref={phone} type="Number" className='placeholder:text-gray-400 outline-none border-none font-medium bg-slate-200 w-full p-3 rounded-lg pl-10' placeholder='Phone' />
                             <Box className="absolute top-4 left-3">
@@ -186,17 +187,17 @@ export default function Sign_up() {
                             {
                                 loading ? (
                                     <Flex justifyContent={'center'} alignItems={'center'} gap={2}>
-                                        <Spinner color='green.600' />
-                                        <Text color={'green.600'}>Loading...</Text>
+                                        <Spinner color='pink.600' />
+                                        <Text color={'pink.600'}>Loading...</Text>
                                     </Flex>
                                 ) : 'Sign Up'
                             }
                         </button>
                     </Box>
                     <Box className="flex justify-center items-center">
-                        <p className="w-[100px] p-[1px] bg-green-300"></p>
+                        <p className="w-[100px] p-[1px] bg-pink-300"></p>
                         <p className="text-gray-400 text-sm">Or Login With</p>
-                        <p className="w-[100px] p-[1px] bg-green-300"></p>
+                        <p className="w-[100px] p-[1px] bg-pink-300"></p>
                     </Box>
                     <Box className="mx-auto w-full">
                         <button className='bg-slate-800 text-white w-full py-3 rounded-lg flex items-center justify-center gap-2 font-medium'><FaGoogle className='text-red-500'/> Google</button>

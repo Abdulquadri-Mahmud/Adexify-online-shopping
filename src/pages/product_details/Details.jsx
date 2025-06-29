@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Stack, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Image, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import React, { createContext, Fragment, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { FaSmileBeam } from "react-icons/fa";
@@ -141,7 +141,7 @@ export default function Details() {
         description: "Your item has been saved.",
         duration: 5000,
         isClosable: true,
-        bgColor: 'green.600',
+        bgColor: 'pink.600',
       });
     }
 
@@ -194,10 +194,9 @@ export default function Details() {
                 </div>
               </div>
               <div className="flex-1 md:mt-0 mt-4 pl-3">
-                <div className="flex items-center gap-1 bg-green-200 py-1 px-2 rounded-r-xl w-[140px]">
-                  <FaSmileBeam className='text-sm text-green-600'/>
-                  <Heading fontSize={13} fontFamily={'revert'} className='font-medium uppercase'>Ade<span className="text-green-600">X</span>ify <span className="black">Now</span></Heading>
-                </div>
+                <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
+                  <Image src='/Logo.png' alt='logo' w={{md:'100px', base:'100px'}}/>
+                </Link>
                 <div className=" mt-4 border-b-[1px] border-b-gray-300 pb-2">
                   <Heading fontSize={{md:23, base: 16}} fontWeight={500} color={'gray.800'}>{name}</Heading>
                   <div className="mt-3">
@@ -231,15 +230,15 @@ export default function Details() {
                     </div>
                     {
                       oldprice && (
-                        <p className="text-[13px] text-green-400 font-medium pt-3">You save up to {oldprice - price}</p>
+                        <p className="text-[13px] text-pink-400 font-medium pt-3">You save up to {oldprice - price}</p>
                       )
                     }
                   </div>
                 </div>
                 <div className="border-b-[1px] border-b-gray-300">
-                  <div className="bg-green-200 px-2 py-2 rounded-md mt-3">
+                  <div className="bg-pink-200 px-2 py-2 rounded-md mt-3">
                     <p className='text-sm font-medium text-center'>Call us for Bulk Purchase</p>
-                    <div className="flex justify-center items-center text-green-600 font-medium">
+                    <div className="flex justify-center items-center text-pink-600 font-medium">
                       <IoMdCall/>
                       <Link to={'tell:07047594667'} className='text-center'>07047594667</Link>
                     </div>
@@ -247,16 +246,16 @@ export default function Details() {
 
                   {/* Add to cart */}
                   <div className=" mt-5 flex justify-between items-center">
-                    <button className="bg-green-600 text-white px-5 py-2 rounded-md w-[100%] font-medium" onClick={handleCart}>Add To Cart</button>
+                    <button className="bg-pink-600 text-white px-5 py-2 rounded-md w-[100%] font-medium" onClick={handleCart}>Add To Cart</button>
                   </div>
 
                   {/* Add to wishlist */}
-                  <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-green-600 active:text-green-600 focus:text-green-600 absolute top-3 right-3 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
+                  <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-pink-600 active:text-pink-600 focus:text-pink-600 absolute top-3 right-3 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
                     <IoHeart className='text-xl'/>
                   </button>
                   {
                     currentAdmin && (
-                      <Box mt={4} className='text-green-600 text-center'>
+                      <Box mt={4} className='text-pink-600 text-center'>
                         <Link to={`/admin/update-products/${_id}`}>Update Product</Link>
                       </Box>
                     )
@@ -272,7 +271,7 @@ export default function Details() {
             </div>
             <div className="py-3 flex gap-2 justify-start p-3">
               <div className="">
-                <TbTruckDelivery className='text-green-600 text-xl'/>
+                <TbTruckDelivery className='text-pink-600 text-xl'/>
               </div>
               <div className="">
                 <Text className='text-[15] font-medium'>Delivery</Text>
@@ -285,12 +284,12 @@ export default function Details() {
             </div>
             <div className="text-[13px] py-3 flex gap-2 justify-start p-3">
               <div className="">
-                <MdOutlinePolicy className='text-green-600 text-xl'/>
+                <MdOutlinePolicy className='text-pink-600 text-xl'/>
               </div>
               <div className="">
                 <p className="text-[15px] pb-3">Return Policy</p>
                 <p className="text-[13px] pb-3 font-medium">Guaranteed 7-Day Return Policy</p>
-                <p className="text-[13px] pb-3">For details about return shipping options, please visit - <Link to={'/'} className='text-green-600'>ADEXIFY Return Policy</Link></p>
+                <p className="text-[13px] pb-3">For details about return shipping options, please visit - <Link to={'/'} className='text-pink-600'>ADEXIFY Return Policy</Link></p>
               </div>
             </div>
             <div className="py-3 flex gap-2 justify-start p-3">
@@ -337,7 +336,7 @@ export default function Details() {
                   ))}
                 </Stack>
 
-                <Button type="button" width="100%" bg="green.600" color="white" borderRadius="full" onClick={handleCart} _hover={{ bg: "green.700" }} fontWeight="medium" py={2}>
+                <Button type="button" width="100%" bg="pink.600" color="white" borderRadius="full" onClick={handleCart} _hover={{ bg: "pink.700" }} fontWeight="medium" py={2}>
                   Confirm Selection
                 </Button>
               </Box>

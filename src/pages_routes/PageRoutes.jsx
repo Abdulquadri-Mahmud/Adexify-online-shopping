@@ -46,7 +46,7 @@ export default function PageRoutes() {
         <Route path='/product-details/:proId' element={<Details/>}/>
 
         <Route path='/view-carts' element={<Carts_Page/>}/>
-        {/* <Route path='/view-wishlist' element={<Wishlist_Page/>}/> */}
+        <Route path='/view-wishlist' element={<Wishlist_Page/>}/>
 
         <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
         <Route path="/womens-clothing" element={<Women_Clothing_page/>}/>

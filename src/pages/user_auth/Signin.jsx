@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Spinner, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Image, Spinner, Text, useToast } from '@chakra-ui/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaSmileBeam } from 'react-icons/fa'
 import { MdOutlineShoppingCart } from 'react-icons/md'
@@ -19,6 +19,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signinFailure, signinStart, signinSuccess } from '../../store/userReducers';
 import Header from '../../components/Header';
+import Footer from '../../components/footer/Footer';
 
 export default function Signin() {
 
@@ -107,11 +108,12 @@ export default function Signin() {
     <Box>
       <Header/>
         <Box className='bg-zinc-100 md:py-10 pt-6 pb-20 flex justify-center items-center px-2'>
-            <Box bg={'white'} px={3} py={6} rounded={'md'} maxW={{md: '50%',base:'100%'}} mx={'auto'} className="flex-1 w-full xl:mt-0 mt-5 xl:px-5">
-                <Box className="flex items-center justify-center mx-auto bg-green-200 py-1 px-2 rounded-2xl w-[140px]">
-                    <MdOutlineShoppingCart className='md:text-xl animate text-green-600'/>
-                    <h1 className='md:text-xl font-medium uppercase'>Ade<span className="text-green-600">X</span>ify</h1>
-                </Box>
+            <Box bg={'white'} px={3} py={6} rounded={'md'} maxW={{md: 'md',base:'100%'}} mx={'auto'} className="flex-1 w-full xl:mt-0 mt-5 xl:px-5">
+                <Flex justifyContent={'center'}>
+                    <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
+                        <Image src='/Logo.png' alt='logo' w={{md:'100px', base:'100px'}}/>
+                    </Link>
+                </Flex>
                 <Box className="mt-5">
                     <Heading textAlign={'center'} fontWeight={500} fontSize={{md:30, base: 25}}>Welcome Back</Heading>
                     <p className='text-center text-gray-400 text-sm mt-1'>We are here to save your time and money</p>
@@ -146,20 +148,20 @@ export default function Signin() {
                     </Box>
                     <Box className="mx-auto w-full">
                         <button className='bg-slate-800 text-white w-full py-3 rounded-lg font-medium uppercase'>
-                        {
-                            loading ? (
-                                <Flex justifyContent={'center'} alignItems={'center'} gap={2}>
-                                    <Spinner color='green.600' />
-                                    <Text color={'green.600'}>Loading...</Text>
-                                </Flex>
-                            ) : 'Login'
-                        }
+                            {
+                                loading ? (
+                                    <Flex justifyContent={'center'} alignItems={'center'} gap={2}>
+                                        <Spinner color='pink.600' />
+                                        <Text color={'pink.600'}>Loading...</Text>
+                                    </Flex>
+                                ) : 'Login'
+                            }
                         </button>
                     </Box>
                     <Box className="flex justify-center items-center">
-                        <p className="w-[100px] p-[1px] bg-green-300"></p>
+                        <p className="w-[100px] p-[1px] bg-pink-300"></p>
                         <p className="text-gray-400 text-sm">Or Login With</p>
-                        <p className="w-[100px] p-[1px] bg-green-300"></p>
+                        <p className="w-[100px] p-[1px] bg-pink-300"></p>
                     </Box>
                     <Box className="mx-auto w-full">
                         <button className='bg-slate-800 text-white w-full py-3 rounded-lg flex items-center justify-center gap-2 font-medium'><FaGoogle className='text-red-500'/> Google</button>
@@ -174,6 +176,7 @@ export default function Signin() {
                 </Flex>
             </Box>
         </Box>
+        <Footer/>
     </Box>
   )
 }
