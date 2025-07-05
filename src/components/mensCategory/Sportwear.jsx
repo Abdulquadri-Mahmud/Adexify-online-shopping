@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
 import { SportwearContext } from '../../pages/Mens_Clothing/Mens_sportwear';
 import { Link } from 'react-router-dom';

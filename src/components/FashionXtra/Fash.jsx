@@ -6,7 +6,7 @@ import { Badge, Box, Button, Flex, Image, Text, useToast, VStack } from '@chakra
 import { IoHeart } from 'react-icons/io5';
 import { FashProductsContext } from './FashionXtra';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 
 
 export default function Fash() {

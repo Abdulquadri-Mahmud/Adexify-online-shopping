@@ -23,20 +23,13 @@ import { BsCart4 } from 'react-icons/bs';
 
 export default function All_category() {
     const { items } = useSelector((state) => state.cart);
-    const [cartLength, setCartLength] = useState(0);
     const [open, setOpen] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const firstField = useRef();
     const { currentUser } = useSelector((state) => state.user);
     const [categories, setCategories] = useState([]);
 
-    useEffect(() => {
-        if (items.length >= 1) {
-            setCartLength(items.length);
-        } else {
-            setCartLength(0);
-        }
-    }, [items]);
+    const cartCount = useSelector((state) => state.cart.count);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -51,6 +44,12 @@ export default function All_category() {
         };
         fetchCategories();
     }, []);
+
+    // Select wishlist count from Redux store
+    const wishlistCount = useSelector((state) => state.wishlist.wishlistCount);
+
+    console.log(wishlistCount);
+    
 
     return (
         <div className="">
@@ -76,7 +75,7 @@ export default function All_category() {
                                         <Box bg={'pink.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
                                             <BsCart4 />
                                             <Box bg={'pink.500'} p={2} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-3 right-0 text-sm">
-                                                <Text fontWeight={'600'}>{cartLength}</Text>
+                                                <Text fontWeight={'600'}>{cartCount}</Text>
                                             </Box>
                                         </Box>
                                     </Flex>
@@ -110,7 +109,7 @@ export default function All_category() {
                                     <Link to={`/profile/${currentUser._id}`}>My Account</Link>
                                 </Flex>
                                 <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'pink.500'} color='white' _hover={{bg: ''}}>
-                                    <Link to={'/view-wislist'}>My WishLists</Link>
+                                    <Link to={'/view-wislist'}>My WishLists ({wishlistCount})</Link>
                                 </Flex>
                             </Flex>
                         )}

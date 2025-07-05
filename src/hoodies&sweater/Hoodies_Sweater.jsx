@@ -4,7 +4,7 @@ import { FaCartShopping, FaNairaSign } from 'react-icons/fa6';
 import { IoHeart } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Box, Button, Flex, Image, Text, useToast, VStack } from '@chakra-ui/react';
-import { addToCart } from '../store/cart/cartsReucer';
+// import { addToCart } from '../store/cart/cartsReucer';
 import { addWishlist } from '../store/wishlists/Wishlists';
 import { Hoodies_Sweater_Context } from '../pages/clothing_page/Men_Clothing_page';
 

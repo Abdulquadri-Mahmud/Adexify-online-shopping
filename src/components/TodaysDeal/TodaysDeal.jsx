@@ -120,7 +120,7 @@ export default function TodaysDeal() {
             <Link to={'/'} className='text-[12px] font-medium text-gray.800 uppercase flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
         </Box>
       </Box>
-      <div className="p-">
+      <div className="p-1">
         <Slider {...settings}>
           {
               currentPost.length > 0 && currentPost.map((product) => (

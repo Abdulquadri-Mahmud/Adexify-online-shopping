@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import Wishlists from "./wishlists/Wishlists";
 import adminReducer from "./adminReducer";
-import { cartReducer } from "./cart/cartsReucer";
+import { cartReducer } from "./cart/cartsReducer";
 
 const rootReducer = combineReducers({
     user: userReducers,

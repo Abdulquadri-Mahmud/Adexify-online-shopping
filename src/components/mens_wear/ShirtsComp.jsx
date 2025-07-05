@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { FaNairaSign } from 'react-icons/fa6';
 import { IoHeart } from 'react-icons/io5';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
 import { useDispatch } from 'react-redux';
 import { Badge, Box, Flex, Image, Text, useToast, VStack, Button } from '@chakra-ui/react';

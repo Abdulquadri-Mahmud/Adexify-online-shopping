@@ -25,7 +25,7 @@ import {
 import { IoHeart } from "react-icons/io5";
 import { IoMdCart } from "react-icons/io";
 import Header from "../../components/Header";
-import { addToCart } from "../../store/cart/cartsReucer";
+// import { addToCart } from "../../store/cart/cartsReucer";
 import { addWishlist } from "../../store/wishlists/Wishlists";
 import Footer from "../../components/footer/Footer";
 import SearchLoader from "../../components/searchs/SearchLoader/SearchLoader";

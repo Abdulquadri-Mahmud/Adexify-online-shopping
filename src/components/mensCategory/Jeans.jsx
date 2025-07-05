@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
 import { Link } from 'react-router-dom';
 import { IoHeart } from 'react-icons/io5';

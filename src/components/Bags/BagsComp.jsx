@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { FaCartShopping, FaNairaSign } from 'react-icons/fa6';
 import { IoHeart } from 'react-icons/io5';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToast } from '@chakra-ui/react';

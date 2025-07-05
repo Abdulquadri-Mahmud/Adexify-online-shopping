@@ -34,6 +34,7 @@ import FashionDeals from '../pages/FashionDeals';
 import GreateDeals from '../pages/GreateDeals';
 import Fashion from '../pages/Fashion';
 import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
+import CheckOutPage from '../pages/cartsPage/CheckoutPage/CheckOutPage';
 
 export default function PageRoutes() {
   return (
@@ -48,9 +49,10 @@ export default function PageRoutes() {
 
         <Route path='/view-carts' element={<Carts_Page/>}/>
         <Route path='/view-wishlist' element={<Wishlist_Page/>}/>
+        <Route path='/checkout/summary' element={<CheckOutPage/>}/>
 
-        <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
-        <Route path="/womens-clothing" element={<Women_Clothing_page/>}/>
+        {/* <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
+        <Route path="/womens-clothing" element={<Women_Clothing_page/>}/> */}
         <Route path="/category" element={<ProductsByCategory/>}/>
 
         <Route path="/fashion" element={<Fashion/>}/>

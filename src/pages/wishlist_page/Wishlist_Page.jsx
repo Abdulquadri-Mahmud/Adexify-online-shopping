@@ -18,7 +18,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { deleteWishlist } from '../../store/wishlists/Wishlists';
 
 export default function Wishlist_Page() {

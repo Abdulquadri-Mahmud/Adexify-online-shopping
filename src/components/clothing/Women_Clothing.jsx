@@ -5,7 +5,7 @@ import { IoHeart } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Box, Button, Flex, Image, Text, useToast, VStack } from '@chakra-ui/react';
 import { Women_ClothingContext } from '../../pages/clothing_page/Women_Clothing_page';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { addWishlist } from '../../store/wishlists/Wishlists';
 
 export default function Women_Clothing() {

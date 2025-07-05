@@ -5,9 +5,9 @@ export default function ProductByCategroyBanner({category}) {
     
   return (
     <Box>
-        <Box pb={7} className="bg-zinc-200 rounded-t-lg">
+        <Box pb={5} className="bg-zinc-200 rounded-t-lg">
         {/* Breadcrumb Navigation */}
-        <Box bg={''} py={6}>
+        <Box bg={''} py={3}>
             <Box bg={'white'} py={4} px={6} rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '97%', base: '97%'}} mx={'auto'}>
                 <Box bg={''} className="flex gap-1 items-center">
                     <Link to={'/'} className='text-[13px] text-gray-500'>Home</Link>
@@ -25,7 +25,7 @@ export default function ProductByCategroyBanner({category}) {
             </Heading>
         </Box>
         
-        <Box bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} rounded={'md'} p={2} mt={4}>
+        <Box bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} rounded={'md'} p={2} mt={2}>
             <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '300px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'top'} bgBlendMode={'multiply'} className='bg-slate-400' bgImage={'/hero2.jpg'} position={'relative'}>
                 <Box position={'absolute'}>
                     <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>

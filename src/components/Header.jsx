@@ -150,22 +150,10 @@ const MobileNav = () => {
 };
 
 export default function Header() {
-    const [cartLength, setCartLength] = useState(0)
     const { currentUser } = useSelector((state) => state.user);
     const { currentAdmin } = useSelector((state) => state.admin);
     
-    const { items } = useSelector((state) => state.cart);
-    
-    useEffect(() => {
-
-        if (items.length >= 1) {
-            setCartLength(items.length);
-            return;
-        }else{
-            setCartLength(0);
-        }
-    });
-
+    const cartCount = useSelector((state) => state.cart.count);
 
   return (
     <div className="sticky top-0 z-20 bg-white">
@@ -202,8 +190,8 @@ export default function Header() {
                                     <Text fontWeight={600} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'pink.500'}>My Cart</Text>
                                     <Box bg={'pink.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
                                         <BsCart4 />
-                                        <Box bg={'pink.600'} p={2} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-3 right-0 text-sm">
-                                            <Text fontWeight={'600'}>{cartLength}</Text>
+                                        <Box bg={'pink.600'} px={2} pb={3} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-4 right-0 text-[17px]">
+                                            <Text fontWeight={'600'} >{cartCount}</Text>
                                         </Box>
                                     </Box>
                                 </Flex>
@@ -214,7 +202,7 @@ export default function Header() {
                         <Link to={'/view-carts'}>
                             <MdOutlineShoppingCart className='text-xl text-white'/>
                             <div className="absolute -top-5 right-0 text-white ">
-                                <p className='text-[17px] font-medium'>{cartLength}</p>
+                                <p className='text-[17px] font-medium'>{cartCount}</p>
                             </div>
                         </Link>
                     </div>

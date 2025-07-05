@@ -30,21 +30,23 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
-import { changeQuantity, removeItem } from '../../store/cart/cartsReucer';
+// import { changeQuantity, removeItem } from '../../store/cart/cartsReucer';
 
 export default function Carts_Page() {
   const { items } = useSelector((state) => state.cart);
-
-  console.log('item:', items);
+  const { currentUser } = useSelector((state) => state.user);
+  const [emptyCart, setEmptyCart] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen2, onOpen2, onClose2 } = useDisclosure();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedQty, setSelectedQty] = useState(0);
+  const [alertMessage, setAlertMessage] = useState('');
 
   // Calculate total and item count
   let total = 0;
@@ -66,6 +68,17 @@ export default function Carts_Page() {
 
     dispatch(changeQuantity(selectedItem.productID, selectedSize, selectedQty));
     onClose();
+  };
+
+  const handleRedirect = () => {
+    if (items.length <= 0) {
+      setAlertMessage('You need at least one item in your cart.');
+      onOpen2();
+    } else if (!currentUser) {
+      setAlertMessage('You must be logged in to proceed.');
+      onOpen2();
+    }
+    setTimeout(() => setAlertMessage(''), 2000);
   };
 
   return (
@@ -113,10 +126,15 @@ export default function Carts_Page() {
                     items.map((item, index) => {
                       const sizes = Object.entries(item.items || {});
 
+                      const subTotal = item.productPrice;
+                      total += subTotal;
+
+                      console.log('total:', total);
+
                       if (sizes.length === 0) {
                         // Item with no sizes/quantities
                         return (
-                          <Flex key={`empty-${index}`} bg={'yellow.50'} border="1px solid" borderColor="yellow.200" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
+                          <Flex key={`empty-${index}`} bg={'gray.50'} border="1px solid" borderColor="gray.200" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
                             <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productID}`}>
                               <Image src={item.productImage} boxSize="50px" objectFit="cover" rounded="md"/>
                               <Box>
@@ -134,13 +152,11 @@ export default function Carts_Page() {
                               </Text>
                             </Flex>
 
-                            <Button size="sm" colorScheme="green" onClick={() => openSizeModal(item)}
-                            >
+                            <Button size="sm" bg="pink.500" color={'white'} onClick={() => openSizeModal(item)}>
                               Select Size
                             </Button>
 
-                            <Button size="sm" colorScheme="red" onClick={() => dispatch(removeItem(item.productID))}
-                            >
+                            <Button size="sm" colorScheme="red" onClick={() => dispatch(removeItem(item.productID))}>
                               <MdDelete />
                             </Button>
                           </Flex>
@@ -248,9 +264,11 @@ export default function Carts_Page() {
                   Excluding delivery charges
                 </Text>
                 <Box borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                  <button className="bg-green-600 text-white w-full my-3 rounded-md py-2 font-medium">
-                    Continue to Checkout
-                  </button>
+                  <Link to={currentUser && !items.length <= 0 ? "/checkout/summary" : "/view-carts"}>
+                    <Button bg={'green.500'} color={'white'} _hover={{bg: 'green.700'}} onClick={handleRedirect} className="w-full my-3 rounded-md py-2 font-medium">
+                      Continue to Checkout
+                    </Button>
+                  </Link>
                 </Box>
               </Box>
             </Flex>
@@ -288,6 +306,24 @@ export default function Carts_Page() {
             >
               Add to Cart
             </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Modal to alert user to sign in */}
+      <Modal isOpen={isOpen2} onClose={onClose2} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            <Box bg={'red.50'} py={2} rounded={'md'} textAlign={'center'}>Error Message</Box>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text fontWeight={500}>{alertMessage}</Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button></Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

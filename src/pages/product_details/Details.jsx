@@ -9,7 +9,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlinePolicy } from "react-icons/md";
 import { PiGreaterThan } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../store/cart/cartsReucer';
+// import { addToCart } from '../../store/cart/cartsReucer';
 import { CgMathMinus } from 'react-icons/cg';
 import { RiAddFill } from 'react-icons/ri';
 import { FaNairaSign } from 'react-icons/fa6';
