@@ -48,7 +48,7 @@ export default function All_category() {
     // Select wishlist count from Redux store
     const wishlistCount = useSelector((state) => state.wishlist.wishlistCount);
 
-    console.log(wishlistCount);
+    // console.log(wishlistCount);
     
 
     return (

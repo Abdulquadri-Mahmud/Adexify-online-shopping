@@ -8,7 +8,10 @@ import { addWishlist } from '../../store/wishlists/Wishlists';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCartCount } from '../../store/cart/cartActions';
 import { setWishlistCount } from '../../store/cart/wishlishActions';
-// import { addToCart } from '../../store/cart/cartsReucer';
+import { Spinner } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+
+const MotionButton = motion.create(Button);
 
 export default function Shoe() {
     const product = useContext(ShoesProductsContext);
@@ -203,48 +206,65 @@ export default function Shoe() {
     }, []);
   
     return (
-      <Box px={0}>
-        <Box borderWidth="1px" borderRadius="xl" className="bg-white p-2 rounded-xl shadow-md relative">
-          <VStack spacing={2} align="stretch">
-            <Link to={`/product-details/${product._id}`}>
-              <Image mx="auto" src={product.image?.[0] || 'https://via.placeholder.com/150'} alt={product.name} width={'100%'} objectFit="cover" borderRadius="md"/>
-            </Link>
-  
+      <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
+      <VStack spacing={2} m={1} align="stretch">
+        <Link to={`/product-details/${product?._id}`}>
+          <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
+        </Link>
+
+        {loadingWishlistProductId === product._id ? (
+            <Flex justifyContent='center' alignItems='center' bg={'pink.600'} rounded={'full'} className="absolute top-2 right-2 w-[30px] h-[30px]">
+              <Spinner color="gray.50" size="sm" mr={2} />
+            </Flex>
+          ) : (
             <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
               <IoHeart className="text-xl text-white hover:text-gray-600" />
             </button>
-  
-            <Box>
-              <Text fontWeight="500" isTruncated>
-                {product.name}
-              </Text>
-              <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
-                {product.category}
-              </Badge>
-              <Text my={2} fontSize="sm" color="gray.600" isTruncated>
-                {product.description}
-              </Text>
+          )}
 
-              <Flex justifyContent={'space-between'}>
-                <Text display="flex" alignItems="center">
-                  <FaNairaSign />
-                  <span className="font-medium">{product.price.toLocaleString()}.00</span>
-                </Text>
-    
-                {product.oldprice && (
-                  <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                    <FaNairaSign className="inline-block text-sm" />
-                    {product.oldprice}
-                  </Text>
-                )}
-              </Flex>
-  
-              <Button _hover={{ bg: 'pink.800' }} onClick={() => handleCart(product)} w="full" mt={3} bg="pink.500" color="white">
-                Add To Cart
-              </Button>
-            </Box>
-          </VStack>
+        <Box>
+          <Text fontWeight="500" isTruncated>{product.name}</Text>
+          <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
+            {product.category}
+          </Badge>
+          <Text fontSize="sm" color="gray.600" isTruncated>
+            {product.description}
+          </Text>
+
+          <Text display="flex" alignItems="center">
+            <FaNairaSign />
+            <span className="font-medium">{product.price.toLocaleString()}.00</span>
+          </Text>
+
+          {product.oldprice && (
+            <Text fontSize="sm" color="gray.400" textDecoration="line-through">
+              <FaNairaSign className="inline-block text-sm" />{product.oldprice}
+            </Text>
+          )}
+
+          <MotionButton
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
+            transition={{ duration: 0.2 }}
+            disabled={loadingProductId === product._id}
+            _hover={{ bg: 'pink.800' }}
+            onClick={() => handleCart(product)}
+            w="full"
+            mt={3}
+            bg="pink.500"
+            color="white">
+            {loadingProductId === product._id ? (
+              <>
+                <Spinner size="sm" mr={2} /> Adding...
+              </>
+            ) : (
+              'Add to Cart'
+            )}
+          </MotionButton>
+
         </Box>
-      </Box>
+      </VStack>
+    </Box>
   )
 }

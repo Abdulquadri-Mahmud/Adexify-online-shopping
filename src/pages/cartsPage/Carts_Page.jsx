@@ -17,11 +17,12 @@ import {
   Select,
   NumberInput,
   NumberInputField,
+  Spinner,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { BiLeftArrowAlt } from 'react-icons/bi';
 import { PiGreaterThan } from 'react-icons/pi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CgMathMinus } from 'react-icons/cg';
 import { RiAddFill } from 'react-icons/ri';
 import { FaNairaSign } from 'react-icons/fa6';
@@ -30,6 +31,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
+import { setCartCount } from '../../store/cart/cartActions';
 
 export default function Carts_Page() {
   const { currentUser } = useSelector((state) => state.user);
@@ -42,14 +44,22 @@ export default function Carts_Page() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   // Modal for alert messages
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
+  const { isOpen: isOpenUpdateSize, onOpen: onOpenUpdateSize, onClose: onCloseUpdateSize } = useDisclosure();
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedQty, setSelectedQty] = useState(1);
+  const[updateLoading, setUpdateLoading] = useState(false);
+  const[deleteLoading, setDeleteLoading] = useState(false);
+  const[loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
 
   // Fetch cart items from backend
   const fetchCart = async () => {
     if (!currentUser?._id) return;
+    setLoading(true);
     try {
       const res = await fetch('https://adexify-api.vercel.app/api/cart/get-user-cart', {
         method: 'POST',
@@ -58,12 +68,15 @@ export default function Carts_Page() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
+        setLoading(false);
         setCartItems(data.cart.products);
       } else {
         setCartItems([]);
       }
     } catch (error) {
       console.error('Failed to fetch cart:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,40 +86,69 @@ export default function Carts_Page() {
 
   // Update cart item quantity or size
   const updateCartItem = async (productId, size, quantity) => {
-    if (quantity < 1) return; // Prevent quantity less than 1
+    if (quantity < 1) return;
+
+    setUpdateLoading(`${productId}-${size}`);
+
     try {
-      const res = await fetch('https://adexify-api.vercel.app/api/cart/update', {
-        method: 'PUT',
+      const res = await fetch('https://adexify-api.vercel.app/api/cart/update-user-cart', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser._id, productId, size, quantity }),
+        body: JSON.stringify({ userId: currentUser._id, productId, selectedSize: size, quantity }),
       });
+
       const data = await res.json();
-      if (res.ok && data.success) {
+      console.log(data);
+
+      if (res.ok && data.success === true) {
         fetchCart();
+        onCloseUpdateSize();
       } else {
         console.error('Update failed:', data.message);
       }
     } catch (error) {
       console.error('Update error:', error);
+    } finally {
+      setUpdateLoading(null);
     }
   };
 
   // Delete cart item by productId (and size if needed)
   const deleteCartItem = async (productId, size) => {
+    setDeleteLoading(productId);
     try {
-      const res = await fetch('https://adexify-api.vercel.app/api/cart/delete', {
+      const res = await fetch('https://adexify-api.vercel.app/api/cart/delete-cart-item', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser._id, productId, size }),
+        body: JSON.stringify({ userId: currentUser._id, productId }),
       });
       const data = await res.json();
       if (res.ok && data.success) {
         fetchCart();
+        // Fetch updated cart from backend to get latest product count
+        const cartRes = await fetch('https://adexify-api.vercel.app/api/cart/get-user-cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: currentUser._id }),
+        });
+        
+        const cartData = await cartRes.json();
+        
+        if (cartRes.ok && cartData.success === true) {
+          // Get the count of products in the cart
+          const count = cartData.cart?.products?.length || 0;
+          
+          // Dispatch count to Redux so header badge can update immediately
+          dispatch(setCartCount(count));
+        }
+        setDeleteLoading(false);
       } else {
         console.error('Delete failed:', data.message);
+        setDeleteLoading(false);
       }
     } catch (error) {
       console.error('Delete error:', error);
+      setDeleteLoading(false);
     }
   };
 
@@ -116,6 +158,11 @@ export default function Carts_Page() {
     setSelectedSize('');
     setSelectedQty(1);
     onOpen();
+  };
+  const openOnlySizeModal = (item) => {
+    setSelectedItem(item);
+    setSelectedSize('');
+    onOpenUpdateSize();
   };
 
   // Confirm adding size & quantity on modal
@@ -167,7 +214,7 @@ export default function Carts_Page() {
       <Header />
 
       <Box pb={10} pt={7} className="bg-zinc-200">
-        <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx="auto" className="py-2" bg="white" py={4} px={6} rounded="md">
+        <Box maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" className="py-2" bg="white" py={4} px={6} rounded="md">
           <Box className="flex gap-1 items-center">
             <Link to="/" className="text-[13px]">Home</Link>
             <PiGreaterThan className="text-[13px] pt-1 text-gray-500" />
@@ -175,125 +222,106 @@ export default function Carts_Page() {
           </Box>
         </Box>
 
-        <Box bg="white" py={3} px={2} rounded="md" maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx="auto" mt={4}>
-          <Heading fontSize={{ md: 30, base: 25 }} fontWeight={500} color="black">
-            Shopping Cart
-          </Heading>
-          <Box mt={4} width="200px" py={1} rounded="md" className="border border-gray-300">
-            <Link to="/fashion" fontWeight={500} className="text- flex items-center justify-center gap-2">
-              <BiLeftArrowAlt /> Continue Shopping
-            </Link>
+        <Flex justifyContent={'space-between'} alignItems={''} bg="white" py={3} px={2} rounded="md" maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" mt={4}>
+          <Box>
+            <Heading fontSize={{ md: 30, base: 25 }} fontWeight={500} color="black">
+              Shopping Cart
+            </Heading>
+            <Box mt={4} width="200px" py={1} rounded="md" className="border border-gray-300">
+              <Link to="/fashion" fontWeight={500} className="text- flex items-center justify-center gap-2">
+                <BiLeftArrowAlt /> Continue Shopping
+              </Link>
+            </Box>
           </Box>
-        </Box>
+          <Box>
+            <Button onClick={fetchCart} ml={4} bg="pink.500" color="white" py={5} _hover={{ bg: 'pink.600' }} size="sm">
+              {loading ? <><Spinner size="sm" mr={2} /> Refreshing...</> : 'Refresh Cart'}
+            </Button>
+          </Box>
+        </Flex>
 
-        <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx="auto" mt={6}>
+        <Box maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" mt={6}>
           {/* Flex container: left = cart items, right = order summary */}
           <Flex justifyContent="space-between" flexWrap={{ md: 'nowrap', base: 'wrap' }} gap={{ md: 5, base: 4 }}>
             {/* Left side: Cart Items */}
             <Box flex={1} bg="white" color="gray.800" p={{ lg: 4 }} rounded="md" minW="0">
               <VStack spacing={4}>
-                {cartItems.length === 0 ? (
-                  <Box textAlign="center" py={10}>
-                    <Text color="gray.500" fontSize="lg">Your cart is empty.</Text>
-                    <Button mt={4} bg="green.600" color="white" _hover={{ bg: 'green.700' }} onClick={() => navigate('/fashion')}>
-                      Go to Shop
-                    </Button>
-                  </Box>
-                ) : (
-                  cartItems.map((item) => {
-                    if (item.items && Object.keys(item.items).length > 0) {
-                      // Render each size in items
-                      return Object.entries(item.items).map(([size, qty]) => (
-                        <Flex
-                          key={`${item.productId}-${size}`}
-                          bg="gray.100"
-                          border="1px solid"
-                          borderColor="gray.300"
-                          rounded="md"
-                          p={4}
-                          w="full"
-                          justify="space-between"
-                          align="center"
-                          wrap="wrap"
-                          gap={4}
-                        >
-                          <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
-                            <Image src={item.image?.[0]} boxSize="50px" objectFit="cover" rounded="md" />
-                            <Box>
-                              <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
-                              <Text fontSize="xs" color="gray.500">Size: {size}</Text>
-                            </Box>
-                          </Flex>
+                {
+                  cartItems.length === 0 ? (
+                    <Box textAlign="center" py={10}>
+                      <Text color="gray.500" fontSize="lg">Your cart is empty.</Text>
+                      <Button mt={4} bg="green.600" color="white" _hover={{ bg: 'green.700' }} onClick={() => navigate('/fashion')}>
+                        Go to Shop
+                      </Button>
+                    </Box>
+                    ) : (
+                      cartItems.map((item) => {
+                        const size = item.selectedSize;
+                        const qty = item.quantity;
+                        if (item.selectedSize) {
+                          return (
+                            <Flex key={`${item.productId}-${size}`} bg="gray.100" border="1px solid" borderColor="gray.300" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
+                              <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
+                                <Image src={item.image?.[0]} boxSize="50px" objectFit="cover" rounded="md" />
+                                <Box>
+                                  <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
+                                  <Text fontSize="xs" color="gray.500">Size: {size}</Text>
+                                </Box>
+                              </Flex>
 
-                          <Flex align="center" gap={2}>
-                            <Button
-                              h="30px"
-                              w="30px"
-                              bg="green.500"
-                              color="white"
-                              size="sm"
-                              onClick={() => updateCartItem(item.productId, size, qty - 1)}
-                              isDisabled={qty <= 1}
-                            >
-                              <CgMathMinus />
+                              <Flex align="center" gap={2}>
+                                <Button h="30px" w="30px" bg="pink.500" _hover={{bg: 'pink.800'}} color="white" size="" onClick={() => updateCartItem(item.productId, size, qty - 1)} isDisabled={qty <= 1 || updateLoading === `${item.productId}-${size}`}>
+                                  {updateLoading === `${item.productId}-${size}` ? <Spinner size="sm" /> : <CgMathMinus />}
+                                </Button>
+                                <Text>{qty}</Text>
+                                <Button h="30px" w="30px" bg="pink.500" _hover={{bg: 'pink.800'}} color="white" size="" onClick={() => updateCartItem(item.productId, size, qty + 1)} isDisabled={updateLoading === `${item.productId}-${size}`}>
+                                  {updateLoading === `${item.productId}-${size}` ? <Spinner size="sm" /> : <RiAddFill />}
+                                </Button>
+                              </Flex>
+
+                              <Flex align="center">
+                                <FaNairaSign />
+                                <Text fontWeight="medium" ml={1}>{(item.price * qty).toLocaleString()}.00</Text>
+                              </Flex>
+
+                              <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
+                                Update Size
+                              </Button>
+
+                              <Button size="sm" colorScheme="red" onClick={() => deleteCartItem(item.productId, size)} isDisabled={deleteLoading === item.productId}>
+                                {deleteLoading === item.productId ? <Spinner size="sm" /> : <MdDelete />}
+                              </Button>
+                            </Flex>
+                          );
+                        }
+
+                        return (
+                          <Flex key={`no-size-${item.productId}`} bg="gray.50" border="1px solid" borderColor="gray.200" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
+                            <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
+                              <Image src={item.image?.[0]} boxSize="50px" objectFit="cover" rounded="md" />
+                              <Box>
+                                <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
+                                <Text fontSize="xs" color="orange.500">No size selected yet.</Text>
+                              </Box>
+                            </Flex>
+
+                            <Flex align="center" gap={2}>
+                              <FaNairaSign />
+                              <Text fontWeight="medium" ml={1}>{item.price.toLocaleString()}.00</Text>
+                            </Flex>
+
+                            <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openSizeModal(item)}>
+                              Select Size
                             </Button>
-                            <Text>{qty}</Text>
-                            <Button h="30px" w="30px" bg="green.500" color="white" size="sm" onClick={() => updateCartItem(item.productId, size, qty + 1)}>
-                              <RiAddFill />
+
+                            <Button size="sm" colorScheme="red" onClick={() => deleteCartItem(item.productId, null)}>
+                              {deleteLoading === item.productId ? <Spinner size="sm" /> : <MdDelete />}
                             </Button>
                           </Flex>
-
-                          <Flex align="center">
-                            <FaNairaSign />
-                            <Text fontWeight="medium" ml={1}>{(item.price * qty).toLocaleString()}.00</Text>
-                          </Flex>
-
-                          <Button size="sm" colorScheme="red" onClick={() => deleteCartItem(item.productId, size)}>
-                            <MdDelete />
-                          </Button>
-                        </Flex>
-                      ));
-                    }
-
-                    // Item without sizes (no selected size yet)
-                    return (
-                      <Flex
-                        key={`no-size-${item.productId}`}
-                        bg="gray.50"
-                        border="1px solid"
-                        borderColor="gray.200"
-                        rounded="md"
-                        p={4}
-                        w="full"
-                        justify="space-between"
-                        align="center"
-                        wrap="wrap"
-                        gap={4}
-                      >
-                        <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
-                          <Image src={item.image?.[0]} boxSize="50px" objectFit="cover" rounded="md" />
-                          <Box>
-                            <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
-                            <Text fontSize="xs" color="orange.500">No size selected yet.</Text>
-                          </Box>
-                        </Flex>
-
-                        <Flex align="center" gap={2}>
-                          <FaNairaSign />
-                          <Text fontWeight="medium" ml={1}>{item.price.toLocaleString()}.00</Text>
-                        </Flex>
-
-                        <Button size="sm" bg="pink.500" color="white" onClick={() => openSizeModal(item)}>
-                          Select Size
-                        </Button>
-
-                        <Button size="sm" colorScheme="red" onClick={() => deleteCartItem(item.productId, null)}>
-                          <MdDelete />
-                        </Button>
-                      </Flex>
-                    );
-                  })
-                )}
+                        );
+                      })
+                    )
+                }
               </VStack>
             </Box>
 
@@ -367,7 +395,7 @@ export default function Carts_Page() {
               placeholder="Select size"
               value={selectedSize}
               onChange={(e) => setSelectedSize(e.target.value)}
-            >
+            > 
               <option value="XS">XS</option>
               <option value="S">S</option>
               <option value="M">M</option>
@@ -386,6 +414,36 @@ export default function Carts_Page() {
           <ModalFooter>
             <Button colorScheme="green" onClick={handleAddSizeToCart} isDisabled={!selectedSize}>
               Add to Cart
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Update only size modal */}
+      <Modal isOpen={isOpenUpdateSize} onClose={onCloseUpdateSize} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Size</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text fontWeight={500}>{selectedItem?.name}</Text>
+            <Text mt={3} fontWeight={'600'} color={'pink.500'} bg={'pink.100'} width={'130px'} px={2} py={1} rounded={'5px'}>{selectedItem?.selectedSize ? `Current size: ${selectedItem.selectedSize}` : "Select size"}</Text>
+            <Select
+              mt={4}
+              placeholder={selectedItem?.selectedSize ? `Current size: ${selectedItem.selectedSize}` : "Select size"}
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(e.target.value)}
+            > 
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </Select>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="green" onClick={handleAddSizeToCart} isDisabled={!selectedSize} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+              {loading ? <><Spinner size="sm" mr={2} /> Updating...</> : 'Add to Cart'}
             </Button>
           </ModalFooter>
         </ModalContent>
