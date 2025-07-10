@@ -1,20 +1,14 @@
 // import React from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from '../pages/Home';
-// import Header from '../components/Header';
-// import BottomNav from '../bottom_nav/BottomNav';
 import Details from '../pages/product_details/Details';
 import Signin from '../pages/user_auth/Signin';
 import Sign_up from '../pages/user_auth/Sign_up';
-// import Footer from '../components/footer/Footer';
 import Private_Routes from '../components/private_routes/Private_Routes';
 import ContactUs from '../pages/ContactUs';
 import UserProfile from '../pages/profile/UserProfile';
-import Womens_Wear from '../pages/Womens_Wear';
-import Mens_Wear from '../pages/Mens_Wear';
 import NotFound from '../pages/NotFound';
 import Carts_Page from '../pages/cartsPage/Carts_Page';
-// import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
 import Men_Clothing_page from '../pages/clothing_page/Men_Clothing_page';
 import Women_Clothing_page from '../pages/clothing_page/Women_Clothing_page';
 import Admin_Login from './admin/Admin_Login';
@@ -60,8 +54,6 @@ export default function PageRoutes() {
         <Route path="/fashion-deals" element={<FashionDeals/>}/>
         <Route path="/greate-deals" element={<GreateDeals/>}/>
         
-        <Route path="/womenswear" element={<Womens_Wear/>}/>
-        <Route path="/menswear" element={<Mens_Wear/>}/>
         <Route path='/signin' element={<Signin/>}/>
         <Route path='/signup' element={<Sign_up/>}/>
         <Route path='/forgot-password' element={<User_forgotten_password/>}/>

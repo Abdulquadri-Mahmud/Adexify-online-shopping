@@ -11,7 +11,6 @@ import FemaleSalesBanner from '../components/banners/FemaleSalesBanner'
 import Header from '../components/Header'
 import Footer from '../components/footer/Footer'
 import Womens_wear from '../components/womens_wear/Womens_wear'
-import Mens_wear from '../components/mens_wear/Mens_wear'
 import Shoes from '../components/top_sneakers/Shoes'
 import Jewelleries from '../Jewellery/Jewelleries'
 import Banner from '../Jewellery/Banner'
@@ -20,6 +19,7 @@ import FashionXtraBanner from '../components/FashionXtra/FashionXtraBanner'
 import Home_category from '../components/Bottom_Categories/Home_category'
 import Adverts from '../components/Adverts/Adverts'
 import Home_banner3 from '../components/banners/Home_banner3'
+import Mens_wear from '../components/mens_wear/Mens_wear'
 
 export default function Home() {
 
