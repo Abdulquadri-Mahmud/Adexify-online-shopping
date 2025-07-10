@@ -32,8 +32,6 @@ export default function Home() {
         <Section1/>
         <TodaysDeal/>
         <Home_banner4/>
-
-        {/* <Home_banner1/> */}
         
         <TopDeals/>
         <Home_banner2/>
@@ -43,7 +41,7 @@ export default function Home() {
         <Mens_wear/>
 
         <Box my='10'/>
-        <Home_banner3/>
+        {/* <Home_banner3/> */}
         {/* Male sales banner */}
         <FemaleSalesBanner/>
 

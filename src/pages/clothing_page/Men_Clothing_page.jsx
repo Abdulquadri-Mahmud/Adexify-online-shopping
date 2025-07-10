@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Image, Text, useColorModeValue } from '@chakra-ui/react'
+import { Box, Flex, Heading, SimpleGrid, Text, useColorModeValue } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 import React, { createContext, Suspense, useEffect, useState } from 'react'
@@ -14,10 +14,6 @@ const Men_Clothing = React.lazy(() => import('../../components/clothing/Men_Clot
 const Hoodies_Sweater = React.lazy(() => import('../../hoodies&sweater/Hoodies_Sweater'));
 const ShirtsComp = React.lazy(() => import('../../components/mens_wear/ShirtsComp.jsx'));
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-import Slider from "react-slick";
 import Home_banner4 from '../../components/banners/Home_banner4.jsx';
 import Header from '../../components/Header.jsx';
 import Loading from '../../components/loader/Loading.jsx';
@@ -26,35 +22,6 @@ import Footer from '../../components/footer/Footer.jsx';
 import MenCategory from '../../components/Bottom_Categories/MenCategory.jsx';
 import FemaleSalesBanner from '../../components/banners/FemaleSalesBanner.jsx';
 import MaleSalesBanner from '../../components/banners/MaleSalesBanner.jsx';
-
-function SampleNextArrow(props) {
-  
-    const { className, style, onClick } = props;
-    return (
-      <Box bg={'gray.300'} width={'30px'} height={'30px'} rounded={'full'}
-      right={'1vh'}  
-      className={className}
-        style={{ ...style, display: "block",
-          paddingTop: '5.5px', paddingLeft: '5.5px',
-        }}
-        onClick={onClick}
-      />
-    );
-  }
-  
-  function SamplePrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-      <Box bg={''} width={'30px'} height={'30px'} rounded={'full'}
-        left={'1vh'} zIndex={'10'}
-        className={className}
-        style={{ ...style, display: "none", 
-          paddingTop: '5.5px', paddingLeft: '5.5px',
-        }}
-        onClick={onClick}
-      />
-    );
-}
 
 const SuggestedSection = () => {
   return (
@@ -78,70 +45,10 @@ const SuggestedSection = () => {
   );
 };
 
-export default function Men_Clothing_page() {
-    const [products, setProducts] = useState([]);
+const MenHeader = () => {
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
-
-            const data = await res.json();
-
-            setProducts(data);
-        };
-        fetchProducts();
-    }, []);
-
-    const settings = {
-        dots: false,
-        infinite: true,
-        focusOnSelect: true,
-        speed: 500,
-        slidesToShow: 6,
-        slidesToScroll: 1,
-        // autoplay: true,
-        autoplaySpeed: 3000,
-        waitForAnimate: false,
-        cssEase: "linear",
-        nextArrow: <SampleNextArrow />,
-        prevArrow: <SamplePrevArrow />,
-        responsive: [
-            {
-              breakpoint: 1024,
-              settings: {
-                slidesToShow: 5,
-                slidesToScroll: 3,
-              }
-            },
-            {
-              breakpoint: 768,
-              settings: {
-                slidesToShow: 4,
-                slidesToScroll: 2,
-              }
-            },
-            {
-              breakpoint: 600,
-              settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                }
-            },
-            {
-              breakpoint: 420,
-              settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                }
-            },
-        ]
-    };
-
-  return (
-    <Box>
-      <Header/>
-
-        <Box pb={10} className='bg-zinc-200 rounded-t-lg'>
+    return (
+        <>
             <Box bg={''} py={2}>
                 <Box mt={4} maxW={{'2xl' : '80%', xl : '95%', lg : '97%', base: '97%'}} mx={'auto'} bg={'white'} py={4} px={6} rounded={'md'}>
                     <Box bg={''} className="flex gap-1 items-center">
@@ -167,212 +74,74 @@ export default function Men_Clothing_page() {
                     </Box>
                 </Flex>
             </Box>
+        </>
+    );
+};
 
-            {/* Male sales banner */}
-            <MaleSalesBanner/>
+export default function Men_Clothing_page() {
+  const [products, setProducts] = useState([]);
 
-            <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-                <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} pb={3} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} color={'gray.800'} className='bg-white py-3 rounded-t-lg px-3'>
-                        <Heading fontWeight={500} fontSize={20}>Top Picks</Heading>
-                        <Link className=' font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
-                    </Flex>            
-                </Box>
-                <Box pb={3} bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
-                    <Box className="py-3 px-2">
-                        <Slider {...settings}>
-                            {
-                                products.map((product) => (
-                                    product.gender === 'male' ? (
-                                    <Men_ClothingContext.Provider key={product?._id} value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <Men_Clothing product={product}/>
-                                        </Suspense>
-                                    </Men_ClothingContext.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Slider>
-                    </Box>
-                </Box>
-            </Box>
-            
-            <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} rounded={'md'} bg={'white'}>
-                <Box>
-                    <Flex alignItems={'center'} justifyContent={'center'} gap={2} px={2} py={2}>
-                        <Flex justifyContent={'center'} alignItems={'center'} w={{md:'50%', base: '100%'}} height={{'xl': '250px',md: '220px', base: '180px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'center'} bgBlendMode={'multiply'} rounded={'md'} className='bg-slate-400' bgImage={'/shirts.jpg'} position={'relative'}>
-                            <Box position={'absolute'}>
-                                <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                                <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Shirts</Heading>
-                            </Box>
-                        </Flex>
-                        <Flex justifyContent={'center'} alignItems={'center'} w={{md:'50%', base: '100%'}} height={{'xl': '250px',md: '220px', base: '180px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'center'} bgBlendMode={'multiply'} rounded={'md'} className='bg-slate-400' bgImage={'/shoesbanner.jpg'} position={'relative'}>
-                            <Box position={'absolute'}>
-                                <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                                <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Shoes</Heading>
-                            </Box>
-                        </Flex>
-                    </Flex>
-                </Box>
-            </Box>
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
+      const data = await res.json();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
 
-            <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-                <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} pb={3} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} color={'gray.800'} className='bg-white py-3 rounded-t-lg px-3'>
-                        <Heading fontWeight={500} fontSize={20}>Top Shirts</Heading>
-                        <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
-                    </Flex>            
-                </Box>
-                <Box pb={3} bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} roundedBottom={'md'}>
-                    <Box className="">
-                        <Slider {...settings}>
-                            {
-                                products.map((product) => (
-                                    product.gender === 'male' && product.category === 'Shirt' && product.price >= 4000 ? (
-                                    <ShirtsComp_Context.Provider key={product?._id} value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <ShirtsComp product={product}/>
-                                        </Suspense>
-                                    </ShirtsComp_Context.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Slider>
-                    </Box>
-                </Box>
-            </Box>
+  const renderSection = (title, context, Component, filterFn) => {
+    const filtered = products.filter(filterFn).slice(0, 6);
 
-            <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-                <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} pb={3} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-white text-gray-800 py-3 rounded-t-lg px-3'>
-                        <Heading fontWeight={500} fontSize={20}>Top Shoes</Heading>
-                        <Link className=' font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
-                    </Flex>            
-                </Box>
-                <Box pb={3} bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} roundedBottom={'md'}>
-                    <Box className="">
-                        <Slider {...settings}>
-                            {
-                                products.map((product) => (
-                                    product.gender === 'male' && product.category === 'Shoes' ? (
-                                    <ShirtsComp_Context.Provider key={product?._id} value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <ShirtsComp product={product}/>
-                                        </Suspense>
-                                    </ShirtsComp_Context.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Slider>
-                    </Box>
-                </Box>
-            </Box>
-            {/* Male sales banner */}
-            <MaleSalesBanner/>
-
-            <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-                <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} color={'gray.800'} className='bg-white py-3 rounded-t-lg px-3'>
-                        <Heading fontWeight={500} fontSize={20}>Top Bags</Heading>
-                        <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
-                    </Flex>
-                </Box>
-                <Box pb={3} bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} roundedBottom={'md'}>
-                    <Box className="">
-                        <Slider {...settings}>
-                            {
-                                products.map((product) => (
-                                    product.gender === 'male' && product.category === 'Bags' ? (
-                                    <ShirtsComp_Context.Provider key={product?._id} value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <ShirtsComp product={product}/>
-                                        </Suspense>
-                                    </ShirtsComp_Context.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Slider>
-                    </Box>
-                </Box>
-            </Box>
-
-            <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} rounded={'md'} bg={'white'}>
-                <Box>
-                    <Flex alignItems={'center'} justifyContent={'center'} gap={2} px={2} py={2}>
-                        <Flex justifyContent={'center'} alignItems={'center'} w={{md:'50%', base: '100%'}} height={{'xl': '250px',md: '220px', base: '180px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'center'} bgBlendMode={'multiply'} rounded={'md'} className='bg-slate-400' bgImage={'/mp.jpg'} position={'relative'}>
-                            <Box position={'absolute'}>
-                                <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                                <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Pants</Heading>
-                            </Box>
-                        </Flex>
-                        <Flex justifyContent={'center'} alignItems={'center'} w={{md:'50%', base: '100%'}} height={{'xl': '250px',md: '220px', base: '180px'}} bgRepeat={'no-repeat'} bgSize={'contain'} bgPos={'center'} bgBlendMode={'multiply'} rounded={'md'} className='bg-slate-400' bgImage={'/ub.jpg'} position={'relative'}>
-                            <Box position={'absolute'}>
-                                <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                                <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Underwear</Heading>
-                            </Box>
-                        </Flex>
-                    </Flex>
-                </Box>
-            </Box>
-            <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-                <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} color={'gray.800'} className='bg-white py-3 rounded-t-lg px-3'>
-                        <Heading fontWeight={500} fontSize={20}>Top Pants</Heading>
-                        <Link className=' font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
-                    </Flex>            
-                </Box>
-                <Box  bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} roundedBottom={'md'}>
-                    <Box>
-                        <Slider {...settings}>
-                            {
-                                products.map((product) => (
-                                    product.gender === 'male' && product.category === 'Pants' ? (
-                                    <Hoodies_Sweater_Context.Provider key={product?._id} value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <Hoodies_Sweater product={product}/>
-                                        </Suspense>
-                                    </Hoodies_Sweater_Context.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Slider>
-                    </Box>
-                </Box>
-            </Box>
-            <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className='mt-10 md:mb-0 mb-0 bg-white rounded-lg'>
-                <Box mt={5} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} className=''>
-                    <Flex justifyContent={'space-between'} alignItems={'center'} className='bg-white py-3 rounded-t-lg px-3'>
-                        <Heading fontWeight={500} fontSize={20}>Top Underwear</Heading>
-                        <Link className='text-green-500 font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
-                    </Flex>            
-                </Box>
-                <Box pb={3} bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} roundedBottom={'md'}>
-                    <Box>
-                        <Slider {...settings}>
-                            {
-                                products.map((product) => (
-                                    product.gender === 'male' && product.category === 'Underwear' ? (
-                                    <Hoodies_Sweater_Context.Provider key={product?._id} value={product}>
-                                        <Suspense fallback={<Loading/>}>
-                                            <Hoodies_Sweater product={product}/>
-                                        </Suspense>
-                                    </Hoodies_Sweater_Context.Provider>
-                                ) : ''
-                                ))
-                            }
-                        </Slider>
-                    </Box>
-                </Box>
-            </Box>
-            <Home_banner4/>
-            
-            <SuggestedSection/>
-            <Box my='8'/>
-            <MenCategory/>
-            
-            <Adverts/>
+    return (
+      <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'} className='mt-10 bg-white rounded-lg'>
+        <Box>
+            <Flex color='white' bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
+                <Heading fontWeight={500} fontSize={20}>{title}</Heading>
+                <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]' /></Link>
+            </Flex>
         </Box>
-        <Footer/>
+        <Box p={3}>
+          <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
+            {filtered.map(product => (
+              <context.Provider key={product._id} value={product}>
+                <Suspense fallback={<Loading />}>
+                  <Component product={product} />
+                </Suspense>
+              </context.Provider>
+            ))}
+          </SimpleGrid>
+        </Box>
+      </Box>
+    );
+  };
+
+  return (
+    <Box className='bg-zinc-200'>
+      <Header />
+
+      <MenHeader/>
+
+      <Box py={4}>
+        <MaleSalesBanner />
+
+        {renderSection('Top Picks', Men_ClothingContext, Men_Clothing, product => product.gender === 'male')}
+        {renderSection('Top Shirts', ShirtsComp_Context, ShirtsComp, product => product.gender === 'male' && product.category === 'Shirt')}
+        <MaleSalesBanner />
+        {renderSection('Top Shoes', ShirtsComp_Context, ShirtsComp, product => product.gender === 'male' && product.category === 'Shoes')}
+        {renderSection('Top Bags', ShirtsComp_Context, ShirtsComp, product => product.gender === 'male' && product.category === 'Bags')}
+        <Home_banner4 />
+        {renderSection('Top Pants', Hoodies_Sweater_Context, Hoodies_Sweater, product => product.gender === 'male' && product.category === 'Pants')}
+        {renderSection('Top Underwear', Hoodies_Sweater_Context, Hoodies_Sweater, product => product.gender === 'male' && product.category === 'Underwear')}
+
+        <MaleSalesBanner />
+        <SuggestedSection />
+        <Box my='4'/>
+        <MenCategory />
+        <Adverts />
+      </Box>
+
+      <Footer />
     </Box>
-  )
+  );
 }

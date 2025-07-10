@@ -41,8 +41,8 @@ export default function Fashion() {
             <Unisex/>
             <FashionXtraBanner/>
             {/* <Bags/> */}
-            <MaleSalesBanner/>
             <Top_sneakers/>
+            <MaleSalesBanner/>
             <FashionCategory/>
         </Box>
         <Footer/>

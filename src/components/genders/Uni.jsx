@@ -1,122 +1,89 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { FaNairaSign } from 'react-icons/fa6';
-import { addWishlist } from '../../store/wishlists/Wishlists';
-import { Badge, Box, Button, Flex, Image, Text, useToast, VStack } from '@chakra-ui/react';
-import { IoHeart } from 'react-icons/io5';
-import { UinisexProductsContext } from './Unisex';
-import { useDispatch } from 'react-redux';
-// import { addToCart } from '../../store/cart/cartsReucer';
+import { Badge, Box, Button, Flex, Image, SimpleGrid, Text,} from '@chakra-ui/react';
 
+import { motion } from 'framer-motion';
+const MotionButton = motion.create(Button);
 
 export default function Uni() {
-  const product = useContext(UinisexProductsContext);
-  const dispatch = useDispatch();
-    const toast = useToast();
-  
-    // Handle Add to Cart
-  const handleCart = (product) => {
-    dispatch(
-      addToCart({
-        productID: product._id,
-        productName: product.name,
-        productImage: product.image?.[0],
-        productPrice: product.price,
-        items: {},
-      })
-    );
-    toast({
-      title: 'Added to cart!',
-      description: 'Your selection has been added successfully.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Handle Add to Wishlist
-  const handleWishlistItem = (product) => {
-    dispatch(
-      addWishlist({
-        productID: product._id,
-        productName: product.name,
-        productImage: product.image?.[0],
-        productPrice: product.price,
-        quantity: 1,
-      })
-    );
-    toast({
-      title: 'Added to wishlist.',
-      description: 'Your selection has been added successfully.',
-      status: 'info',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
-
-  // Fix focus inside aria-hidden slick slides (react-slick)
   useEffect(() => {
-    const interval = setInterval(() => {
-      const hiddenSlides = document.querySelectorAll('[aria-hidden="true"]');
-      hiddenSlides.forEach((slide) => {
-        slide.querySelectorAll('a, button, input, [tabindex]').forEach((el) => {
-          el.setAttribute('tabindex', '-1');
-        });
-      });
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
+        const data = await res.json();
 
-      const visibleSlides = document.querySelectorAll('[aria-hidden="false"]');
-      visibleSlides.forEach((slide) => {
-        slide.querySelectorAll('[tabindex="-1"]').forEach((el) => {
-          el.removeAttribute('tabindex');
-        });
-      });
-    }, 300); // Check frequently in case carousel slides
+        // Filter products with price > 10000, then take top 6
+        const filtered = data.filter(item => item.price > 10000).slice(0, 6);
+        setProducts(filtered);
 
-    return () => clearInterval(interval);
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
+  const maxStock = 100; // Upper bound of stock
+
   return (
-    <Box px={0}>
-      <Box borderWidth="1px" borderRadius="xl" className="bg-white p-2 rounded-xl shadow-md relative">
-        <VStack spacing={2} align="stretch">
-          <Link to={`/product-details/${product._id}`}>
-            <Image mx="auto" src={product.image?.[0] || 'https://via.placeholder.com/150'} alt={product.name} width={'100%'} objectFit="cover" borderRadius="md"/>
+    <Box className='my-10 bg-white rounded-md' maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'}>
+      <Box className='bg-white-500 pb-3 rounded-t-lg'>
+        <Box bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
+          <Heading fontWeight={500} fontSize={{ md: 20, base: 18 }} color={'white'} className='text-xl'>
+            Top Deals
+          </Heading>
+          <Link to={'/'} className='text-[12px] font-medium text-white uppercase flex items-center'>
+            See All <FaAngleRight className='text-[20px]' />
           </Link>
+        </Box>
+      </Box>
 
-          <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
-            <IoHeart className="text-xl text-white hover:text-gray-600" />
-          </button>
+      <Box p={4}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3, xl: 6 }} spacing={5}>
+          {loading
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <Skeleton key={index} height="200px" borderRadius="md" />
+              ))
+            : products.map((product) => (
+                <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} transition="all 0.3s">
+                  <Image src={product.image?.[0]} alt={product.name} height="150px" width="100%" objectFit="cover" />
+                  <Box p={3}>
+                    <Text fontSize="14px" noOfLines={1}>{product.name}</Text>
+                    <Flex justify={'space-between'} align={'center'}>
+                      <Badge color="pink.600" fontSize={'16px'}>₦{product.price.toLocaleString()}.00</Badge>
+                      {
+                        product.oldprice && <Text fontSize={'12px'} color={'gray.400'}>₦{product.oldprice}</Text>
+                      }
+                    </Flex>
 
-          <Box>
-            <Text fontWeight="500" isTruncated>
-              {product.name}
-            </Text>
-            <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
-              {product.category}
-            </Badge>
-            <Text my={2} fontSize="sm" color="gray.600" isTruncated>
-              {product.description}
-            </Text>
-
-            <Flex justifyContent={'space-between'}>
-              <Text display="flex" alignItems="center">
-                <FaNairaSign />
-                <span className="font-medium">{product.price.toLocaleString()}.00</span>
-              </Text>
-  
-              {product.oldprice && (
-                <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                  <FaNairaSign className="inline-block text-sm" />
-                  {product.oldprice}
-                </Text>
-              )}
-            </Flex>
-
-            <Button _hover={{ bg: 'pink.800' }} onClick={() => handleCart(product)} w="full" mt={3} bg="pink.500" color="white">
-              Add To Cart
-            </Button>
-          </Box>
-        </VStack>
+                    {product.stock !== undefined && (
+                      <Box mt={2}>
+                        <Text fontSize="xs" color="gray.500" mb={1}>
+                          Stock left: {product.stock}
+                        </Text>
+                        <Box bg="gray.200" h="6px" w="100%" borderRadius="full" overflow="hidden">
+                          <Box
+                            h="100%"
+                            w={`${(product.stock / maxStock) * 1000}%`}
+                            bg="pink.600"
+                            borderRadius="full"
+                            transition="width 0.3s ease"
+                          />
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              ))}
+        </SimpleGrid>
       </Box>
     </Box>
   )

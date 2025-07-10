@@ -40,11 +40,11 @@ export default function MaleSalesBanner() {
         dots: false,
         infinite: true,
         focusOnSelect: true,
-        speed: 500,
+        speed: 1000,
         slidesToShow: 6,
         slidesToScroll: 1,
         autoplay: true,
-        autoplaySpeed: 3000,
+        autoplaySpeed: 3200,
         waitForAnimate: false,
         cssEase: "linear",
         nextArrow: <SampleNextArrow />,
@@ -67,14 +67,14 @@ export default function MaleSalesBanner() {
             {
               breakpoint: 600,
               settings: {
-                    slidesToShow: 3,
+                    slidesToShow: 4,
                     slidesToScroll: 1,
                 }
             },
             {
               breakpoint: 420,
               settings: {
-                    slidesToShow: 2,
+                    slidesToShow: 3,
                     slidesToScroll: 1,
                 }
             },
@@ -86,37 +86,37 @@ export default function MaleSalesBanner() {
             <Slider {...settings}>
                 <Link to={'/fashion'}>
                     <Box p={2} className='bg-zinc-100'>
-                        <Image  height={'150px'} width={'100%'} rounded={'md'} src="/men/cloth.jpg" alt="cloth" />
+                        <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/men/cloth.jpg" alt="cloth" />
                         <Text fontSize={14} mt={2} textAlign={'center'}>Clothing</Text>
                     </Box>
                 </Link>
                 <Link to={'/category?category=Bags'}>
                     <Box p={2} className='bg-zinc-100'>
-                        <Image  height={'150px'} width={'100%'} rounded={'md'} src="/men/bags.gif" alt="bags" />
+                        <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/men/bags.gif" alt="bags" />
                         <Text fontSize={14} mt={2} textAlign={'center'}>Bags</Text>
                     </Box>
                 </Link>
                 <Link to={'/category?category=Shoes'}>
                     <Box p={2} className='bg-zinc-100'>
-                        <Image  height={'150px'} width={'100%'} rounded={'md'} src="/men/shoes.gif" alt="shoes" />
+                        <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/men/shoes.gif" alt="shoes" />
                         <Text fontSize={14} mt={2} textAlign={'center'}>Shoes</Text>
                     </Box>
                 </Link>
                 <Link to={'/category?category=Pants'}>
                     <Box p={2} className='bg-zinc-100'>
-                        <Image  height={'150px'} width={'100%'} rounded={'md'} src="/men/pants.gif" alt="pants" />
+                        <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/men/pants.gif" alt="pants" />
                         <Text fontSize={14} mt={2} textAlign={'center'}>Pants</Text>
                     </Box>
                 </Link>
                 <Link to={'/category?category=Jewellery'}>
                     <Box p={2} className='bg-zinc-100'>
-                        <Image  height={'150px'} width={'100%'} rounded={'md'} src="/men/jewelleries.jpg" alt="jewelleries" />
+                        <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/men/jewelleries.jpg" alt="jewelleries" />
                         <Text fontSize={14} mt={2} textAlign={'center'}>Jewelleries</Text>
                     </Box>
                 </Link>
                 <Link to={'/category?category=Underwear'}>
                     <Box p={2} className='bg-zinc-100'>
-                        <Image  height={'150px'} width={'100%'} rounded={'md'} src="/men/underwear.jpg" alt="underwear" />
+                        <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/men/underwear.jpg" alt="underwear" />
                         <Text fontSize={14} mt={2} textAlign={'center'}>Underwear</Text>
                     </Box>
                 </Link>

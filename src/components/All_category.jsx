@@ -56,7 +56,7 @@ export default function All_category() {
             <Button bg={'transparent'} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-600">
                 <HiOutlineMenuAlt2 className='text-xl' />
                 <h2 className="md:text-[15px] hidden md:block text-[10px] font-normal">Browse All</h2>
-                <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">Categories</h2>
+                <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">All Categories</h2>
             </Button>
             <Drawer isOpen={isOpen} placement='left' initialFocusRef={firstField} onClose={onClose} size={'md'}>
                 <DrawerOverlay />
@@ -113,7 +113,23 @@ export default function All_category() {
                                 </Flex>
                             </Flex>
                         )}
-                        <Box mt={8} rounded={'lg'} p={0} bg={'white'}>
+                        <Box mt={5} rounded={'lg'} p={0} bg={'white'}>
+                            <Text mb={{ md: 0, base: 2 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
+                            <Box className='py-2 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
+                                <Link to={`/fashion`} className='text-md ml-5 hover:text-pink-500 duration-200 text-[14px]'>
+                                    Fashion
+                                </Link>
+                            </Box>
+                            <Box className='py-2 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
+                                <Link to={`/mens-clothing`} className='text-md ml-5 hover:text-pink-500 duration-200 text-[14px]'>
+                                    Men's wear
+                                </Link>
+                            </Box>
+                            <Box mb={3} className='py-2 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
+                                <Link to={`/womens-clothing`} className='text-md ml-5 hover:text-pink-500 duration-200 text-[14px]'>
+                                    Women's wear
+                                </Link>
+                            </Box>
                             <Text mb={{ md: 0, base: 5 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
                             <div className="flex justify-start flex-col items-start gap-1">
                                 {categories.map((category, index) => (

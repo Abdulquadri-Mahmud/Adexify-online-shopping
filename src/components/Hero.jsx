@@ -1,5 +1,5 @@
 import React from 'react'
-import { Flex, Icon, Image, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Icon, Image, SimpleGrid, useColorModeValue } from '@chakra-ui/react';
 import { Box, Text, Heading, Button} from '@chakra-ui/react';
 
 import "slick-carousel/slick/slick.css";
@@ -14,7 +14,7 @@ import { FaShoppingBag } from "react-icons/fa";
 function StartShoppingButton() {
   return (
     <Button size="lg" px={8} py={6} fontSize="lg" bg="pink.500" color="white" leftIcon={<Icon as={FaShoppingBag} />} _hover={{ bg: "pink.600", transform: "scale(1.05)" }} _active={{ bg: "pink.700" }} transition="all 0.3s ease" rounded="full" shadow="md">
-      <Link className='/fashion'>Start Shopping Now</Link>
+      <Link to='/fashion'>Start Shopping Now</Link>
     </Button>
   );
 }
@@ -46,6 +46,74 @@ function SampleNextArrow(props) {
     );
 }
 
+const categories = [
+  {
+    name: "Men's Fashion",
+    url: '/mens-clothing',
+    image: '/img2.png',
+  },
+  {
+    name: "Women's Fashion",
+    url: '/womens-clothing',
+    image: '/w-cloth.jpg',
+  },
+  {
+    name: 'Shoes',
+    url: '/category?category=Shoes',
+    image: '/sneaker.gif',
+  },
+  {
+    name: 'Jewellery',
+    url: '/category?category=Jewellery',
+    image: '/jewellery.gif',
+  },
+  {
+    name: 'Mobile Devices',
+    url: '/category?category=Shoes',
+    image: '/sneaker.gif',
+  },
+  {
+    name: 'Computing Device',
+    url: '/category?category=Jewellery',
+    image: '/jewellery.gif',
+  },
+];
+
+const CategoryCards = () => {
+  return (
+    <SimpleGrid
+      columns={{ base: 3, sm: 3, md: 3, lg: 2, xl: 3, '2xl': 2 }}
+      spacing={3}
+      justifyContent="center"
+    >
+      {categories.map((cat, index) => (
+        <Link key={index} to={cat.url}>
+          <Box
+            height={{ base: '80px', sm: '100px', md: '130px', xl: '190px', '2xl': '180px' }}
+            bgImage={cat.image}
+            bgPosition="center"
+            bgSize="cover"
+            bgRepeat="no-repeat"
+            rounded="md"
+            bgBlendMode="multiply"
+            bgColor="gray.200"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+          >
+            <Box bg="pink.500" px={4} py={1} rounded="md">
+              <Text fontSize={{ base: '10px', md: '14px' }} fontWeight={500} color="white">
+                {cat.name}
+              </Text>
+            </Box>
+          </Box>
+        </Link>
+      ))}
+    </SimpleGrid>
+  );
+};
+
 export default function Hero() {
     const settings = {
         dots: false,
@@ -65,14 +133,14 @@ export default function Hero() {
     
   return (
     <Box pt={5}>
-      <Box bg={'white'} p={{md: 3, base: '2'}} rounded={'md'} className='flex gap-3 flex-nowrap' height={{'xl':'61vh', base:'74vh'}} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
+      <Box bg={'white'} p={{md: 3, base: '2'}} rounded={'md'} className='flex gap-3 flex-wrap' height={{'xl':'100%','xl':'61vh', base:'100%'}} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
         <Box overflow={'hidden'} width={{md:'60%', base: '100%'}}>
             <Slider {...settings}>
-              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/hero2.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
+              <Box height={{'xl':'57vh', base:'100%'}} rounded={'md'} bgPos={'top'} bgImage={'/hero2.jpg'} className='md:py-10 py-6 px-2 md:px-0 bgImage bg-slate-400'>
                 <Flex justifyContent={{md:'center', base: 'center'}} alignItems={'center'} gap={3} className='flex-wrap' p={{md:0, base: 0}} maxW={{md: '100%', base: '100%'}} mx={'auto'} height={'100%'}>
                   <Flex gap={3} flexDir={'column'} color={'black'} className='p-3 md:py-7 rounded-md '>
                     <div className="flex items-center">
-                      <Heading fontWeight={500} fontSize={{md: 40, base:35}} color={'white'} textAlign={'center'}>Inside Adexify: <br /> A Sneak Peek Into Our Amazing Shop</Heading>
+                      <Heading fontWeight={500} fontSize={{md: 40, base:25}} color={'white'} textAlign={'center'}>Inside Adexify: <br /> A Sneak Peek Into Our Amazing Shop</Heading>
                     </div>
                     <div className="">
                       <Text fontFamily={''} className='text-center font-medium py-2 text-white'>Shop What You Desire On ADEXIFY</Text>
@@ -84,11 +152,11 @@ export default function Hero() {
                   </Flex>
                 </Flex>
               </Box>
-              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'top'} bgImage={'/hero.png'} className='pt-10 px-2 md:px-0 bgImage bg-slate-400'>
+              <Box height={{'xl':'57vh', base:'100%'}} rounded={'md'} bgPos={'top'} bgImage={'/hero.png'} className='md:py-10 py-6 px-2 md:px-0 bgImage bg-slate-400'>
                 <Flex justifyContent={{md:'center', base: 'center'}} alignItems={'center'} gap={3} className='flex-wrap' p={{md:0, base: 0}} maxW={{md: '90%', base: '100%'}} mx={'auto'} height={'100%'}>
                   <Flex gap={3} flexDir={'column'} color={'black'} className='p-3 md:py-7 rounded-md '>
                     <div className="flex items-center">
-                      <Heading fontWeight={500} fontSize={{md: 40, base:35}} color={'white'} textAlign={'center'}>Inside Adexify: <br /> A Sneak Peek Into Our Amazing Shop</Heading>
+                      <Heading fontWeight={500} fontSize={{md: 40, base:25}} color={'white'} textAlign={'center'}>Inside Adexify: <br /> A Sneak Peek Into Our Amazing Shop</Heading>
                     </div>
                     <div className="">
                       <Text fontFamily={''} className='text-center font-medium py-2 text-white'>Shop What You Desire On ADEXIFY</Text>
@@ -100,11 +168,11 @@ export default function Hero() {
                   </Flex>
                 </Flex>
               </Box>
-              <Box height={{'xl':'57vh', base:'70vh'}} rounded={'md'} bgPos={'right'} bgSize={'cover'} bgImage={'/new-arrivals.jpg'} className='pt-10 px-2 md:px-0 bgImage bg-slate-300'>
+              <Box height={{'xl':'57vh', base:'100%'}} rounded={'md'} bgPos={'right'} bgSize={'cover'} bgImage={'/new-arrivals.jpg'} className='md:py-10 py-6 px-2 md:px-0 bgImage bg-slate-300'>
                 <Flex justifyContent={{md:'center', base: 'center'}} alignItems={'center'} gap={3} className='flex-wrap' p={{md:0, base: 0}} maxW={{md: '90%', base: '100%'}} mx={'auto'} height={'100%'}>
                   <Flex gap={3} flexDir={'column'} color={'black'} className='p-3 md:py-7 rounded-md '>
                     <div className="flex items-center">
-                      <Heading fontWeight={500} fontSize={{md: 40, base:35}} color={'white'} textAlign={'center'}>Inside Adexify: <br /> A Sneak Peek Into Our Amazing Shop</Heading>
+                      <Heading fontWeight={500} fontSize={{md: 40, base:25}} color={'white'} textAlign={'center'}>Inside Adexify: <br /> A Sneak Peek Into Our Amazing Shop</Heading>
                     </div>
                     <div className="">
                       <Text fontFamily={''} className='text-center font-medium py-2 text-white'>Shop What You Desire On ADEXIFY</Text>
@@ -118,42 +186,8 @@ export default function Hero() {
               </Box>
             </Slider>
           </Box>
-          <Box display={{md: 'block', base: 'none'}}>
-            <Box className='flex flex-col flex-wrap flex-1 gap-2'>
-              <Box className='flex gap-3'>
-                <Link to={'/mens-clothing'}>
-                  <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/img2.png'} bgPos={'center'} bgSize={'contain'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      {/* <Image height={'100%'}  rounded={'md'} src="/new-arrival.jpg" alt="" /> */}
-                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
-                        <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Men's Fashion</Text>
-                      </Box>
-                  </Box>
-                </Link>
-                <Link to={'/womens-clothing'}>
-                    <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/w-cloth.jpg'} bgPos={'center'} bgSize={'cover'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
-                        <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Women's Fashion</Text>
-                      </Box>
-                    </Box>
-                </Link>
-              </Box>
-              <Box className='flex gap-3'>
-                <Link to={'/category?category=Shoes'}>
-                    <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/sneaker.gif'} bgPos={'center'} bgSize={'cover'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
-                        <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Shoes</Text>
-                      </Box>
-                    </Box>
-                </Link>
-                <Link to={'/category?category=Jewellery'}>
-                    <Box height={{md:'190px', base: '200px'}} width={'225px'} bgImage={'/jewellery.gif'} bgPos={'center'} bgSize={'cover'} bgRepeat={'no-repeat'} rounded={'md'} bgBlendMode={'multiply'} bgColor={'gray.200'} className='flex justify-center items-center text-black'>
-                      <Box className='bg-pink-500 px-5 rounded-md py-1'>
-                        <Text fontSize={'14px'} color={'white'} fontWeight={500} textAlign={'center'}>Jewellery</Text>
-                      </Box>
-                    </Box>
-                </Link>
-              </Box>
-            </Box>
+          <Box display={{md: 'block', base: 'non'}} flex={'1'} width={{md:'60%', base: '100%'}}>
+            <CategoryCards/>
           </Box>
         </Box>
       </Box>

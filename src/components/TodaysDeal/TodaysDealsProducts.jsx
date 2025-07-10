@@ -242,7 +242,7 @@ export default function TodaysDealsProducts() {
             </Text>
           )}
 
-          <MotionButton
+          {/* <MotionButton
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 1 }}
             animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
@@ -261,7 +261,7 @@ export default function TodaysDealsProducts() {
             ) : (
               'Add to Cart'
             )}
-          </MotionButton>
+          </MotionButton> */}
 
         </Box>
       </VStack>

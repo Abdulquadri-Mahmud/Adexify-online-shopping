@@ -1,141 +1,96 @@
-import { Box, Heading } from '@chakra-ui/react'
-import React, { createContext, Suspense, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Todays_deals_pag from '../paginations/todays_deals_pag/Todays_deals_pag';
+import {
+  Box,
+  Heading,
+  SimpleGrid,
+  Skeleton,
+  Image,
+  Text,
+  Badge,
+  Flex,
+} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FaAngleRight } from 'react-icons/fa';
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-function SampleNextArrow(props) {
-  
-    const { className, style, onClick } = props;
-    return (
-      <Box bg={'gray.300'} width={'30px'} height={'30px'} rounded={'full'}
-      right={'1vh'}  
-      className={className}
-        style={{ ...style, display: "block",
-          paddingTop: '5.7px', paddingLeft: '5.7px',
-        }}
-        onClick={onClick}
-      />
-    );
-  }
-  
-  function SamplePrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-      <Box bg={'gray.100'} width={'30px'} height={'30px'} rounded={'full'}
-        left={'1vh'} zIndex={'10'}
-        className={className}
-        style={{ ...style, display: "none", 
-          paddingTop: '5.5px', paddingLeft: '5.5px',
-        }}
-        onClick={onClick}
-      />
-    );
-}
-
-import Slider from "react-slick";
-import Loading from '../loader/Loading';
-
-const TodaysDealsProducts = React.lazy(() => import('./TodaysDealsProducts'))
-
-export const TodaysDealsProductsContext = createContext();
-
 export default function TodaysDeal() {
-    const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [postPerPage] = useState(12);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
+        const data = await res.json();
+        setProducts(data.slice(0, 12)); // limit to 6 products
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
+    fetchProducts();
 
-            const data = await res.json();
+    // Re-fetch on back navigation
+    // window.addEventListener('popstate', fetchProducts);
+    // return () => window.removeEventListener('popstate', fetchProducts);
+  }, []);
 
-            setProducts(data);
-        };
-        fetchProducts();
-    }, []);
-
-    const startIndex = currentPage * postPerPage;
-    const endIndex = startIndex - postPerPage;
-
-    const currentPost = products.slice(endIndex, startIndex);
-
-    const paginate  = paginate => setCurrentPage(paginate);
-
-    const settings = {
-      dots: false,
-      infinite: true,
-      focusOnSelect: true,
-      speed: 500,
-      slidesToShow: 6,
-      slidesToScroll: 1,
-      // autoplay: true,
-      autoplaySpeed: 2500,
-      waitForAnimate: false,
-      cssEase: "linear",
-      nextArrow: <SampleNextArrow />,
-      prevArrow: <SamplePrevArrow />,
-      responsive: [
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 5,
-              slidesToScroll: 1,
-            }
-          },
-          {
-            breakpoint: 768,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 1,
-            }
-          },
-          {
-            breakpoint: 600,
-            settings: {
-                  slidesToShow: 3,
-                  slidesToScroll: 1,
-              }
-          },
-          {
-            breakpoint: 420,
-            settings: {
-                  slidesToShow: 2,
-                  slidesToScroll: 1,
-              }
-          },
-      ]
-  };
+  const maxStock = 100; // Upper bound of stock
 
   return (
-    <Box className='my-10 bg-white rounded-md' maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
-      <Box className='bg-white-500 py-3 rounded-t-lg px-3 '>
-        <Box maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} pb={3} mx={'auto'} className="flex justify-between items-center gap-4 ">
-            <Heading fontWeight={500} fontSize={{md:20, base: 18}} color={'gray.800'} className='text-xl'>Today's Deals</Heading>
-            <Link to={'/'} className='text-[12px] font-medium text-gray.800 uppercase flex items-center'>See All <FaAngleRight className='text-[20px]'/></Link>
+    <Box className='my-10 bg-white rounded-md' maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'}>
+      <Box className='bg-white-500 pb-3 rounded-t-lg'>
+        <Box bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
+          <Heading fontWeight={500} fontSize={{ md: 20, base: 18 }} color={'white'} className='text-xl'>
+            Today's Deals
+          </Heading>
+          <Link to={'/'} className='text-[12px] font-medium text-white uppercase flex items-center'>
+            See All <FaAngleRight className='text-[20px]' />
+          </Link>
         </Box>
       </Box>
-      <div className="p-1">
-        <Slider {...settings}>
-          {
-              currentPost.length > 0 && currentPost.map((product) => (
-                  <TodaysDealsProductsContext.Provider key={product?._id} value={product}>
-                    <Suspense fallback={<Loading/>}>
-                      <TodaysDealsProducts product={product}/>
-                    </Suspense>
-                  </TodaysDealsProductsContext.Provider>
+
+      <Box p={4}>
+        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
+          {loading
+            ? Array.from({ length: 12 }).map((_, index) => (
+                <Skeleton key={index} height="200px" borderRadius="md" />
               ))
-          }
-        </Slider>
-      </div>
-      <Box pb={5}>
-        {/* <Todays_deals_pag postPerPage={postPerPage} totalPost={products.length} paginate={paginate}/> */}
+            : products.map((product) => (
+                <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} transition="all 0.3s">
+                  <Image src={product.image?.[0]} alt={product.name} height="150px" width="100%" objectFit="cover" />
+                  <Box p={3}>
+                    <Text fontSize="14px" noOfLines={1}>{product.name}</Text>
+                    <Flex justify={'space-between'} align={'center'}>
+                      <Badge color="pink.600" fontSize={'16px'}>₦{product.price.toLocaleString()}.00</Badge>
+                      {
+                        product.oldprice && <Text fontSize={'12px'} color={'gray.400'}>₦{product.oldprice}</Text>
+                      }
+                    </Flex>
+
+                    {product.stock !== undefined && (
+                      <Box mt={2}>
+                        <Text fontSize="xs" color="gray.500" mb={1}>
+                          Stock left: {product.stock}
+                        </Text>
+                        <Box bg="gray.200" h="6px" w="100%" borderRadius="full" overflow="hidden">
+                          <Box
+                            h="100%"
+                            w={`${(product.stock / maxStock) * 1000}%`}
+                            bg="pink.600"
+                            borderRadius="full"
+                            transition="width 0.3s ease"
+                          />
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              ))}
+        </SimpleGrid>
       </Box>
     </Box>
-  )
+  );
 }

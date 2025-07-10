@@ -213,7 +213,7 @@ export default function Carts_Page() {
     <Box>
       <Header />
 
-      <Box pb={10} pt={7} className="bg-zinc-200">
+      <Box pb={10} pt={5} className="bg-zinc-200">
         <Box maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" className="py-2" bg="white" py={4} px={6} rounded="md">
           <Box className="flex gap-1 items-center">
             <Link to="/" className="text-[13px]">Home</Link>
@@ -221,24 +221,29 @@ export default function Carts_Page() {
             <Link to="/view-carts" className="text-[13px] text-gray-500">Shopping Cart</Link>
           </Box>
         </Box>
+        <Box borderWidth={'1px'} borderBottomColor={'gray.300'} bg="white" maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx={'auto'} py={2} px={2} rounded="md" mt={4}>
+          <Flex borderBottomWidth={'1px'} borderBottomColor={'gray.200'} pb={2} justifyContent={'space-between'} alignItems={''} bg="white">
+            <Box>
+              <Heading fontSize={{ md: 25, base: 20 }} fontWeight={500} color="black">
+                My Carts
+                <Text fontSize={'12px'} color={'gray.400'} pt={2}>You have ( {cartItems.length >= 1 ? cartItems.length : 0} ) in your cart</Text>
+              </Heading>
+            </Box>
+            <Box>
+              <Button onClick={fetchCart} ml={4} bg="pink.500" color="white" py={5} _hover={{ bg: 'pink.600' }} size="sm">
+                {loading ? <><Spinner size="sm" mr={2} /> Refreshing...</> : 'Refresh Cart'}
+              </Button>
+            </Box>
+          </Flex>
 
-        <Flex justifyContent={'space-between'} alignItems={''} bg="white" py={3} px={2} rounded="md" maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" mt={4}>
-          <Box>
-            <Heading fontSize={{ md: 30, base: 25 }} fontWeight={500} color="black">
-              Shopping Cart
-            </Heading>
-            <Box mt={4} width="200px" py={1} rounded="md" className="border border-gray-300">
+          <Flex justifyContent={'center'} mt={0} width={'full'} py={1} rounded="md">
+            <Box width="200px" bg={''} py={2} rounded={'md'} color={'gray.800'} fontWeight={'600'}>
               <Link to="/fashion" fontWeight={500} className="text- flex items-center justify-center gap-2">
                 <BiLeftArrowAlt /> Continue Shopping
               </Link>
             </Box>
-          </Box>
-          <Box>
-            <Button onClick={fetchCart} ml={4} bg="pink.500" color="white" py={5} _hover={{ bg: 'pink.600' }} size="sm">
-              {loading ? <><Spinner size="sm" mr={2} /> Refreshing...</> : 'Refresh Cart'}
-            </Button>
-          </Box>
-        </Flex>
+          </Flex>
+        </Box>
 
         <Box maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" mt={6}>
           {/* Flex container: left = cart items, right = order summary */}
@@ -250,7 +255,7 @@ export default function Carts_Page() {
                   cartItems.length === 0 ? (
                     <Box textAlign="center" py={10}>
                       <Text color="gray.500" fontSize="lg">Your cart is empty.</Text>
-                      <Button mt={4} bg="green.600" color="white" _hover={{ bg: 'green.700' }} onClick={() => navigate('/fashion')}>
+                      <Button mt={4} bg="pink.600" color="white" _hover={{ bg: 'pink.700' }} onClick={() => navigate('/fashion')}>
                         Go to Shop
                       </Button>
                     </Box>

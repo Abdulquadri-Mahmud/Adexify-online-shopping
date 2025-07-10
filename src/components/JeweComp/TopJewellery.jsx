@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import { FaNairaSign } from 'react-icons/fa6';
 import { IoHeart } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
-import { Badge, Box, Button, Flex, Image, Text, useToast, VStack } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Image, Spinner, Text, useToast, VStack } from '@chakra-ui/react';
 import { TopJewellery_Context } from '../../pages/clothing_page/Women_Clothing_page';
 import { setCartCount } from '../../store/cart/cartActions';
 import { setWishlistCount } from '../../store/cart/wishlishActions';
+
+import { motion } from 'framer-motion';
+const MotionButton = motion.create(Button);
 
 export default function TopJewellery() {
     const product = useContext(TopJewellery_Context);
@@ -239,24 +242,24 @@ export default function TopJewellery() {
                 )}
 
                 <MotionButton
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 1 }}
-                animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
-                transition={{ duration: 0.2 }}
-                disabled={loadingProductId === product._id}
-                _hover={{ bg: 'pink.800' }}
-                onClick={() => handleCart(product)}
-                w="full"
-                mt={3}
-                bg="pink.500"
-                color="white">
-                {loadingProductId === product._id ? (
-                    <>
-                    <Spinner size="sm" mr={2} /> Adding...
-                    </>
-                ) : (
-                    'Add to Cart'
-                )}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
+                  transition={{ duration: 0.2 }}
+                  disabled={loadingProductId === product._id}
+                  _hover={{ bg: 'pink.800' }}
+                  onClick={() => handleCart(product)}
+                  w="full"
+                  mt={3}
+                  bg="pink.500"
+                  color="white">
+                  {loadingProductId === product._id ? (
+                      <>
+                      <Spinner size="sm" mr={2} /> Adding...
+                      </>
+                  ) : (
+                      'Add to Cart'
+                  )}
                 </MotionButton>
 
             </Box>

@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Heading, Icon, Image, Stack, Text, useDisclosure } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Heading, Icon, Image, Spinner, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import React, { createContext, Fragment, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { FaSmileBeam } from "react-icons/fa";
@@ -19,6 +19,10 @@ import { IoHeart } from 'react-icons/io5';
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
 import Adverts from '../../components/Adverts/Adverts';
+import {motion} from 'framer-motion';
+import { setCartCount } from '../../store/cart/cartActions';
+import { setWishlistCount } from '../../store/cart/wishlishActions';
+const MotionButton = motion.create(Button);
 
 export const quantityContext = createContext();
 
@@ -33,6 +37,9 @@ export default function Details() {
       productPrice: '',
       items: {}, // e.g. { "S": 2, "M": 1 }
     });
+    const [loadingProductId, setLoadingProductId] = useState(null);
+    const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
+    const { currentUser } = useSelector((state) => state.user);
 
     const { currentAdmin } = useSelector((state) => state.admin);
     const { items } = useSelector((state) => state.cart);
@@ -103,8 +110,8 @@ export default function Details() {
       });
     };
 
-
-    const handleCart = () => {
+    // Handle Add to Cart
+    const handleCart = async () => {
       // Case: Product has sizes
       if (Array.isArray(size) && size.length > 0) {
         if (!getCarts.items || Object.keys(getCarts.items).length === 0) {
@@ -112,38 +119,206 @@ export default function Details() {
           setIsOpen(true);
           return;
         }
+
+        // Loop over selected sizes
+        for (const selectedSize in getCarts.items) {
+          const quantity = getCarts.items[selectedSize];
+
+          const payload = {
+            userId: currentUser._id || '',
+            product: {
+              productId: _id,
+              name,
+              stock: stock || 0,
+              price,
+              discount: product.discount || 0,
+              oldprice: oldprice || 0,
+              deal: product.deal || '',
+              category: category || '',
+              image: image || [],
+              description: description || '',
+              discountType: product.discountType || '',
+              trackingId: trackingId || '',
+              size: size || [],
+              selectedSize,
+              quantity,
+              gender: gender || 'unisex',
+              brand: product.brand || '',
+            },
+          };
+
+          try {
+            const res = await fetch('https://adexify-api.vercel.app/api/cart/add', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || data.success !== true) {
+              throw new Error(data.message || 'Failed to add to cart');
+            }
+          } catch (error) {
+            toast({
+              title: 'Error',
+              description: error.message,
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+            });
+            return;
+          }
+        }
+      } else {
+        // Case: Product has no sizes
+        const payload = {
+          userId: currentUser._id || '',
+          product: {
+            productId: _id,
+            name,
+            stock: stock || 0,
+            price,
+            discount: product.discount || 0,
+            oldprice: oldprice || 0,
+            deal: product.deal || '',
+            category: category || '',
+            image: image || [],
+            description: description || '',
+            discountType: product.discountType || '',
+            trackingId: trackingId || '',
+            size: [],
+            selectedSize: '',
+            quantity: 1,
+            gender: gender || 'unisex',
+            brand: product.brand || '',
+          },
+        };
+
+        try {
+          const res = await fetch('https://adexify-api.vercel.app/api/cart/add', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || data.success !== true) {
+            throw new Error(data.message || 'Failed to add to cart');
+          }
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: error.message,
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+          return;
+        }
       }
 
-      // Case: No sizes OR sizes are selected
-      dispatch(addToCart(getCarts));
+      // Show success toast
       toast({
         title: 'Added to cart!',
-        description: 'Your selection has been added successfully.',
+        description: 'Item added successfully.',
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
+
+      // Fetch updated cart count
+      try {
+        const cartRes = await fetch('https://adexify-api.vercel.app/api/cart/get-user-cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: currentUser._id }),
+        });
+
+        const cartData = await cartRes.json();
+
+        if (cartRes.ok && cartData.success === true) {
+          const count = cartData.cart?.products?.length || 0;
+          dispatch(setCartCount(count));
+        }
+      } catch (error) {
+        console.error('Cart count fetch failed:', error);
+      }
+
       setIsOpen(false);
     };
 
-    const getWishlist = {
-      productID: _id,
-      productName: name,
-      productImage : image,
-      productPrice: price,
-      productSize: [],
-      quantity: 1
-    }
+    const handleWishlistItem = async () => {
+      setLoadingWishlistProductId(_id); // Show loading for this product
 
-    const handleWishlistItem = () => {
-      dispatch(addWishlist(getWishlist));
-      toast({
-        description: "Your item has been saved.",
-        duration: 5000,
-        isClosable: true,
-        bgColor: 'pink.600',
-      });
-    }
+      const payload = {
+        userId: currentUser._id || '',
+        product: {
+          productId: _id,
+          name,
+          price,
+          image: image || [],
+          category: category || '',
+          brand: product.brand || '',
+          gender: gender || '',
+          description: description || '',
+        },
+      };
+
+      try {
+        const res = await fetch('https://adexify-api.vercel.app/api/wishlist/add-to-wishlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success === true) {
+          toast({
+            title: 'Added to wishlist!',
+            description: 'Item saved to your wishlist.',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
+
+          // Fetch updated wishlist count
+          const wishlistRes = await fetch('https://adexify-api.vercel.app/api/wishlist/get-wishlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: currentUser._id }),
+          });
+
+          const wishlistData = await wishlistRes.json();
+
+          if (wishlistRes.ok && wishlistData.success === true) {
+            const count = wishlistData.wishlist?.products?.length || 0;
+            dispatch(setWishlistCount(count));
+          }
+        } else {
+          throw new Error(data.message || 'Failed to add to wishlist');
+        }
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setLoadingWishlistProductId(null);
+      }
+    };
+
 
     const handleClick = (img) => {
       displayImage.current.src = img;
@@ -253,14 +428,38 @@ export default function Details() {
                   </div>
 
                   {/* Add to cart */}
-                  <div className=" mt-5 flex justify-between items-center">
-                    <button className="bg-pink-600 text-white px-5 py-2 rounded-md w-[100%] font-medium" onClick={handleCart}>Add To Cart</button>
-                  </div>
+                  <MotionButton
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: loadingProductId === _id ? 0.7 : 1 }}
+                    transition={{ duration: 0.2 }}
+                    disabled={loadingProductId === _id}
+                    _hover={{ bg: 'pink.800' }}
+                    onClick={() => handleCart(product)}
+                    w="full"
+                    mt={3}
+                    bg="pink.500"
+                    color="white">
+                    {loadingProductId === product._id ? (
+                        <>
+                          <Spinner size="sm" mr={2} /> Adding...
+                        </>
+                    ) : (
+                        'Add to Cart'
+                    )}
+                  </MotionButton>
 
                   {/* Add to wishlist */}
-                  <button onClick={handleWishlistItem} className=" text-white cursor-pointer hover:text-pink-600 active:text-pink-600 focus:text-pink-600 absolute top-3 right-3 w-[30px] h-[30px] bg-gray-300 flex justify-center items-center rounded-full">
-                    <IoHeart className='text-xl'/>
-                  </button>
+                  {loadingWishlistProductId === product._id ? (
+                      <Flex justifyContent='center' alignItems='center' bg={'pink.600'} rounded={'full'} className="absolute top-2 right-2 w-[30px] h-[30px]">
+                          <Spinner color="gray.50" size="sm" mr={2} />
+                      </Flex>
+                      ) : (
+                          <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
+                              <IoHeart className="text-xl text-white hover:text-gray-600" />
+                          </button>
+                      )
+                  }
                   {
                     currentAdmin && (
                       <Box mt={4} className='text-pink-600 text-center'>
@@ -344,8 +543,36 @@ export default function Details() {
                   ))}
                 </Stack>
 
-                <Button type="button" width="100%" bg="pink.600" color="white" borderRadius="full" onClick={handleCart} _hover={{ bg: "pink.700" }} fontWeight="medium" py={2}>
-                  Confirm Selection
+                {/* <MotionButton
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: loadingProductId === _id ? 0.7 : 1 }}
+                    transition={{ duration: 0.2 }}
+                    disabled={loadingProductId === _id}
+                    _hover={{ bg: 'pink.800' }}
+                    onClick={() => handleCart(_id)}
+                    w="full"
+                    mt={3}
+                    bg="pink.500"
+                    rounded={'full'}
+                    color="white">
+                    {loadingProductId === product._id ? (
+                        <>
+                          <Spinner size="sm" mr={2} /> Adding...
+                        </>
+                    ) : (
+                        'Confirm Selection'
+                    )}
+                  </MotionButton> */}
+
+                <Button type="button" width="100%" bg="pink.600" color="white" borderRadius="full" onClick={() => handleCart(_id)} _hover={{ bg: "pink.700" }} fontWeight="medium" py={2}>
+                  {loadingProductId === product._id ? (
+                        <>
+                          <Spinner size="sm" mr={2} /> Adding...
+                        </>
+                    ) : (
+                        'Confirm Selection'
+                    )}
                 </Button>
               </Box>
 

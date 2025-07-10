@@ -40,11 +40,11 @@ export default function FemaleSalesBanner() {
       dots: false,
       infinite: true,
       focusOnSelect: true,
-      speed: 500,
+      speed: 1000,
       slidesToShow: 6,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 3000,
+      autoplaySpeed: 3500,
       waitForAnimate: false,
       cssEase: "linear",
       nextArrow: <SampleNextArrow />,
@@ -67,14 +67,14 @@ export default function FemaleSalesBanner() {
           {
             breakpoint: 600,
             settings: {
-                  slidesToShow: 3,
+                  slidesToShow: 4,
                   slidesToScroll: 1,
               }
           },
           {
             breakpoint: 420,
             settings: {
-                  slidesToShow: 2,
+                  slidesToShow: 3,
                   slidesToScroll: 1,
               }
           },
@@ -86,37 +86,37 @@ export default function FemaleSalesBanner() {
           <Slider {...settings}>
             <Link to={'/fashion'}>
                 <Box>
-                    <Image  height={'150px'} width={'90%'} rounded={'md'} src="/women/cloth.jpeg" alt="" />
+                    <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/women/cloth.jpeg" alt="" />
                     <Text fontSize={14} mt={2} textAlign={'center'}>Clothing</Text>
                 </Box>
             </Link>
             <Link to={'/category?category=Bags'}>
                 <Box>
-                    <Image  height={'150px'} width={'90%'} rounded={'md'} src="/women/bags.jpeg" alt="" />
+                    <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/women/bags.jpeg" alt="" />
                     <Text fontSize={14} mt={2} textAlign={'center'}>Bags</Text>
                 </Box>
             </Link>
             <Link to={'/category?category=Shoes'}>
                 <Box>
-                    <Image  height={'150px'} width={'90%'} rounded={'md'} src="/women/shoes.jpeg" alt="" />
+                    <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/women/shoes.jpeg" alt="" />
                     <Text fontSize={14} mt={2} textAlign={'center'}>Shoes</Text>
                 </Box>
             </Link>
             <Link to={'/category?category=Pants'}>
                 <Box>
-                    <Image  height={'150px'} width={'90%'} rounded={'md'} src="/women/pant.jpg" alt="" />
+                    <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/women/pant.jpg" alt="" />
                     <Text fontSize={14} mt={2} textAlign={'center'}>Pants</Text>
                 </Box>
             </Link>
             <Link to={'/category?category=Jewellery'}>
                 <Box>
-                    <Image  height={'150px'} width={'90%'} rounded={'md'} src="/women/jewellery.jpeg" alt="" />
+                    <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/women/jewellery.jpeg" alt="" />
                     <Text fontSize={14} mt={2} textAlign={'center'}>Jewelleries</Text>
                 </Box>
             </Link>
             <Link to={'/category?category=Underwear'}>
                 <Box>
-                    <Image  height={'150px'} width={'90%'} rounded={'md'} src="/women/underwear.jpg" alt="" />
+                    <Image  height={{md:'150px', base: '100px'}} width={'100%'} rounded={'md'} src="/women/underwear.jpg" alt="" />
                     <Text fontSize={14} mt={2} textAlign={'center'}>Underwear</Text>
                 </Box>
             </Link>

@@ -10,13 +10,13 @@ export default function FashionXtraBanner() {
                         <Flex justifyContent={'center'} alignItems={'center'} w={{md:'50%', base: '100%'}} height={{'xl': '250px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'center'} bgBlendMode={'multiply'} rounded={'md'} className='bg-slate-500' bgImage={'/mbg.jpeg'} position={'relative'}>
                             <Box position={'absolute'}>
                             <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                            <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Men Bags</Heading>
+                            <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 25}}>Men Bags</Heading>
                             </Box>
                         </Flex>
                         <Flex justifyContent={'center'} alignItems={'center'} w={{md:'50%', base: '100%'}} height={{'xl': '250px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'center'} bgBlendMode={'multiply'} rounded={'md'} className='bg-slate-500' bgImage={'/wbg.jpg'} position={'relative'}>
                             <Box position={'absolute'}>
-                            <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                            <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Women Bags</Heading>
+                                <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
+                                <Heading color={'white'} fontWeight={500} textAlign={'center'} fontSize={{md: 40, base: 25}}>Women Bags</Heading>
                             </Box>
                         </Flex>
                     </Flex>
@@ -26,7 +26,7 @@ export default function FashionXtraBanner() {
                 <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '250px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'center'} bgBlendMode={'multiply'} className='bg-slate-500' bgImage={'/shoes.jpg'} position={'relative'}>
                     <Box position={'absolute'}>
                         <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                        <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Shoes</Heading>
+                        <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 25}}>Shoes</Heading>
                     </Box>
                 </Flex>
             </Box>

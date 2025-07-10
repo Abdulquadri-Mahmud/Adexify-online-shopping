@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, SimpleGrid, Text } from '@chakra-ui/react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import "slick-carousel/slick/slick.css";
@@ -80,73 +80,46 @@ export default function Home_banner4() {
     ]
 };
   return (
-    <Box bg={'white'} my={5} p={{md:4, base: 3}} rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
-        <Box display={{xl: 'block', base: 'none'}}>
-            <Flex gap={6} justifyContent={'center'}>
+    <Box bg={'white'} my={3} p={{md:4, base: 3}} rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'}>
+        <Box display={{xl: 'block', base: ''}}>
+            <SimpleGrid columns={{ base: 3, sm: 3, md: 3, lg: 2, xl: 6 }} spacing={3} justifyContent="center">
                 <Link to={'/fashion'}>
-                    <Box height={'230px'} width={'200px'}>
-                        <Image  rounded={'md'} src="/new-arrival.jpg" alt="" />
-                        <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
+                    <Box width={{md:'200px', base: '100px'}}>
+                        <Image height={{md:'150px', base: '90px'}} width={'100%'}  rounded={'md'} src="/new-arrival.jpg" alt="" />
+                        <Text fontSize={'14px'} pt={2} textAlign={'center'}>Fashion Deals</Text>
                     </Box>
                 </Link>
                 <Link to={'/new-arrival'}>
-                    <Box height={'230px'} width={'200px'}>
-                        <Image  rounded={'md'} src="/men_fashion.jpg" alt="" />
-                        <Text fontSize={'14px'} mt={2} textAlign={'center'}>New Arrival</Text>
+                    <Box width={{md:'200px', base: '100px'}}>
+                        <Image height={{md:'150px', base: '90px'}} width={'100%'}  rounded={'md'} src="/men_fashion.jpg" alt="" />
+                        <Text fontSize={'14px'} pt={2} textAlign={'center'}>New Arrival</Text>
                     </Box>
                 </Link>
                 <Link to={'/fashion-deals'}>
-                    <Box height={'230px'} width={'200px'}>
-                        <Image height={'200px'} rounded={'md'} src="/fahsion3.gif" alt="" />
-                        <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
+                    <Box width={{md:'200px', base: '100px'}}>
+                        <Image height={{md:'150px', base: '90px'}} width={'100%'} rounded={'md'} src="/men/bags.gif" alt="" />
+                        <Text fontSize={'14px'} pt={2} textAlign={'center'}>Fashion Deals</Text>
                     </Box>
                 </Link>
                 <Link to={'/greate-deals'}>
-                    <Box height={'230px'} width={'200px'}>
-                        <Image  rounded={'md'} src="/recommended.gif" alt="" />
-                        <Text fontSize={'14px'} mt={2} textAlign={'center'}>Great Deals</Text>
+                    <Box width={{md:'200px', base: '100px'}}>
+                        <Image height={{md:'150px', base: '90px'}} width={'100%'}  rounded={'md'} src="/recommended.gif" alt="" />
+                        <Text fontSize={'14px'} pt={2} textAlign={'center'}>Great Deals</Text>
                     </Box>
                 </Link>
                 <Link to={'/'}>
-                    <Box height={'230px'} width={'200px'}>
-                        <Image  rounded={'md'} src="/specia-offer.png" alt="" />
-                        <Text fontSize={'14px'} mt={2} textAlign={'center'}>Special Offter</Text>
+                    <Box width={{md:'200px', base: '100px'}}>
+                        <Image height={{md:'150px', base: '90px'}} width={'100%'}  rounded={'md'} src="/specia-offer.png" alt="" />
+                        <Text fontSize={'14px'} pt={2} textAlign={'center'}>Special Offter</Text>
                     </Box>
                 </Link>
-            </Flex>
-        </Box>
-        <Box display={{xl: 'none', base: 'block'}}>
-          <Slider {...settings}>
-            <Link to={'/'}>
-              <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                  <Image  rounded={'md'} src="/new-arrival.jpg" alt="" />
-                  <Text fontSize={'14px'} mt={2} textAlign={'center'}>New Arrival</Text>
-              </Box>
-              </Link>
-              <Link to={'/'}>
-                <Box height={{xl:'230px',md:'200px', base: '100%'}} width={{md:'200px', base: '150px'}}>
-                    <Image  rounded={'md'} src="/men_fashion.jpg" alt="" />
-                </Box>
-              </Link>
-              <Link to={'/'}>
-                <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                    <Image height={'150px'} rounded={'md'} src="/fahsion3.gif" alt="" />
-                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>Fashion Deals</Text>
-                </Box>
-              </Link>
-              <Link to={'/'}>
-                <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                    <Image  rounded={'md'} src="/recommended.gif" alt="" />
-                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>Great Deals</Text>
-                </Box>
-              </Link>
-              <Link to={'/'}>
-                <Box height={{xl:'230px',md:'200px', base: '150px'}} width={{md:'200px', base: '150px'}}>
-                    <Image  rounded={'md'} src="/specia-offer.png" alt="" />
-                    <Text fontSize={'14px'} mt={2} textAlign={'center'}>Special Offter</Text>
-                </Box>
-              </Link>
-          </Slider>
+                <Link to={'/'}>
+                    <Box width={{md:'200px', base: '100px'}}>
+                        <Image height={{md:'150px', base: '90px'}} width={'100%'}  rounded={'md'} src="/stock.jpeg" alt="" />
+                        <Text fontSize={'14px'} pt={2} textAlign={'center'}>Special Offter</Text>
+                    </Box>
+                </Link>
+            </SimpleGrid>
         </Box>
     </Box>
   )

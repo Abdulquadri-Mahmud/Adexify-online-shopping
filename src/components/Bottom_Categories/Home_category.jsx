@@ -47,7 +47,7 @@ export default function Home_category() {
   const filteredProducts = products.filter((product) => {
     const isPriceMatch = product.price <= priceRange;
     const isCategoryMatch =
-      filter === 'All' ? product.gender === 'male' : product.category === filter && product.gender === 'male';
+      filter === 'All' ? product.gender === 'male' : product.category === filter && product.gender === 'male' && product.gender === 'female';
     return isPriceMatch && isCategoryMatch;
   });
 

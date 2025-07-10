@@ -71,7 +71,7 @@ const ProductsByCategory = () => {
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
   
   // Price filter
   const [priceRange, setPriceRange] = useState("all");
@@ -353,7 +353,7 @@ const ProductsByCategory = () => {
         {error && <Text color="red.500">{error}</Text>}
 
         {/* Product Grid */}
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 3, lg: 4, xl: 5, '2xl': 6 }} spacing={2}>
+        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
           {currentItems.map((product) => (
             <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
               <VStack spacing={2} align="stretch">
