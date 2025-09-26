@@ -51,8 +51,9 @@ export default function Jewelleries() {
               ))
             : products.map((product) => (
                 <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} transition="all 0.3s">
-                  <Image src={product.image?.[0]} alt={product.name} height="150px" width="100%" objectFit="cover" />
-                  <Box p={3}>
+                  <Link to={`/product-details/${product?._id}`}>
+                    <Image src={product.image?.[0]} alt={product.name} height="150px" width="100%" objectFit="cover" />
+                  </Link>                  <Box p={3}>
                     <Text fontSize="14px" noOfLines={1}>{product.name}</Text>
                     <Flex justify={'space-between'} align={'center'}>
                       <Badge color="pink.600" fontSize={'16px'}>₦{product.price.toLocaleString()}.00</Badge>
