@@ -185,23 +185,23 @@ export default function TopJewellery() {
 
     // Fix focus inside aria-hidden slick slides (react-slick)
     useEffect(() => {
-    const interval = setInterval(() => {
-        const hiddenSlides = document.querySelectorAll('[aria-hidden="true"]');
-        hiddenSlides.forEach((slide) => {
-        slide.querySelectorAll('a, button, input, [tabindex]').forEach((el) => {
-            el.setAttribute('tabindex', '-1');
-        });
-        });
+      const interval = setInterval(() => {
+          const hiddenSlides = document.querySelectorAll('[aria-hidden="true"]');
+            hiddenSlides.forEach((slide) => {
+            slide.querySelectorAll('a, button, input, [tabindex]').forEach((el) => {
+                el.setAttribute('tabindex', '-1');
+            });
+          });
 
-        const visibleSlides = document.querySelectorAll('[aria-hidden="false"]');
-        visibleSlides.forEach((slide) => {
-        slide.querySelectorAll('[tabindex="-1"]').forEach((el) => {
-            el.removeAttribute('tabindex');
-        });
-        });
-    }, 300); // Check frequently in case carousel slides
+          const visibleSlides = document.querySelectorAll('[aria-hidden="false"]');
+          visibleSlides.forEach((slide) => {
+          slide.querySelectorAll('[tabindex="-1"]').forEach((el) => {
+              el.removeAttribute('tabindex');
+          });
+          });
+      }, 300); // Check frequently in case carousel slides
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
     }, []);
 
     return (
@@ -224,21 +224,21 @@ export default function TopJewellery() {
             <Box>
                 <Text fontWeight="500" isTruncated>{product.name}</Text>
                 <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
-                {product.category}
+                  {product.category}
                 </Badge>
                 <Text fontSize="sm" color="gray.600" isTruncated>
-                {product.description}
+                  {product.description}
                 </Text>
 
                 <Text display="flex" alignItems="center">
-                <FaNairaSign />
-                <span className="font-medium">{product.price.toLocaleString()}.00</span>
+                  <FaNairaSign />
+                  <span className="font-medium">{product.price.toLocaleString()}.00</span>
                 </Text>
 
                 {product.oldprice && (
-                <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                    <FaNairaSign className="inline-block text-sm" />{product.oldprice}
-                </Text>
+                  <Text fontSize="sm" color="gray.400" textDecoration="line-through">
+                      <FaNairaSign className="inline-block text-sm" />{product.oldprice}
+                  </Text>
                 )}
 
                 <MotionButton

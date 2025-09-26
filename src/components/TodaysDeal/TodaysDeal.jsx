@@ -61,7 +61,7 @@ export default function TodaysDeal() {
             : products.map((product) => (
                 <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} transition="all 0.3s">
                   <Link to={`/product-details/${product?._id}`}>
-                    <Image src={product.image?.[0]} alt={product.name} height="150px" width="100%" objectFit="cover" />
+                    <Image src={product.image?.[0]} alt={product.name} height={"150px"} width="100%" objectFit="cover" />
                   </Link>
                   
                   <Box p={3}>
@@ -81,7 +81,7 @@ export default function TodaysDeal() {
                         <Box bg="gray.200" h="6px" w="100%" borderRadius="full" overflow="hidden">
                           <Box
                             h="100%"
-                            w={`${(product.stock / maxStock) * 1000}%`}
+                            w={`${(product.stock / maxStock) * 100}%`}
                             bg="pink.600"
                             borderRadius="full"
                             transition="width 0.3s ease"

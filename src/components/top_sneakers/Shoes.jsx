@@ -71,7 +71,7 @@ export default function Shoes() {
                         <Box bg="gray.200" h="6px" w="100%" borderRadius="full" overflow="hidden">
                           <Box
                             h="100%"
-                            w={`${(product.stock / maxStock) * 1000}%`}
+                            w={`${(product.stock / maxStock) * 100}%`}
                             bg="pink.600"
                             borderRadius="full"
                             transition="width 0.3s ease"
