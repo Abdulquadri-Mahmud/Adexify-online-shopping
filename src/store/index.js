@@ -6,11 +6,13 @@ import Wishlists from "./wishlists/Wishlists";
 import adminReducer from "./adminReducer";
 import { cartReducer } from "./cart/cartsReducer";
 import cartSlice from "./cart/cartSlice";
+import wishlistSlice from "./cart/wishlistSlice";
 
 const rootReducer = combineReducers({
     user: userReducers,
     cart: cartReducer,
     guestCart: cartSlice,
+    guestWishlist: wishlistSlice,
     wishlist : Wishlists,
     admin: adminReducer
 });

@@ -8,6 +8,8 @@ import { Hoodies_Sweater_Context } from '../pages/clothing_page/Men_Clothing_pag
 import {motion} from 'framer-motion';
 import { addToCart, clearError } from '../store/cart/cartSlice';
 import { setCartCount } from '../store/cart/cartActions';
+import { addToWishlist, clearWishlistError } from '../store/cart/wishlistSlice';
+import { setWishlistCount } from '../store/cart/wishlishActions';
 
 const MotionButton = motion.create(Button);
 
@@ -20,6 +22,7 @@ export default function Hoodies_Sweater() {
     const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
     const { currentUser } = useSelector((state) => state.user);
     const guestCart = useSelector((state) => state.guestCart);
+    const guestWishlist = useSelector((state) => state.guestWishlist);
     const error = useSelector((state) => state.guestCart.error);
 
     useEffect(() => {
@@ -165,76 +168,122 @@ export default function Hoodies_Sweater() {
     
     // Handle Add to Wishlist
     const handleWishlistItem = async (product) => {
-    // Show loading for this product (optional, but consistent with cart)
-    setLoadingWishlistProductId(product._id);
+        setLoadingWishlistProductId(product._id);
     
-    // Construct payload
-    const payload = {
-        userId: currentUser._id,
-        product: {
-        productId: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.image || [],
-        category: product.category || '',
-        brand: product.brand || '',
-        gender: product.gender || '',
-        description: product.description || '',
-        },
-    };
+        const wishlistItem = {
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.image || [],
+          category: product.category || '',
+          brand: product.brand || '',
+          gender: product.gender || '',
+          description: product.description || '',
+        };
     
-    try {
-        // Send product to backend
-        const res = await fetch('https://adexify-api.vercel.app/api/wishlist/add-to-wishlist', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        });
+        try {
+          // =======================
+          // Guest Wishlist
+          // =======================
+          if (!currentUser?._id) {
+            dispatch(addToWishlist(wishlistItem));
+            const count = guestWishlist.items.length;
+            dispatch(setWishlistCount(count));
     
-        const data = await res.json();
+            if (guestWishlist.error) {
+              toast({
+                title: "Error",
+                description: guestWishlist.error,
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+              });
+              dispatch(clearWishlistError());
+            } else {
+              toast({
+                title: "Added to wishlist!",
+                description: "Item saved locally. Log in to save permanently.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              });
+            }
+            return;
+          }
     
-        if (res.ok && data.success === true) {
-        toast({
-            title: 'Added to wishlist!',
-            description: 'Item saved to your wishlist.',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        });
+          // =======================
+          // Logged-in Wishlist
+          // =======================
+          // 1. Merge guest wishlist if exists
+          if (guestWishlist.items.length > 0) {
+            const res = await fetch("https://adexify-api.vercel.app/api/wishlist/merge", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId: currentUser._id, products: guestWishlist.items }),
+            });
     
-        // Fetch updated wishlist to get count
-        const wishlistRes = await fetch('https://adexify-api.vercel.app/api/wishlist/get-wishlist', {
+            const data = await res.json();
+            if (!res.ok || data.success === false) {
+              toast({
+                title: "Error",
+                description: data.message,
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+              });
+              return;
+            }
+    
+            dispatch(clearWishlist()); // clear guest wishlist after merging
+          }
+    
+          // 2. Add current product to DB wishlist
+          const payload = { userId: currentUser._id, product: wishlistItem };
+    
+          const res = await fetch('https://adexify-api.vercel.app/api/wishlist/add-to-wishlist', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: currentUser._id }),
-        });
+            body: JSON.stringify(payload),
+          });
     
-        const wishlistData = await wishlistRes.json();
+          const data = await res.json();
     
-        console.log('Wishlist Data:', wishlistData);
+          if (res.ok && data.success === true) {
+            toast({
+              title: 'Added to wishlist!',
+              description: 'Item saved successfully.',
+              status: 'success',
+              duration: 3000,
+              isClosable: true,
+            });
     
-        if (wishlistRes.ok && wishlistData.success === true) {
-            const count = wishlistData.wishlist?.products?.length || 0;
-            console.log("Wishlist count:", count); // ✅ DEBUG
-            dispatch(setWishlistCount(count)); // Send to Redux
-        }
+            // Refresh wishlist count
+            const wishlistRes = await fetch('https://adexify-api.vercel.app/api/wishlist/get-wishlist', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: currentUser._id }),
+            });
     
-        } else {
-        throw new Error(data.message || 'Failed to add to wishlist');
-        }
-    } catch (error) {
-        toast({
+            const wishlistData = await wishlistRes.json();
+            if (wishlistRes.ok && wishlistData.success === true) {
+              const count = wishlistData.wishlist?.products?.length || 0;
+              dispatch(setWishlistCount(count));
+            }
+          } else {
+            throw new Error(data.message || 'Failed to add to wishlist');
+          }
+    
+        } catch (error) {
+          toast({
             title: 'Error',
             description: error.message,
             status: 'error',
             duration: 3000,
             isClosable: true,
-        });
-    } finally {
-        setLoadingWishlistProductId(null); // Stop loading
-    }
+          });
+        } finally {
+          setLoadingWishlistProductId(null);
+        }
     };
     
     return (

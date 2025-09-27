@@ -10,6 +10,7 @@ import {motion} from 'framer-motion';
 import { setWishlistCount } from '../../store/cart/wishlishActions';
 import { setCartCount } from '../../store/cart/cartActions';
 import { addToCart, clearError } from '../../store/cart/cartSlice';
+import { addToWishlist, clearWishlistError } from '../../store/cart/wishlistSlice';
 const MotionButton = motion.create(Button);
 
 export default function Men_Clothing() {
@@ -23,8 +24,9 @@ export default function Men_Clothing() {
     
     const { currentUser } = useSelector((state) => state.user);
     const guestCart = useSelector((state) => state.guestCart);
+    const guestWishlist = useSelector((state) => state.guestWishlist);
     const error = useSelector((state) => state.guestCart.error);
-    
+
     useEffect(() => {
         dispatch(setCartCount(guestCart.items.length));
     }, [guestCart.items, dispatch]);
@@ -169,99 +171,123 @@ export default function Men_Clothing() {
     
     // Handle Add to Wishlist
     const handleWishlistItem = async (product) => {
-    // Show loading for this product (optional, but consistent with cart)
-    setLoadingWishlistProductId(product._id);
-    
-    // Construct payload
-    const payload = {
-        userId: currentUser._id,
-        product: {
-        productId: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.image || [],
-        category: product.category || '',
-        brand: product.brand || '',
-        gender: product.gender || '',
-        description: product.description || '',
-        },
-    };
-    
-    try {
-        // Send product to backend
-        const res = await fetch('https://adexify-api.vercel.app/api/wishlist/add-to-wishlist', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        });
-    
-        const data = await res.json();
-    
-        if (res.ok && data.success === true) {
-        toast({
-            title: 'Added to wishlist!',
-            description: 'Item saved to your wishlist.',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        });
-    
-        // Fetch updated wishlist to get count
-        const wishlistRes = await fetch('https://adexify-api.vercel.app/api/wishlist/get-wishlist', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: currentUser._id }),
-        });
-    
-        const wishlistData = await wishlistRes.json();
-    
-        console.log('Wishlist Data:', wishlistData);
-    
-        if (wishlistRes.ok && wishlistData.success === true) {
-            const count = wishlistData.wishlist?.products?.length || 0;
-            console.log("Wishlist count:", count); // ✅ DEBUG
-            dispatch(setWishlistCount(count)); // Send to Redux
-        }
-    
-        } else {
-        throw new Error(data.message || 'Failed to add to wishlist');
-        }
-    } catch (error) {
-        toast({
-        title: 'Error',
-        description: error.message,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        });
-    } finally {
-        setLoadingWishlistProductId(null); // Stop loading
-    }
-    };
-    
-    // Fix focus inside aria-hidden slick slides (react-slick)
-    useEffect(() => {
-        const interval = setInterval(() => {
-        const hiddenSlides = document.querySelectorAll('[aria-hidden="true"]');
-        hiddenSlides.forEach((slide) => {
-            slide.querySelectorAll('a, button, input, [tabindex]').forEach((el) => {
-            el.setAttribute('tabindex', '-1');
+        setLoadingWishlistProductId(product._id);
+
+        const wishlistItem = {
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            image: product.image || [],
+            category: product.category || '',
+            brand: product.brand || '',
+            gender: product.gender || '',
+            description: product.description || '',
+        };
+
+        try {
+            // =======================
+            // Guest Wishlist
+            // =======================
+            if (!currentUser?._id) {
+                dispatch(addToWishlist(wishlistItem));
+                const count = guestWishlist.items.length;
+                dispatch(setWishlistCount(count));
+
+                if (guestWishlist.error) {
+                    toast({
+                        title: "Error",
+                        description: guestWishlist.error,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                dispatch(clearWishlistError());
+                } else {
+                    toast({
+                        title: "Added to wishlist!",
+                        description: "Item saved locally. Log in to save permanently.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
+                return;
+            }
+
+            // =======================
+            // Logged-in Wishlist
+            // =======================
+            // 1. Merge guest wishlist if exists
+            if (guestWishlist.items.length > 0) {
+            const res = await fetch("https://adexify-api.vercel.app/api/wishlist/merge", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: currentUser._id, products: guestWishlist.items }),
             });
-        });
-    
-        const visibleSlides = document.querySelectorAll('[aria-hidden="false"]');
-        visibleSlides.forEach((slide) => {
-            slide.querySelectorAll('[tabindex="-1"]').forEach((el) => {
-            el.removeAttribute('tabindex');
+
+            const data = await res.json();
+            if (!res.ok || data.success === false) {
+                toast({
+                    title: "Error",
+                    description: data.message,
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                return;
+            }
+
+            dispatch(clearWishlist()); // clear guest wishlist after merging
+            }
+
+            // 2. Add current product to DB wishlist
+            const payload = { userId: currentUser._id, product: wishlistItem };
+
+            const res = await fetch('https://adexify-api.vercel.app/api/wishlist/add-to-wishlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
-        });
-        }, 300); // Check frequently in case carousel slides
-    
-        return () => clearInterval(interval);
-    }, []);
-    
+
+            const data = await res.json();
+
+            if (res.ok && data.success === true) {
+                toast({
+                    title: 'Added to wishlist!',
+                    description: 'Item saved successfully.',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+
+                // Refresh wishlist count
+                const wishlistRes = await fetch('https://adexify-api.vercel.app/api/wishlist/get-wishlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser._id }),
+                });
+
+                const wishlistData = await wishlistRes.json();
+                if (wishlistRes.ok && wishlistData.success === true) {
+                    const count = wishlistData.wishlist?.products?.length || 0;
+                    dispatch(setWishlistCount(count));
+                }
+            } else {
+                throw new Error(data.message || 'Failed to add to wishlist');
+            }
+
+            } catch (error) {
+                toast({
+                    title: 'Error',
+                    description: error.message,
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } finally {
+                setLoadingWishlistProductId(null);
+            }
+        };
     return (
         <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
             <VStack spacing={2} m={1} align="stretch">
@@ -277,7 +303,7 @@ export default function Men_Clothing() {
                     <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
                         <IoHeart className="text-xl text-white hover:text-gray-600" />
                     </button>
-                    )}
+                )}
 
                     <Box>
                         <Text fontWeight="500" isTruncated>{product.name}</Text>

@@ -32,7 +32,8 @@ export default function Home() {
   const { currentUser } = useSelector((state) => state.user);
 
   const guestCart = useSelector((state) => state.guestCart.items);
-  
+  const guestWishlist = useSelector((state) => state.guestWishlist); 
+
   useEffect(() => {
     const mergeGuestCart = async () => {
       if (!currentUser || guestCart.length === 0) return;
@@ -60,18 +61,63 @@ export default function Home() {
         if (data.ok && data.success === true) {
           const count = data.cart?.products?.length || 0;
           dispatch(setCartCount(count));
-          console.log("count");
+          // console.log("count");
         }
-        // ✅ Clear guest cart
-        // dispatch(clearCart());
 
         // toast({
-        //   title: "Cart merged",
-        //   description: "Your guest cart has been merged with your account.",
-        //   status: "success",
-        //   duration: 3000,
-        //   isClosable: true,
-        // });
+        //     title: "Cart merged",
+        //     description: "Your guest wishlist has been merged with your account.",
+        //     status: "success",
+        //     duration: 3000,
+        //     isClosable: true,
+        //   });
+
+      } catch (err) {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    };
+
+    const mergeGuestWishlist = async () => {
+      if (!currentUser || guestWishlist.length === 0) return;
+
+      try {
+        const res = await fetch("https://adexify-api.vercel.app/api/wishlist/merge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: currentUser._id, products: guestWishlist.items }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.success === false) {
+          toast({
+            title: "Error merging wishlist",
+            description: data.message || "Something went wrong.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          return;
+        }
+
+        // if (data.ok && data.success === true) {
+        //   toast({
+        //     title: "Wishlist merged",
+        //     description: "Your guest wishlist has been merged with your account.",
+        //     status: "success",
+        //     duration: 3000,
+        //     isClosable: true,
+        //   });
+        // }
+
+        // ✅ Clear guest wishlist after merging
+        // dispatch(clearWishlist());
       } catch (err) {
         toast({
           title: "Error",
@@ -84,7 +130,8 @@ export default function Home() {
     };
 
     mergeGuestCart();
-  }, [currentUser, guestCart, dispatch, toast]);
+    mergeGuestWishlist();
+  }, [currentUser, guestCart, guestWishlist, dispatch, toast]);
 
   return (
     <Box>

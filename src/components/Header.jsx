@@ -16,6 +16,7 @@ import All_category from './All_category';
 import { useSelector } from 'react-redux';
 import { SiPhpmyadmin } from 'react-icons/si';
 import SearchInputField from './searchs/SearchInputField';
+import GuestNav from './settings/GuestNav';
 
 export const OpenMenuCOntext = createContext();
 
@@ -82,8 +83,7 @@ const Navs = () => {
             </Link>
             ))}
         </Box>
-        </Box>
-
+    </Box>
   );
 };
 
@@ -190,7 +190,7 @@ export default function Header() {
                                     <Text fontWeight={600} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'pink.500'}>My Cart</Text>
                                     <Box bg={'pink.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
                                         <BsCart4 />
-                                        <Box bg={'pink.600'} px={2} pb={3} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-4 right-0 text-[17px]">
+                                        <Box bg={'pink.500'} px={2} pb={3} rounded={'full'} color={'white'} zIndex={-1} className="absolute -top-4 right-0 text-[17px]">
                                             <Text fontWeight={'600'} >{cartCount}</Text>
                                         </Box>
                                     </Box>
@@ -198,12 +198,17 @@ export default function Header() {
                             </div>
                         </Link>
                     </div>
-                    <div className="md:hidden block text-xl relative">
+                    <div className="md:hidden block text-xl relative mt-2">
                         <Link to={'/view-carts'}>
-                            <MdOutlineShoppingCart className='text-xl text-white'/>
-                            <div className="absolute -top-5 right-0 text-white ">
-                                <p className='text-[17px] font-medium'>{cartCount}</p>
-                            </div>
+                            <Flex gap={0} alignItems={'center'}>
+                                <Text fontWeight={500} fontSize={'sm'} color={'pink.500'} px={3} roundedLeft={'full'} mr={-2} bg={'white'}>My Cart</Text>
+                                <Box bg={'white'} p={2} zIndex={2} rounded={'full'} color={'pink.500'} className="md:block text-xl relative">
+                                    <BsCart4 />
+                                    <Box bg={'white'} p={2} rounded={'full'} color={'pink.500'} zIndex={-1} className="absolute -top-3 right-0 text-sm">
+                                        <Text fontWeight={'600'}>{cartCount}</Text>
+                                    </Box>
+                                </Box>
+                            </Flex>
                         </Link>
                     </div>
                     <div className="flex items-center md:gap-2 md:text-black text-white">
@@ -211,11 +216,7 @@ export default function Header() {
                             currentUser ? (
                                 <Settings/>
                             ) : (
-                                <Flex gap={1} ml={2}>
-                                    <Link to={'/signin'} className='text-[14px]'>Signin</Link>
-                                    <span>/</span>
-                                    <Link to={'/signup'} className='text-[14px]'>Signup</Link>
-                                </Flex>
+                                <GuestNav/>
                             )
                         }
                         {
