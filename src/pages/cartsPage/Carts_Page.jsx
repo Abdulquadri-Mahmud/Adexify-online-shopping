@@ -34,6 +34,10 @@ import Footer from '../../components/footer/Footer';
 import { setCartCount } from '../../store/cart/cartActions';
 import { removeFromCart } from '../../store/cart/cartSlice';
 
+// Lazy load image
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+
 export default function Carts_Page() {
   const { currentUser } = useSelector((state) => state.user);
   const [cartItems, setCartItems] = useState([]);
@@ -182,19 +186,23 @@ export default function Carts_Page() {
   };
 
   // Redirect to checkout or show alert
-  const handleRedirect = () => {
+  const handleRedirect = (cartItems) => {
+    console.log(cartItems);
     if (cartItems.length <= 0) {
-      setAlertMessage('You need at least one item in your cart.');
+      setAlertMessage("You need at least one item in your cart.");
       onOpen2();
       return;
     }
     if (!currentUser) {
-      setAlertMessage('You must be logged in to proceed.');
+      setAlertMessage("You must be logged in to proceed.");
       onOpen2();
       return;
     }
-    navigate('/checkout/summary');
+
+    // ✅ Pass cart items with state
+    navigate("/checkout/summary", { state: { cartItems } });
   };
+
 
   // Calculate total price and total item count (including sizes)
   let total = 0;
@@ -285,7 +293,12 @@ export default function Carts_Page() {
                       return (
                         <Flex key={`${item.productId}-${size}`} bg="gray.100" border="1px solid" borderColor="gray.300" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
                           <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
-                            <Image src={item.image?.[0]} boxSize="50px" objectFit="cover" rounded="md"/>
+                            <LazyLoadImage 
+                              src={Array.isArray(item.image) ? item?.image[0] : item?.image} 
+                              width="50px" 
+                              objectFit="cover" 
+                              rounded="md"
+                            />
                             <Box>
                               <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
                               <Text fontSize="xs" color="gray.500">Size: {size}</Text>
@@ -328,7 +341,7 @@ export default function Carts_Page() {
                           )}
 
                           <Flex align="center">
-                            <FaNairaSign />
+                             
                             <Text fontWeight="medium" ml={1}>
                               {(item.price * qty).toLocaleString()}.00
                             </Text>
@@ -439,7 +452,7 @@ export default function Carts_Page() {
                     bg={'green.500'}
                     color={'white'}
                     _hover={{ bg: 'green.700' }}
-                    onClick={handleRedirect}
+                    onClick={() => handleRedirect(cartItems)}
                     className="w-full my-3 rounded-md py-2 font-medium"
                   >
                     Continue to Checkout

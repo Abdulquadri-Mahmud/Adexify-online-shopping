@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FaBookmark, FaNairaSign } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { Box,Button,Container,Flex, Heading, HStack, Image, Text } from '@chakra-ui/react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Box,Button,Container,Flex, Heading, HStack, Image, Radio, RadioGroup, Stack, Text } from '@chakra-ui/react';
 // import { toast } from 'react-toastify';
 import {
   Grid,
@@ -14,8 +14,23 @@ import { FaArrowRight, FaRegBookmark } from 'react-icons/fa';
 import Header from '../../../components/Header';
 import Footer from '../../../components/footer/Footer';
 
+const paymentMethods = [
+  {
+    id: "Pay on Delivery",
+    name: "Pay on Delivery",
+    description: "Pay with cash or POS when your order is delivered",
+  },
+  {
+    id: "online",
+    name: "Pay Online",
+    description: "Secure payment with card, transfer, or USSD",
+  },
+];
+
 export default function CheckOutPage() {
-  const { items } = useSelector((state) => state.cart);
+  const location = useLocation();
+  const { cartItems } = location.state || { cartItems: [] };
+
   const { currentUser } = useSelector((state) => state.user);
 
   const [error, setError] = useState('');
@@ -31,13 +46,13 @@ export default function CheckOutPage() {
   let total = 0;
 
   useEffect(() => {
-    items.map((item) => {
+    cartItems.map((item) => {
       setItem(item)
     })
   },[]);
 
-  // console.log(item);
-
+  const [selectedMethod, setSelectedMethod] = useState("Pay on Delivery"); // default to COD
+  
   const [formData, setFormData] = useState({
     firstname: currentUser?.firstname || '',
     lastname: currentUser?.lastname || '',
@@ -45,8 +60,7 @@ export default function CheckOutPage() {
     email: currentUser?.email || '',
     address: currentUser?.address || '',
     deliveryMethod: 'Standard',
-    paymentMethod: 'Cash on Delivery',
-    items: items || [],
+    items: cartItems || [],
   });
 
   const handleChange = (e) => {
@@ -59,7 +73,6 @@ export default function CheckOutPage() {
   const handleCustomerAddressSubmit = async (e) => {
     e.preventDefault();
 
-    
     try {
         setLoading(true);
 
@@ -112,24 +125,31 @@ export default function CheckOutPage() {
     
   }
 
-  const banks = [
-    {
-      name: 'Opay',
-      logo: 'image',
-      accountInfo: {
-        name: 'Abdul-Quadri Mahmud',
-        acountNumber: 9134831368,
-      }
-    }
-  ]
+  cartItems.forEach((item) => {
+    total += item.price;
+  });
+
+  // Whenever user changes payment method, we just update state
+  const handlePaymentChange = (id) => {
+    setSelectedMethod(id);
+  };
+
+  const handleOrder = () => {
+    const payload = {
+      ...formData,
+      paymentMethod: selectedMethod, // always synced here
+    };
+    console.log("Submitting order:", payload);
+    // 👉 send payload to backend
+  }
 
   return (
     <Box className="bg-zinc-100">
         <Header/>
-      <Box maxW={{ base: '100%', xl: '95%', '2xl': '80%' }} mx="auto" my="8">
+      <Box maxW={{ base: '100%', xl: '95%', '2xl': '80%' }} px={2} mx="auto" my="8">
         <Box>
-          <Box border={'1px solid'} borderColor={'gray.200'} bg="white" p={4} mx={{md:0, base: 2}} borderRadius="lg" boxShadow="" mb={6}>
-            <Flex justify="space-between" align="center" mb={4}>
+          {/* <Box border={'1px solid'} borderColor={'gray.200'} bg="white" p={4} borderRadius="lg" boxShadow="" mb={6}>
+            <Flex justify="space-between" flexWrap={'wrap'} align="center" mb={4}>
               <HStack spacing={1} align="center">
                 <Text fontSize="13px" color="gray.500">
                   <Link to="/">Home / </Link>
@@ -146,7 +166,7 @@ export default function CheckOutPage() {
             <Box mt={4}>
               <Heading fontSize={'5xl'} color={'pink.600'}>Checkout</Heading>
             </Box>
-          </Box>
+          </Box> */}
           {/* Basic Info */}
           <Box maxW={{'2xl' : '80%', xl : '100%', lg : '100%', base: '97%'}} mx={'auto'} py={2} px={{md:0, base: 0}}>
             <Box mb={2} p={2} bg="pink.600" borderTopRadius="md">
@@ -159,14 +179,14 @@ export default function CheckOutPage() {
                 {/* Customer Address */}
                 <Box width={'full'} bg={'white'} p={4} rounded={'lg'} pos={'relative'}>
                   <Flex alignItems={'center'} gap={2}>
-                    <Box bg={'green.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
+                    <Box bg={'pink.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
                     <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>1.CUSTOMER ADDRESS</Heading>
                   </Flex>
                   <Box mt={3} px={3}>
                     <Heading as={'h5'} fontSize={'md'} fontWeight={600} color={'gray.500'}>{currentUser.firstname} {currentUser.lastname}</Heading>
                     <Text pt={3} color={'gray.500'}>{currentUser.address} | {currentUser.phone}</Text>
                   </Box>
-                  <Button onClick={handleEditCustomerAddress} position={'absolute'} top={2} right={0} bg={'transparent'} fontSize={'sm'} color={'gray.500'}>Change <FaArrowRight/></Button>
+                  <Button onClick={handleEditCustomerAddress} position={'absolute'} top={2} right={2} bg={'transparent'} fontSize={'sm'} color={'gray.500'}>Change <FaArrowRight/></Button>
                 </Box>
                 {/* FORM SECTION */}
                 {
@@ -204,14 +224,34 @@ export default function CheckOutPage() {
                 {/* Products */}
                 <Box bg={'white'} p={4} rounded={'lg'} pos={'relative'} mt={5}>
                   <Flex alignItems={'center'} gap={2}>
-                    <Box bg={'green.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
+                    <Box bg={'pink.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
                     <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>2.PRODUCTS</Heading>
                   </Flex>
-                  <Flex alignItems={'center'} gap={3} mt={3} px={3} py={3} bg={'gray.200'} rounded={'lg'} borderBottom={'1px solid'} borderColor={'gray.300'}>
-                    <Box bg={'white'} p={1} rounded={'lg'}>
-                      <Image src={item.productImage} alt={item.productName} boxSize={50} rounded={'lg'}/>
-                    </Box>
-                    <Text fontSize={'sm'} color={'gray.600'}>{item.productName}</Text>
+                  <Flex flexWrap={'wrap'} justifyContent={'start'} alignItems={'center'} gap={3} mt={3} px={3} py={3} bg={'gray.100'} rounded={'lg'} borderBottom={'1px solid'} borderColor={'gray.200'}>
+                    {
+                      cartItems.length > 0 && (
+                        cartItems.map((item) => {
+                          return(
+                            <Box key={item._id} display={'flex'} width={'150px'}
+                              flexDirection={'column'} justifyContent={'center'} 
+                              alignItems={'center'} gap={2} bg={'white'} 
+                              p={2} rounded={'lg'} border={'1px solid'} 
+                              borderColor={'gray.200'}>
+                              <Box bg={'white'} p={1} rounded={'lg'}>
+                                <Image src={item?.image?.[0]} alt={item?.name} width={{md: '70px', base: '80px'}} rounded={'lg'}/>
+                              </Box>
+                              <Text fontSize={'sm'} color={'gray.600'} isTruncated width={'full'}>{item?.name}</Text>
+                              <Flex fontSize={'13px'} justifyContent={'space-between'} alignItems={'center'} width={'full'} gap={2}>
+                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'}
+                                display={'flex'} alignItems={'center'} >QTY: {item?.quantity}</Text>
+                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'}
+                                display={'flex'} alignItems={'center'} ><FaNairaSign className='text-sm'/>{item?.price.toLocaleString()}</Text>
+                              </Flex>
+                            </Box>
+                          )
+                        }
+                      ) )
+                    }
                   </Flex>
                   <Flex justifyContent={'center'} alignItems={'center'} pt={3} color={'pink.500'} fontWeight={'500'}>
                     <Link to={'/view-carts'}>Modify Cart</Link>
@@ -219,17 +259,42 @@ export default function CheckOutPage() {
                 </Box>
 
                 {/* Payment Method */}
-                <Box bg={'white'} p={4} rounded={'lg'} pos={'relative'} mt={5}>
-                  <Flex alignItems={'center'} gap={2}>
-                    <Box bg={'green.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
-                    <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>3.PAYMENT METHOD</Heading>
+                <Box bg={"white"} p={4} rounded={"lg"} pos={"relative"} mt={5}>
+                  <Flex alignItems={"center"} gap={2}>
+                    <Box bg={"pink.500"} w={6} h={6} rounded={"full"} display={"flex"} justifyContent={"center"} alignItems={"center"}></Box>
+                    <Heading as={"h3"} fontSize={"md"} fontWeight={600} color={"gray.600"}>
+                      3. PAYMENT METHOD
+                    </Heading>
                   </Flex>
-                  <Box mt={3} px={3}>
-                    <Heading as={'h5'} fontSize={'md'} fontWeight={600} color={'gray.500'}>Opay</Heading>
-                    <Text py={3} color={'gray.500'}>To use this option, you must be registered with opay</Text>
-                    <Text color={'pink.400'} textDecor={'underline'}><Link to={'/fashion'}>Go back & continue shopping</Link></Text>
+
+                  {/* Radio buttons for payment methods */}
+                  {paymentMethods.map((method) => (
+                    <Box key={method.id} mt={3} px={3} py={2} bg={selectedMethod === method.id ? "pink.100" : "gray.100"} rounded="md" border={selectedMethod === method.id ? "1px solid" : "1px solid transparent"} borderColor={selectedMethod === method.id ? "pink.200" : "gray.200"} cursor="pointer" onClick={() => handlePaymentChange(method.id)}>
+                      <label style={{ display: "block", marginBottom: "10px" }}>
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value={method.id}
+                          checked={selectedMethod === method.id}
+                          onChange={() => handlePaymentChange(method.id)}
+                          className='mr-2'
+                        />
+                        <strong className='font-semibold'>{method.name}</strong> <br /><span className="text-sm text-gray-600">{method.description}</span>
+                      </label>
+                    </Box>
+                  ))}
+
+                  {/* Footer link */}
+                  <Box mt={3} px={3} textAlign={'center'}>
+                    <Text color={"pink.400"} textDecor={"underline"}>
+                      <Link to={"/fashion"}>Go back & continue shopping</Link>
+                    </Text>
                   </Box>
-                  <Button onClick={handleEditCustomerAddress} position={'absolute'} top={2} right={0} bg={'transparent'} fontSize={'sm'} color={'gray.500'}>Change <FaArrowRight/></Button>
+
+                  {/* Change button */}
+                  {/* <Button onClick={handleEditCustomerAddress} position={"absolute"} top={2} right={2} bg={"transparent"} fontSize={"sm"} color={"gray.500"}>
+                    Change <FaArrowRight />
+                  </Button> */}
                 </Box>
                 
                 {/* Pick-up Station Address */}
@@ -245,7 +310,7 @@ export default function CheckOutPage() {
                       <Text>Item's total ({item?.quantity})</Text>
                       <Text display={'flex'} alignItems={'center'} gap={1} fontWeight={600}>
                         <FaNairaSign style={{ fontSize: '14px' }} />
-                        {item.productPrice?.toLocaleString()}.00
+                        {total.toLocaleString()}.00
                       </Text>
                     </Flex>
                     <Flex justifyContent={'space-between'} alignItems={'center'} pt={5}>
@@ -258,7 +323,7 @@ export default function CheckOutPage() {
                     <Text fontSize="xl" fontWeight="medium">Grand Total</Text>
                     <Flex justify="flex-end" align="center" px={2} fontWeight={600}>
                       <FaNairaSign style={{ fontSize: '14px' }} />
-                      {(item?.productPrice * item?.quantity).toLocaleString()}.00
+                      {total.toLocaleString()}.00
                     </Flex>
                   </Flex>
 
@@ -270,10 +335,16 @@ export default function CheckOutPage() {
                       <Text fontSize={'sm'} color={'gray.500'}>You will be able to add a voucher when selecting yout payment method.</Text>
                     </Flex>
                   </Box>
-
+                  {
+                    error && (
+                      <Box my={2} p={2} bg={'red.500'} color={'white'} fontSize={'14px'} textAlign={'center'} rounded={'md'}>
+                        {error}
+                      </Box>
+                    )
+                  }
                   <Flex justify="flex-end" p={3}>
-                    <Button bg="pink.600" _hover={{ bg: 'pink.800' }} color="white" py={3} px={4} w={'full'} rounded="md" transition="background-color 0.2s" isLoading={loading} loadingText="Placing Order..." >
-                      <Link to={'/order'}>Confirm Order</Link>
+                    <Button bg="pink.600" onClick={handleOrder} _hover={{ bg: 'pink.800' }} color="white" py={3} px={4} w={'full'} rounded="md" transition="background-color 0.2s" isLoading={loading} loadingText="Placing Order..." >
+                      Confirm Order
                     </Button>
                   </Flex>
 

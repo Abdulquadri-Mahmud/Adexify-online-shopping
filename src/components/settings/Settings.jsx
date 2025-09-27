@@ -13,6 +13,7 @@ import { AiTwotoneShopping } from 'react-icons/ai';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import { CiLocationOn } from 'react-icons/ci';
 import { IoLogOutOutline } from 'react-icons/io5';
+import { FaRegUser } from 'react-icons/fa6';
 
 export default function Settings() {
     const { currentUser } = useSelector((state) => state.user);
@@ -29,7 +30,7 @@ export default function Settings() {
                     <MdKeyboardArrowDown/>
                 </Flex>
                 <Box  display={{md: 'none', base: 'block'}}>
-                    <MdOutlineAccountCircle className='text-xl hover:text-black text-white' />
+                    <FaRegUser className='text-xl hover:text-black text-white md:text-pink-500' />
                 </Box>
             </MenuButton>
             <MenuList p={2} bg={useColorModeValue('white')}>

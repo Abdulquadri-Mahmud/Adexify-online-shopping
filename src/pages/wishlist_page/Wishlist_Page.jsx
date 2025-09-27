@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Heading, Image, SimpleGrid, Spinner, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Spinner,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaNairaSign } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +16,10 @@ import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
 import { MdDelete } from "react-icons/md";
 import { removeFromWishlist } from "../../store/cart/wishlistSlice";
+
+// Lazy load image
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 export default function Wishlist_Page() {
   const { currentUser } = useSelector((state) => state.user);
@@ -24,11 +37,14 @@ export default function Wishlist_Page() {
     if (!currentUser?._id) return;
     setLoading(true);
     try {
-      const res = await fetch("https://adexify-api.vercel.app/api/wishlist/get-wishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: currentUser._id }),
-      });
+      const res = await fetch(
+        "https://adexify-api.vercel.app/api/wishlist/get-wishlist",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: currentUser._id }),
+        }
+      );
 
       const data = await res.json();
       if (res.ok && data.success) {
@@ -64,11 +80,14 @@ export default function Wishlist_Page() {
     // Logged-in user
     setDeleteLoading(productId);
     try {
-      const res = await fetch("https://adexify-api.vercel.app/api/wishlist/delete-wishlist", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: currentUser._id, productId }),
-      });
+      const res = await fetch(
+        "https://adexify-api.vercel.app/api/wishlist/delete-wishlist",
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: currentUser._id, productId }),
+        }
+      );
       const data = await res.json();
       if (res.ok && data.success) {
         fetchWishlist(); // refresh backend wishlist
@@ -93,7 +112,7 @@ export default function Wishlist_Page() {
       <Header />
 
       <Box pb={10} pt={7} px={2} bg="gray.100">
-        <Box maxW={{md:"80%", base:'100%'}} mx="auto" py={2} bg="white" px={6} rounded="md">
+        <Box  maxW={{ md: "80%", base: "100%" }}  mx="auto"  py={2}  bg="white"  px={6}  rounded="md">
           <Heading fontSize={24} fontWeight={500}>
             My Wishlist
           </Heading>
@@ -102,7 +121,7 @@ export default function Wishlist_Page() {
           </Text>
         </Box>
 
-        <Box maxW={{md:"80%", base:'100%'}} mx="auto" mt={6}>
+        <Box maxW={{ md: "80%", base: "100%" }} mx="auto" mt={6}>
           <Box bg="white" p={4} rounded="md">
             {wishlistItems.length === 0 ? (
               <Box textAlign="center" py={10}>
@@ -120,16 +139,27 @@ export default function Wishlist_Page() {
                 </Button>
               </Box>
             ) : (
-              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={3}>
+              <SimpleGrid
+                columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                spacing={3}
+              >
                 {wishlistItems.map((item, index) => (
-                  <Box key={index} borderWidth="1px" rounded="md" overflow="hidden">
+                  <Box
+                    key={index}
+                    borderWidth="1px"
+                    rounded="md"
+                    overflow="hidden"
+                  >
                     <Link to={`/product-details/${item.productId}`}>
-                      <Image
-                        src={Array.isArray(item.image) ? item.image[0] : item.image}
+                      <LazyLoadImage
+                        src={
+                          Array.isArray(item.image) ? item.image[0] : item.image
+                        }
                         alt={item.name}
                         height="180px"
                         width="100%"
-                        objectFit="cover"
+                        effect="blur" // 👈 blur effect on load
+                        style={{ objectFit: "cover" }}
                       />
                     </Link>
                     <Box p={4}>
