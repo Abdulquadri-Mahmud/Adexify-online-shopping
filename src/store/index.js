@@ -5,10 +5,12 @@ import { persistReducer, persistStore } from "redux-persist";
 import Wishlists from "./wishlists/Wishlists";
 import adminReducer from "./adminReducer";
 import { cartReducer } from "./cart/cartsReducer";
+import cartSlice from "./cart/cartSlice";
 
 const rootReducer = combineReducers({
     user: userReducers,
     cart: cartReducer,
+    guestCart: cartSlice,
     wishlist : Wishlists,
     admin: adminReducer
 });

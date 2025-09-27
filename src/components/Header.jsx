@@ -227,7 +227,7 @@ export default function Header() {
                 </div>
             </Box>
         </Box>
-        <Box py={2} px={2} roundedTop={'xl'} bg={'gray.50'} maxW={{'2xl' : '50%', xl : '60%', lg : '100%', base: '100%'}} mx={'auto'}>
+        <Box py={2} px={2} roundedTop={'xl'} bg={'gray.50'} maxW={{'2xl' : '50%', xl : '60%', lg : '80%', base: '100%'}} mx={'auto'}>
             <Navs/>
             <MobileNav/>
         </Box>

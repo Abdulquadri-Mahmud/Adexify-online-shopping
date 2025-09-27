@@ -30,6 +30,7 @@ import MaleSalesBanner from "../../components/banners/MaleSalesBanner";
 import { motion } from 'framer-motion';
 import { setCartCount } from "../../store/cart/cartActions";
 import { setWishlistCount } from "../../store/cart/wishlishActions";
+import { addToCart, clearError } from "../../store/cart/cartSlice";
 
 const MotionButton = motion.create(Button);
 const SuggestedSection = () => {
@@ -66,7 +67,7 @@ const ProductsByCategory = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [getError, setError] = useState("");
   
   
   // Pagination states
@@ -110,93 +111,148 @@ const ProductsByCategory = () => {
   const [loadingProductId, setLoadingProductId] = useState(null);
   const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
+  const guestCart = useSelector((state) => state.guestCart);
+  const error = useSelector((state) => state.guestCart.error);
 
-  // =====================
-  // Handle Add to Cart
-  // =====================
+  useEffect(() => {
+      dispatch(setCartCount(guestCart.items.length));
+  }, [guestCart.items, dispatch]);
+
   const handleCart = async (product) => {
-    // Show loading only for the current product
-    setLoadingProductId(product._id);
+      setLoadingProductId(product._id);
 
-    // Construct the payload to send to the backend
-    const payload = {
-      userId: currentUser._id || '',
-      product: {
-        productId: product._id,
-        name: product.name,
-        stock: product.stock || 0,
-        price: product.price,
-        discount: product.discount || 0,
-        oldprice: product.oldprice || 0,
-        deal: product.deal || '',
-        category: product.category || '',
-        image: product.image || [],
-        description: product.description || '',
-        discountType: product.discountType || '',
-        trackingId: product.trackingId || '',
-        size: product.size || [],
-        selectedSize: product.size?.[0] || '', // Default to first size if any
-        quantity: 1, // Quantity is always 1 (no quantity selection logic anymore)
-        gender: product.gender || 'unisex',
-        brand: product.brand || '',
-      },
-    };
+      const cartItem = {
+          productId: product._id,
+          name: product.name,
+          stock: product.stock || 0,
+          price: product.price,
+          discount: product.discount || 0,
+          oldprice: product.oldprice || 0,
+          deal: product.deal || "",
+          category: product.category || "",
+          image: product.image || [],
+          description: product.description || "",
+          discountType: product.discountType || "",
+          trackingId: product.trackingId || "",
+          size: product.size || [],
+          selectedSize: product.size?.[0] || "",
+          quantity: 1,
+          gender: product.gender || "unisex",
+          brand: product.brand || "",
+      };
 
-    try {
-      // Send the product to backend to add to user's cart
-      const res = await fetch('https://adexify-api.vercel.app/api/cart/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      try {
+          if (!currentUser?._id) {
+              // =======================
+              // Guest Cart (Redux/localStorage)
+              // =======================
+              dispatch(addToCart(cartItem));
+              const count = guestCart.items.length;
 
-      const data = await res.json();
+              dispatch(setCartCount(count));
+              
+              if (error) {
+                  toast({
+                      title: "Error",
+                      description: error,
+                      status: "error",
+                      duration: 3000,
+                      isClosable: true,
+                  });
+                  
+                  // reset error for next action
+                  dispatch(clearError());
+              } else {
+                  toast({
+                      title: "Added to cart!",
+                      description: "Item added locally. Log in to save permanently.",
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                  });
+                  // dispatch(clearError());
+              }
+          } else {
+              
+          // =======================
+          // Logged-in Cart
+          // =======================
 
-      // If item added successfully
-      if (res.ok && data.success === true) {
-        toast({
-          title: 'Added to cart!',
-          description: 'Item added successfully.', 
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-        });
+          // 1. If guest cart exists, merge first
 
-        // Fetch updated cart from backend to get latest product count
-        const cartRes = await fetch('https://adexify-api.vercel.app/api/cart/get-user-cart', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUser._id }),
-        });
+          if (guestCart.length > 0) {
+                  const res = await fetch("https://adexify-api.vercel.app/api/cart/merge", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ userId: currentUser._id, products: guestCart }),
+              });
 
-        const cartData = await cartRes.json();
+              if (!res || data.success === false) {
+                  toast({
+                      title: "Error",
+                      description: data.message,
+                      status: "error",
+                      duration: 3000,
+                      isClosable: true,
+                  });
+                  return;
+              };
 
-        if (cartRes.ok && cartData.success === true) {
-          // Get the count of products in the cart
-          const count = cartData.cart?.products?.length || 0;
+              dispatch(setCartCount(count));
 
-          // Dispatch count to Redux so header badge can update immediately
-          dispatch(setCartCount(count));
-        }
-      } else {
-        // If adding to cart failed
-        throw new Error(data.message || 'Failed to add to cart');
+              dispatch(clearCart()); // clear guest cart after merging
+          }
+
+          // 2. Add current product to DB cart
+          const payload = { userId: currentUser._id, product: cartItem };
+
+          const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success === true) {
+              toast({
+                  title: "Added to cart!",
+                  description: "Item added successfully.",
+                  status: "success",
+                  duration: 3000,
+                  isClosable: true,
+              });
+
+              // Refresh backend cart count
+              const cartRes = await fetch(
+              "https://adexify-api.vercel.app/api/cart/get-user-cart",
+              {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ userId: currentUser._id }),
+              }
+              );
+
+              const cartData = await cartRes.json();
+              if (cartRes.ok && cartData.success === true) {
+                  const count = cartData.cart?.products?.length || 0;
+                  dispatch(setCartCount(count));
+              }
+          } else {
+              throw new Error(data.message || "Failed to add to cart");
+          }
+          }
+      } catch (error) {
+          toast({
+              title: "Error",
+              description: error.message,
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+          });
+      } finally {
+          setLoadingProductId(null);
       }
-    } catch (error) {
-      // Handle network or server error
-      toast({
-        title: 'Error',
-        description: error.message,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      //Stop loading state for this product
-      setLoadingProductId(null);
-    }
   };
 
   // Handle Add to Wishlist
@@ -350,7 +406,7 @@ const ProductsByCategory = () => {
             ))
           }
         </SimpleGrid>
-        {error && <Text color="red.500">{error}</Text>}
+        {getError && <Text color="red.500">{getError}</Text>}
 
         {/* Product Grid */}
         <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
@@ -379,17 +435,18 @@ const ProductsByCategory = () => {
                   <Text fontSize="sm" color="gray.600" isTruncated>
                     {product.description}
                   </Text>
-
-                  <Text display="flex" alignItems="center">
-                    <FaNairaSign />
-                    <span className="font-medium">{product.price.toLocaleString()}.00</span>
-                  </Text>
-
-                  {product.oldprice && (
-                    <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                      <FaNairaSign className="inline-block text-sm" />{product.oldprice}
+                  <Flex justifyContent={'space-between'} alignItems="center" mt={1}>
+                    <Text display="flex" alignItems="center">
+                      <FaNairaSign />
+                      <span className="font-medium">{product.price.toLocaleString()}.00</span>
                     </Text>
-                  )}
+
+                    {product.oldprice && (
+                      <Text fontSize="sm" color="gray.400" textDecoration="line-through">
+                        <FaNairaSign className="inline-block text-sm" />{product.oldprice}
+                      </Text>
+                    )}
+                  </Flex>
 
                   <MotionButton
                     whileTap={{ scale: 0.95 }}

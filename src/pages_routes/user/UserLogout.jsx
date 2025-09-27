@@ -10,7 +10,7 @@ export default function UserLogout() {
 
     const handleSignOut = () => {
         dispatch(signOutUserSuccess()); // Clear user state
-        navigate("/login"); // Redirect to login page
+        navigate("/signin"); // Redirect to login page
     };
   return (
     <Box>

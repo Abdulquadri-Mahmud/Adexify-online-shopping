@@ -206,7 +206,7 @@ export default function Womens_wear_products() {
     <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
       <VStack spacing={2} m={1} align="stretch">
         <Link to={`/product-details/${product?._id}`}>
-          <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
+          <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'150px'} width={'full'} objectFit="cover" borderRadius="md"/>
         </Link>
 
         {loadingWishlistProductId === product._id ? (

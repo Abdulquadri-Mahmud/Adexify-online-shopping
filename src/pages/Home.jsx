@@ -2,7 +2,7 @@ import Hero from '../components/Hero'
 import TopDeals from '../components/Top_Deals/TopDeals'
 import TodaysDeal from '../components/TodaysDeal/TodaysDeal'
 import Section1 from '../components/sections/Section1'
-import { Box, } from '@chakra-ui/react'
+import { Box, useToast, } from '@chakra-ui/react'
 import Home_banner2 from '../components/banners/Home_banner2'
 // import Home_banner3 from '../components/banners/Home_banner3'
 import Home_banner4 from '../components/banners/Home_banner4'
@@ -20,8 +20,71 @@ import Home_category from '../components/Bottom_Categories/Home_category'
 import Adverts from '../components/Adverts/Adverts'
 import Home_banner3 from '../components/banners/Home_banner3'
 import Mens_wear from '../components/mens_wear/Mens_wear'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { setCartCount } from '../store/cart/cartActions'
+import { clearCart } from '../store/cart/cartSlice'
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const { currentUser } = useSelector((state) => state.user);
+
+  const guestCart = useSelector((state) => state.guestCart.items);
+  
+  useEffect(() => {
+    const mergeGuestCart = async () => {
+      if (!currentUser || guestCart.length === 0) return;
+
+      try {
+        const res = await fetch("https://adexify-api.vercel.app/api/cart/merge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: currentUser._id, products: guestCart }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.success === false) {
+          toast({
+            title: "Error merging cart",
+            description: data.message || "Something went wrong.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          return;
+        }
+
+        if (data.ok && data.success === true) {
+          const count = data.cart?.products?.length || 0;
+          dispatch(setCartCount(count));
+          console.log("count");
+        }
+        // ✅ Clear guest cart
+        // dispatch(clearCart());
+
+        // toast({
+        //   title: "Cart merged",
+        //   description: "Your guest cart has been merged with your account.",
+        //   status: "success",
+        //   duration: 3000,
+        //   isClosable: true,
+        // });
+      } catch (err) {
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    };
+
+    mergeGuestCart();
+  }, [currentUser, guestCart, dispatch, toast]);
 
   return (
     <Box>
