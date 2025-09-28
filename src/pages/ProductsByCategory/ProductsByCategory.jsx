@@ -119,12 +119,17 @@ const ProductsByCategory = () => {
   // console.log(guestWishlist);
 
   useEffect(() => {
+    if (guestCart?.items) {
       dispatch(setCartCount(guestCart.items.length));
-  }, [guestCart.items, dispatch]);
+    }
+  }, [guestCart, dispatch]);
+
 
   useEffect(() => {
-    dispatch(setWishlistCount(guestWishlist.items.length));
-  }, [guestWishlist.items, dispatch]);
+    if (guestWishlist?.items) {
+      dispatch(setWishlistCount(guestWishlist.items.length));
+    }
+  }, [guestWishlist, dispatch]);
 
 
   const handleCart = async (product) => {

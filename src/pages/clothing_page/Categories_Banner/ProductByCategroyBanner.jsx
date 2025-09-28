@@ -21,7 +21,7 @@ export default function ProductByCategroyBanner({category}) {
 
         <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} py={3} mt={3} mb={5} className='bg-pink-500'>
             <Heading color={'white'} fontWeight={500} fontSize={20} textAlign={'center'} className='flex items-center gap-1 justify-center'>CALL TO ORDER 
-                <Link to={'tel:07047594667'}>07047594667</Link>
+                <Link to={'tel:07047594667'}>09134831368</Link>
             </Heading>
         </Box>
         
