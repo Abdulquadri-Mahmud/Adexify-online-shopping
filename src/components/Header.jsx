@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { SiPhpmyadmin } from 'react-icons/si';
 import SearchInputField from './searchs/SearchInputField';
 import GuestNav from './settings/GuestNav';
+import MobileSearchInput from './searchs/MobileSearchInput';
 
 export const OpenMenuCOntext = createContext();
 
@@ -90,62 +91,62 @@ const Navs = () => {
 // Mobile screen mene
 const MobileNav = () => {
     return (
-        <div className="block md:hidden text-black ">
+        <Box className="block md:hidden text-black ">
             <Flex justifyContent={'space-between'} alignItems={'center'} flex={1} mx={'auto'} className="hidden md:flex">
                 <All_category/>
-                <div className="md:hidden block">
-                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                <Box className="md:hidden block">
+                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/'}>
                             <MdHomeFilled className='text-lg'/>
                         </Link>
                         <Link to={'/'} className='text-[10px]'>Home</Link>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
 
-                <div className="md:hidden block">
-                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                <Box className="md:hidden block">
+                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/womens-clothing'}>
                             <GrUserFemale className='text-lg'/>
                         </Link>
                         <Link to={'/womens-clothing'} className='text-[10px]'>Women</Link>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
                 
-                <div className="md:hidden block">
-                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                <Box className="md:hidden block">
+                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/mens-clothing'}>
                             <IoManOutline className='text-lg'/>
                         </Link>
                         <Link to={'/mens-clothing'} className='text-[10px]'>Men</Link>
-                    </div>
-                </div>
-                <div className="md:hidden block">
-                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                    </Box>
+                </Box>
+                <Box className="md:hidden block">
+                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/category?category=Shirt'}>
                             <RiTShirt2Line className='text-lg'/>
                         </Link>
                         <Link to={'/category?category=Shirt'} className='text-[10px]'>Shirts</Link>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
                 
-                <div className="md:hidden block">
-                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                <Box className="md:hidden block">
+                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/category?category=Bags'}>
                             <BiSolidShoppingBags className='text-lg'/>
                         </Link>
                         <Link to={'/category?category=Bags'} className='text-[10px]'>Bags</Link>
-                    </div>
-                </div>
-                <div className="md:hidden block remove">
-                    <div className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
+                    </Box>
+                </Box>
+                <Box className="md:hidden block remove">
+                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/category?category=Shoes'}>
                             <GiConverseShoe className='text-lg'/>
                         </Link>
                         <Link to={'/category?category=Shoes'} className='text-[10px]'>Shoes</Link>
-                    </div>
-                </div>
+                    </Box>
+                </Box>
             </Flex>
-        </div>
+        </Box>
     )
 };
 
@@ -156,22 +157,22 @@ export default function Header() {
     const cartCount = useSelector((state) => state.cart.count);
 
   return (
-    <div className="sticky top-0 z-20 bg-white">
+    <Box className="sticky top-0 z-20 bg-white">
         <Box className='bg-pink-500 hidden md:block'>
             <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}  className="relative flex justify-between items-center px-2 md:px-6 text-white">
-                <div className="flex items-center">
+                <Box className="flex items-center">
                     <IoMdCall/>
                     <Link to='tel:+2347047594667' className='text-[12px]'>+234-704-7594-667</Link>
-                </div>
-                <div className="md:max-w-[40%] max-w-[30%] mx-auto " >
+                </Box>
+                <Box className="md:max-w-[40%] max-w-[30%] mx-auto " >
                     <marquee behavior="sliding" direction="" className={'text-[12px] capitalize'}>Welcome To ADEXIFY, We Give The Best.</marquee>
-                </div>
-                <div className=" flex gap-x-2">
+                </Box>
+                <Box className=" flex gap-x-2">
                     <Link to='#'><FaFacebookF className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
                     <Link to='#'><FaInstagram className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
                     <Link to='#'><FaTwitter className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
                     <Link to='#'><IoLogoYoutube className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
-                </div>
+                </Box>
             </Box>
         </Box>
         <Box top={0} position={'sticky'} className='bg-white text-white'>
@@ -179,13 +180,13 @@ export default function Header() {
                 <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
                     <Image src='/Logo.png' alt='logo' w={{md:'150px', base:'100px'}}/>
                 </Link>
-                <div className="w-[30%] rounded hidden md:block">
+                <Box className="w-[30%] rounded hidden md:block">
                     <SearchInputField/>
-                </div>
-                <div className="flex items-center">
-                    <div className="hidden md:block">
+                </Box>
+                <Box className="flex items-center">
+                    <Box className="hidden md:block">
                         <Link to={'/view-carts'}>
-                            <div className="bg-white text-black flex justify-between gap-2 p-1 px-3 rounded-md">
+                            <Box className="bg-white text-black flex justify-between gap-2 p-1 px-3 rounded-md">
                                 <Flex gap={0} alignItems={'center'}>
                                     <Text fontWeight={600} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'pink.500'}>My Cart</Text>
                                     <Box bg={'pink.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
@@ -195,10 +196,10 @@ export default function Header() {
                                         </Box>
                                     </Box>
                                 </Flex>
-                            </div>
+                            </Box>
                         </Link>
-                    </div>
-                    <div className="md:hidden block text-xl relative mt-2">
+                    </Box>
+                    <Box className="md:hidden block text-xl relative mt-2">
                         <Link to={'/view-carts'}>
                             <Flex gap={0} alignItems={'center'}>
                                 <Text fontWeight={500} fontSize={'sm'} color={'pink.500'} px={3} roundedLeft={'full'} mr={-2} bg={'white'}>My Cart</Text>
@@ -210,8 +211,8 @@ export default function Header() {
                                 </Box>
                             </Flex>
                         </Link>
-                    </div>
-                    <div className="flex items-center md:gap-2 md:text-black text-white">
+                    </Box>
+                    <Box className="flex items-center md:gap-2 md:text-black text-white">
                         {
                             currentUser ? (
                                 <Settings/>
@@ -224,14 +225,17 @@ export default function Header() {
                                 <Link to={'/admin-dashboard'} className='text-[14px]'><SiPhpmyadmin className='text-xl'/></Link>
                             )
                         }
-                    </div>
-                </div>
+                    </Box>
+                </Box>
             </Box>
         </Box>
-        <Box py={2} px={2} roundedTop={'xl'} bg={'gray.50'} maxW={{'2xl' : '50%', xl : '60%', lg : '80%', base: '100%'}} mx={'auto'}>
+        <Box py={2} px={2} roundedTop={'xl'} bg={'white'} maxW={{'2xl' : '50%', xl : '60%', lg : '80%', base: '100%'}} mx={'auto'}>
             <Navs/>
             <MobileNav/>
+            <Box display={{ md: 'none', base: 'block' }} width="100%" mt={2}>
+                <MobileSearchInput/>
+            </Box>
         </Box>
-    </div>
+    </Box>
   )
 }

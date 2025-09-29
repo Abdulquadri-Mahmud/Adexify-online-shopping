@@ -27,10 +27,6 @@ export default function TopShirts() {
     const guestWishlist = useSelector((state) => state.guestWishlist);
     const error = useSelector((state) => state.guestCart.error);
     
-    useEffect(() => {
-        dispatch(setCartCount(guestCart.items.length));
-    }, [guestCart.items, dispatch]);
-
     const handleCart = async (product) => {
         setLoadingProductId(product._id);
 
@@ -291,9 +287,9 @@ export default function TopShirts() {
     return (
         <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
             <VStack spacing={2} m={1} align="stretch">
-                <Link to={`/product-details/${product?._id}`}>
+                {/* <Link to={`/product-details/${product?._id}`}>
                     <Image mx="auto" src={product?.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'150px'} width={'full'} objectFit="cover" borderRadius="md"/>
-                </Link>
+                </Link> */}
 
                 {loadingWishlistProductId === product._id ? (
                     <Flex justifyContent='center' alignItems='center' bg={'pink.600'} rounded={'full'} className="absolute top-2 right-2 w-[30px] h-[30px]">
@@ -334,12 +330,14 @@ export default function TopShirts() {
                     animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
                     transition={{ duration: 0.2 }}
                     disabled={loadingProductId === product._id}
-                    _hover={{ bg: 'pink.800' }}
+                    _hover={{ bg: 'pink.500', color: 'white' }}
                     onClick={() => handleCart(product)}
                     w="full"
                     mt={3}
-                    bg="pink.500"
-                    color="white">
+                    bg="white"
+                    border={'1px solid'}
+                    borderColor={'pink.500'}
+                    color="pink.500">
                     {loadingProductId === product._id ? (
                         <>
                         <Spinner size="sm" mr={2} /> Adding...
@@ -348,7 +346,6 @@ export default function TopShirts() {
                         'Add to Cart'
                     )}
                 </MotionButton>
-
             </Box>
         </VStack>
     </Box>

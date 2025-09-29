@@ -25,10 +25,6 @@ export default function Hoodies_Sweater() {
     const guestWishlist = useSelector((state) => state.guestWishlist);
     const error = useSelector((state) => state.guestCart.error);
 
-    useEffect(() => {
-        dispatch(setCartCount(guestCart.items.length));
-    }, [guestCart.items, dispatch]);
-
     const handleCart = async (product) => {
         setLoadingProductId(product._id);
 
@@ -287,10 +283,14 @@ export default function Hoodies_Sweater() {
     };
     
     return (
-        <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
-            <VStack spacing={2} m={1} align="stretch">
+      <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={1} bg="white">
+        <VStack spacing={2} m={1} align="stretch">
+            <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-1 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
+                <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
+            </Link>
+
             <Link to={`/product-details/${product?._id}`}>
-                <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
+                <Image mx="auto" src={product?.image?.[0] || "https://via.placeholder.com/150"} alt={product?.name} height={'150px'} width={'full'} objectFit="cover" borderRadius="md"/>
             </Link>
 
             {loadingWishlistProductId === product._id ? (
@@ -301,17 +301,17 @@ export default function Hoodies_Sweater() {
                 <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
                     <IoHeart className="text-xl text-white hover:text-gray-600" />
                 </button>
-                )}
+            )}
 
             <Box>
-                <Text fontWeight="500" isTruncated>{product.name}</Text>
-                <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
+                <Text fontWeight="500" fontSize={'sm'} isTruncated>{product.name}</Text>
+                <Badge bg="gray.200" fontSize="10px" my={'2'} p={1} px={2} color="gray.800">
                     {product.category}
                 </Badge>
-                <Text fontSize="sm" color="gray.600" isTruncated>
+                {/* <Text fontSize="sm" color="gray.600" isTruncated>
                     {product.description}
-                </Text>
-                <Flex justifyContent={'space-between0'} alignItems={'center'}>
+                </Text> */}
+                <Flex justifyContent={'space-between'} alignItems={'center'} mt={1}>
                     <Text display="flex" alignItems="center">
                         <FaNairaSign />
                         <span className="font-medium">{product.price.toLocaleString()}.00</span>
@@ -323,29 +323,31 @@ export default function Hoodies_Sweater() {
                         </Text>
                     )}
                 </Flex>
-                <MotionButton
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
-                    transition={{ duration: 0.2 }}
-                    disabled={loadingProductId === product._id}
-                    _hover={{ bg: 'pink.800' }}
-                    onClick={() => handleCart(product)}
-                    w="full"
-                    mt={3}
-                    bg="pink.500"
-                    color="white">
-                    {loadingProductId === product._id ? (
-                        <>
-                        <Spinner size="sm" mr={2} /> Adding...
-                        </>
-                    ) : (
-                        'Add to Cart'
-                    )}
-                </MotionButton>
 
-            </Box>
-        </VStack>
-    </Box>
+            <MotionButton
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 1 }}
+                animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
+                transition={{ duration: 0.2 }}
+                disabled={loadingProductId === product._id}
+                _hover={{ bg: 'pink.500', color: 'white' }}
+                onClick={() => handleCart(product)}
+                w="full"
+                mt={3}
+                bg="white"
+                border={'1px solid'}
+                borderColor={'pink.500'}
+                color="pink.500">
+                {loadingProductId === product._id ? (
+                    <>
+                    <Spinner size="sm" mr={2} /> Adding...
+                    </>
+                ) : (
+                    'Add to Cart'
+                )}
+            </MotionButton>
+        </Box>
+    </VStack>
+</Box>
   )
 }

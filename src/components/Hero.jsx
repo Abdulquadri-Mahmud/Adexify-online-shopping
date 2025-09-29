@@ -69,30 +69,26 @@ const categories = [
   },
   {
     name: 'Mobile Devices',
-    url: '/category?category=Shoes',
-    image: '/sneaker.gif',
+    url: '/category?category=mobiles',
+    image: '/mobile.webp',
   },
   {
-    name: 'Computing Device',
-    url: '/category?category=Jewellery',
-    image: '/jewellery.gif',
+    name: 'Electronics',
+    url: '/category?category=desktops',
+    image: '/electronics.jpg',
   },
 ];
 
 const CategoryCards = () => {
   return (
-    <SimpleGrid
-      columns={{ base: 3, sm: 3, md: 3, lg: 2, xl: 3, '2xl': 2 }}
-      spacing={3}
-      justifyContent="center"
-    >
+    <SimpleGrid columns={{ base: 3, sm: 3, md: 3, lg: 2, xl: 3, '2xl': 2 }} spacing={3} justifyContent="center">
       {categories.map((cat, index) => (
         <Link key={index} to={cat.url}>
           <Box
             height={{ base: '80px', sm: '100px', md: '130px', xl: '190px', '2xl': '180px' }}
             bgImage={cat.image}
             bgPosition="center"
-            bgSize="cover"
+            bgSize="contain"
             bgRepeat="no-repeat"
             rounded="md"
             bgBlendMode="multiply"
@@ -102,8 +98,8 @@ const CategoryCards = () => {
             alignItems="center"
             textAlign="center"
           >
-            <Box bg="pink.500" px={4} py={1} rounded="md">
-              <Text fontSize={{ base: '10px', md: '14px' }} fontWeight={500} color="white">
+            <Box className='bg-white/80' px={4} py={1} rounded="md">
+              <Text fontSize={{ base: '10px', md: '14px' }} fontWeight={500} color="pink.500">
                 {cat.name}
               </Text>
             </Box>
@@ -111,7 +107,7 @@ const CategoryCards = () => {
         </Link>
       ))}
     </SimpleGrid>
-  );
+  );0
 };
 
 export default function Hero() {

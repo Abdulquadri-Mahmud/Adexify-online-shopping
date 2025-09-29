@@ -27,10 +27,6 @@ export default function Men_Clothing() {
     const guestWishlist = useSelector((state) => state.guestWishlist);
     const error = useSelector((state) => state.guestCart.error);
 
-    useEffect(() => {
-        dispatch(setCartCount(guestCart.items.length));
-    }, [guestCart.items, dispatch]);
-
     const handleCart = async (product) => {
         setLoadingProductId(product._id);
 
@@ -62,7 +58,6 @@ export default function Men_Clothing() {
                 dispatch(addToCart(cartItem));
                 const count = guestCart.items.length;
     
-                console.log('count: ', count);
                 dispatch(setCartCount(count));
                 
                 if (error) {
@@ -289,8 +284,12 @@ export default function Men_Clothing() {
             }
         };
     return (
-        <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
+        <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={1} bg="white">
             <VStack spacing={2} m={1} align="stretch">
+                <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-1 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
+                    <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
+                </Link>
+
                 <Link to={`/product-details/${product?._id}`}>
                     <Image mx="auto" src={product?.image?.[0] || "https://via.placeholder.com/150"} alt={product?.name} height={'150px'} width={'full'} objectFit="cover" borderRadius="md"/>
                 </Link>
@@ -305,25 +304,26 @@ export default function Men_Clothing() {
                     </button>
                 )}
 
-                    <Box>
-                        <Text fontWeight="500" isTruncated>{product.name}</Text>
-                    <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
+                <Box>
+                    <Text fontWeight="500" fontSize={'sm'} isTruncated>{product.name}</Text>
+                    <Badge bg="gray.200" fontSize="10px" my={'2'} p={1} px={2} color="gray.800">
                         {product.category}
                     </Badge>
-                    <Text fontSize="sm" color="gray.600" isTruncated>
+                    {/* <Text fontSize="sm" color="gray.600" isTruncated>
                         {product.description}
-                    </Text>
+                    </Text> */}
+                    <Flex justifyContent={'space-between'} alignItems={'center'} mt={1}>
+                        <Text display="flex" alignItems="center">
+                            <FaNairaSign />
+                            <span className="font-medium">{product.price.toLocaleString()}.00</span>
+                        </Text>
 
-                    <Text display="flex" alignItems="center">
-                    <FaNairaSign />
-                    <span className="font-medium">{product.price.toLocaleString()}.00</span>
-                    </Text>
-
-                    {product.oldprice && (
-                    <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                        <FaNairaSign className="inline-block text-sm" />{product.oldprice}
-                    </Text>
-                    )}
+                        {product.oldprice && (
+                            <Text fontSize="sm" color="gray.400" textDecoration="line-through">
+                                <FaNairaSign className="inline-block text-sm" />{product.oldprice}
+                            </Text>
+                        )}
+                    </Flex>
 
                 <MotionButton
                     whileTap={{ scale: 0.95 }}
@@ -331,12 +331,14 @@ export default function Men_Clothing() {
                     animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
                     transition={{ duration: 0.2 }}
                     disabled={loadingProductId === product._id}
-                    _hover={{ bg: 'pink.800' }}
+                    _hover={{ bg: 'pink.500', color: 'white' }}
                     onClick={() => handleCart(product)}
                     w="full"
                     mt={3}
-                    bg="pink.500"
-                    color="white">
+                    bg="white"
+                    border={'1px solid'}
+                    borderColor={'pink.500'}
+                    color="pink.500">
                     {loadingProductId === product._id ? (
                         <>
                         <Spinner size="sm" mr={2} /> Adding...

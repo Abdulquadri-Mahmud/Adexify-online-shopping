@@ -220,9 +220,13 @@ export default function SearchPage() {
             <Text color="gray.500">No products found.</Text>
           )}
 
-          <SimpleGrid columns={{ base: 2, sm: 3, md: 4, xl: 5 }} bg={"white"} p={{ md: 3 }} rounded={"xl"} gap={4} spacing={3}> 
+          <SimpleGrid columns={{ base: 2, sm: 2, md: 4, xl: 5 }} bg={"white"} p={{ md: 3 }} rounded={"xl"} gap={4} spacing={3}> 
             {products.map((item) => (
-              <GridItem key={item._id} bg="white" borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} position="relative">
+              <GridItem key={item._id} pos={'relative'} bg="white" borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} position="relative">
+                {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
+                  <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
+                </Link> */}
+                
                 <Link to={`/product-details/${item._id}`}>
                   <Flex  w={{ base: "full", md: "100%" }} p={2} h="150px"  mx="auto"  justify={"center"}  alignItems={"center"}>
                     <Image
@@ -242,9 +246,9 @@ export default function SearchPage() {
                   <Heading as={"h2"} fontWeight={500} fontSize={'md'} color={"gray.600"} isTruncated className="truncate">
                     {item.name}
                   </Heading>
-                  <Text color="gray.600" fontSize="12px" rounded="md" isTruncated className="truncate" mb={1}>
+                  {/* <Text color="gray.600" fontSize="12px" rounded="md" isTruncated className="truncate" mb={1}>
                     {item.description}
-                  </Text>
+                  </Text> */}
                   <Flex justify="space-between" align="center" mt={1} w="full">
                     <Box>
                       {item.oldprice ? (
@@ -253,7 +257,7 @@ export default function SearchPage() {
                             ((item.oldprice - item.price) / item.oldprice) *
                             100
                           ).toFixed(2)}
-                          % OFF
+                          %
                         </Badge>
                       ) : (
                         <Badge bg="gray.100" fontWeight={500} color="gray.800" variant="subtle" fontSize="12px" mt={2}> 
@@ -267,10 +271,10 @@ export default function SearchPage() {
                     </Badge> */}
                   </Flex>
                   <Flex justify="space-between" mt={1}>
-                    <Text display={"flex"} alignItems={"center"} fontWeight="bold" color="pink.600" fontSize="lg">
+                    <Badge display={"flex"} alignItems={"center"} fontWeight="bold" color="pink.600" fontSize="lg">
                       <TbCurrencyNaira className="" />
                       {item.price?.toLocaleString() || "N/A"}.00
-                    </Text>
+                    </Badge>
                     {item.oldprice && (
                       <Flex fontSize="sm" color="gray.400" textDecoration="line-through" align="center" ml="3">
                         <TbCurrencyNaira fontSize="13px" />

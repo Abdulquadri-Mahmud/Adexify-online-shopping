@@ -116,22 +116,6 @@ const ProductsByCategory = () => {
   const guestWishlist = useSelector((state) => state.guestWishlist);
   const error = useSelector((state) => state.guestCart.error);
 
-  // console.log(guestWishlist);
-
-  useEffect(() => {
-    if (guestCart?.items) {
-      dispatch(setCartCount(guestCart.items.length));
-    }
-  }, [guestCart, dispatch]);
-
-
-  useEffect(() => {
-    if (guestWishlist?.items) {
-      dispatch(setWishlistCount(guestWishlist.items.length));
-    }
-  }, [guestWishlist, dispatch]);
-
-
   const handleCart = async (product) => {
       setLoadingProductId(product._id);
 
@@ -439,12 +423,12 @@ const ProductsByCategory = () => {
       <ProductByCategroyBanner category={category} />
       
       <Box maxW={{md:"95%", base: 'full'}} mx="auto" my={6} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
-        <Box bg={'gray.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={'wrap'}>
-          <Heading size="lg" color={'gray.800'}>Browse Products in "<Text as={'span'} color={'pink.500'}>{category}</Text>"</Heading>
+        <Box bg={'gray.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={{md:'wrap'}}>
+          <Heading size={{md:"lg", base: 'sm', xs: 'sm'}} color={'gray.800'}>Browse Products in "<Text as={'span'} color={'pink.500'}>{category}</Text>"</Heading>
 
           {/* Price Filter */}
           <Box >
-            <Select bg={'white'} value={priceRange} onChange={(e) => handlePriceFilter(e.target.value)} w="200px">
+            <Select bg={'white'} value={priceRange} onChange={(e) => handlePriceFilter(e.target.value)} w={{md:"200px"}}>
               <option value="all">All Prices</option>
               <option value="below5000">Below ₦5,000</option>
               <option value="5000to10000">₦5,000 - ₦10,000</option>
@@ -472,42 +456,46 @@ const ProductsByCategory = () => {
         {getError && <Text color="red.500">{getError}</Text>}
 
         {/* Product Grid */}
-        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
           {currentItems.map((product) => (
             <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
               <VStack spacing={2} align="stretch">
+                {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
+                  <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
+                </Link> */}
+
                 <Link to={`/product-details/${product._id}`}>
                   <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
                 </Link>
 
                 {loadingWishlistProductId === product._id ? (
-                    <Flex justifyContent='center' alignItems='center' bg={'pink.600'} rounded={'full'} className="absolute top-2 right-2 w-[30px] h-[30px]">
+                    <Flex justifyContent='center' alignItems='center' bg={'pink.600'} rounded={'full'} className="absolute top-2 right-2 w-[26px] h-[26px]">
                       <Spinner color="gray.50" size="sm" mr={2} />
                     </Flex>
                   ) : (
-                    <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[30px] h-[30px] bg-gray-200 flex justify-center items-center rounded-full">
-                      <IoHeart className="text-xl text-white hover:text-gray-600" />
+                    <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[26px] h-[26px] bg-pink-200 flex justify-center items-center rounded-full">
+                      <IoHeart className="text-xl text-white hover:text-pink-600" />
                     </button>
                   )}
 
                 <Box>
-                  <Text fontWeight="500" isTruncated>{product.name}</Text>
-                  <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
+                  <Text fontWeight="500" fontSize={'14'} isTruncated>{product.name}</Text>
+                  {/* <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
                     {product.category}
-                  </Badge>
-                  <Text fontSize="sm" color="gray.600" isTruncated>
+                  </Badge> */}
+                  {/* <Text fontSize="sm" color="gray.600" isTruncated>
                     {product.description}
-                  </Text>
+                  </Text> */}
                   <Flex justifyContent={'space-between'} alignItems="center" mt={1}>
-                    <Text display="flex" alignItems="center">
+                    <Text display="flex" alignItems="center" fontWeight={'600'}>
                       <FaNairaSign />
                       <span className="font-medium">{product.price.toLocaleString()}.00</span>
                     </Text>
 
                     {product.oldprice && (
-                      <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                        <FaNairaSign className="inline-block text-sm" />{product.oldprice}
-                      </Text>
+                      <Badge fontSize="12px" fontWeight={400} color="gray.400" textDecoration="line-through">
+                        <FaNairaSign className="inline-block text-[12px]" />{product.oldprice}
+                      </Badge>
                     )}
                   </Flex>
 
@@ -517,12 +505,14 @@ const ProductsByCategory = () => {
                     animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
                     transition={{ duration: 0.2 }}
                     disabled={loadingProductId === product._id}
-                    _hover={{ bg: 'pink.800' }}
+                    _hover={{ bg: 'pink.500', color: 'white' }}
                     onClick={() => handleCart(product)}
                     w="full"
                     mt={3}
-                    bg="pink.500"
-                    color="white">
+                    bg="white"
+                    border={'1px solid'}
+                    borderColor={'pink.500'}
+                    color="pink.500">
                     {loadingProductId === product._id ? (
                       <>
                         <Spinner size="sm" mr={2} /> Adding...

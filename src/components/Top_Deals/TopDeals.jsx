@@ -44,16 +44,21 @@ export default function TopDeals() {
       </Box>
 
       <Box p={4}>
-        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
           {loading
             ? Array.from({ length: 12 }).map((_, index) => (
                 <Skeleton key={index} height="200px" borderRadius="md" />
               ))
             : products.map((product) => (
-                <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} transition="all 0.3s">
-                  <Link to={`/product-details/${product?._id}`}>
-                    <Image src={product.image?.[0]} alt={product.name} height="150px" width="100%" objectFit="cover" />
+                <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} pos={'relative'} transition="all 0.3s">
+                  <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md flex items-center gap-2'>
+                    <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
                   </Link>
+                  
+                  <Link to={`/product-details/${product?._id}`}>
+                    <Image src={product.image?.[0]} alt={product.name} height={"150px"} width="100%" objectFit="cover" />
+                  </Link>
+                  
                   <Box p={3}>
                     <Text fontSize="14px" noOfLines={1}>{product.name}</Text>
                     <Flex justify={'space-between'} align={'center'}>

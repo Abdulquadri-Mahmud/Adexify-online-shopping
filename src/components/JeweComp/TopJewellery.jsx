@@ -26,10 +26,6 @@ export default function TopJewellery() {
     const guestWishlist = useSelector((state) => state.guestWishlist);
     const error = useSelector((state) => state.guestCart.error);
 
-    useEffect(() => {
-        dispatch(setCartCount(guestCart.items.length));
-    }, [guestCart.items, dispatch]);
-
   const handleCart = async (product) => {
       setLoadingProductId(product._id);
 
@@ -331,18 +327,20 @@ export default function TopJewellery() {
                   animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
                   transition={{ duration: 0.2 }}
                   disabled={loadingProductId === product._id}
-                  _hover={{ bg: 'pink.800' }}
+                  _hover={{ bg: 'pink.500', color: 'white' }}
                   onClick={() => handleCart(product)}
                   w="full"
                   mt={3}
-                  bg="pink.500"
-                  color="white">
+                  bg="white"
+                  border={'1px solid'}
+                  borderColor={'pink.500'}
+                  color="pink.500">
                   {loadingProductId === product._id ? (
-                      <>
+                    <>
                       <Spinner size="sm" mr={2} /> Adding...
-                      </>
+                    </>
                   ) : (
-                      'Add to Cart'
+                    'Add to Cart'
                   )}
                 </MotionButton>
 

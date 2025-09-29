@@ -85,16 +85,26 @@ const WomenHeader = () => {
 };
 
 export default function Women_Clothing_page() {
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
-      const data = await res.json();
-      setProducts(data);
+      setLoading(true);
+      try {
+        const res = await fetch('https://adexify-api.vercel.app/api/products/all-products');
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false); // ✅ always stop loading
+      }
     };
+
     fetchProducts();
   }, []);
+
 
   const renderSection = (title, context, Component, filterFn) => {
     const filtered = products.filter(filterFn).slice(0, 6);
@@ -108,15 +118,29 @@ export default function Women_Clothing_page() {
           </Flex>
         </Box>
         <Box p={3}>
-          <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={3}>
-            {filtered.map(product => (
-              <context.Provider key={product._id} value={product}>
-                <Suspense fallback={<Loading />}>
+          {loading ? (
+            // 🔹 Skeleton loader grid
+            <SimpleGrid bg={"white"} rounded={"xl"} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={3} py={3} px={2}>
+              {[...Array(8)].map((_, index) => (
+                <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
+                  <Box h="150px" bg="gray.300" mb={4} />
+                  <Box h="2" bg="gray.300" w="75%" mb={2} />
+                  <Box h="2" bg="gray.300" w="50%" mb={2} />
+                  <Box h="2" bg="gray.300" w="50%" />
+                  <Box h="10" bg="gray.300" w="full" mt={3} />
+                </SimpleGrid>
+              ))}
+            </SimpleGrid>
+          ) : (
+            <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+              {filtered.map((product) => (
+                <context.Provider key={product._id} value={product}>
+                  {/* Direct render, no Suspense */}
                   <Component product={product} />
-                </Suspense>
-              </context.Provider>
-            ))}
-          </SimpleGrid>
+                </context.Provider>
+              ))}
+            </SimpleGrid>
+          )}
         </Box>
       </Box>
     );
