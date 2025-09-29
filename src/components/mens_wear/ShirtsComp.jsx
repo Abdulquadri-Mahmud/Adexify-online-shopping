@@ -288,9 +288,9 @@ export default function ShirtsComp() {
     return (
       <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={1} bg="white">
         <VStack spacing={2} m={1} align="stretch">
-            <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-1 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
+            {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-1 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
                 <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
-            </Link>
+            </Link> */}
 
             <Link to={`/product-details/${product?._id}`}>
                 <Image mx="auto" src={product?.image?.[0] || "https://via.placeholder.com/150"} alt={product?.name} height={'150px'} width={'full'} objectFit="cover" borderRadius="md"/>
