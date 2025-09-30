@@ -68,8 +68,10 @@ const MobileSearchInput = () => {
   return (
     <Box position="relative" display="flex" justifyContent="center">
       {/* Circle button */}
-      <Box w="60px" h="35px" borderRadius="full" bg="white" display="flex" justifyContent="center" alignItems="center" cursor="pointer" shadow="lg" transition="all 0.2s ease" _hover={{ transform: "scale(1.05)", shadow: "xl" }} onClick={handleToggle} zIndex={20}>
-        <Icon as={MdSearch} color="pink.500" fontSize="24px" />
+      <Box pos={'relative'}  onClick={handleToggle} zIndex={20}>
+        <Box className="animate-bounce" p="2px" borderRadius="full" bg="white" display="flex" justifyContent="center" alignItems="center" cursor="pointer" shadow="lg" transition="all 0.2s ease" _hover={{ transform: "scale(1.05)", shadow: "xl" }}>
+          <Icon as={MdSearch} color="pink.500" fontSize="24px" />
+        </Box>
       </Box>
 
       {/* Stroke + Input animation */}
