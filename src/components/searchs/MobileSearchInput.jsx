@@ -77,7 +77,7 @@ const MobileSearchInput = () => {
         {open && (
           <Box as="form" onSubmit={handleSearch} position="fixed" top={0} left={0} right={0} bottom={0} bg="rgba(0,0,0,0.5)" zIndex={15} display="flex" justifyContent="center" alignItems="start" pt="60px">
             <Box
-              pr={'2.5rem'}
+              pr={{md:'2.5rem', base: '2rem'}}
               ref={ref}
               display="flex"
               flexDirection="column"
@@ -115,7 +115,7 @@ const MobileSearchInput = () => {
                   placeholder="Search for products, categories..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  w="240px"
+                  w={{md:"240px", base: '180px'}}
                   h={'40px'}
                   rounded={'md'}
                   size="sm"
