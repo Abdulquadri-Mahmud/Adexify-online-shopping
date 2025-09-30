@@ -50,24 +50,24 @@ const MenHeader = () => {
     return (
         <>
             <Box bg={''} py={2}>
-                <Box mt={4} maxW={{'2xl' : '80%', xl : '95%', lg : '97%', base: '97%'}} mx={'auto'} bg={'white'} py={4} px={6} rounded={'md'}>
+                <Box mt={2} maxW={{'2xl' : '80%', xl : '95%', lg : '97%', base: '97%'}} mx={'auto'} bg={'white'} py={4} px={6} rounded={'md'}>
                     <Box bg={''} className="flex gap-1 items-center">
                         <Link to={'/'} className='text-[13px] text-gray-500'>Home</Link>
                         <PiGreaterThan className='text-[13px] text-gray-500 pt-1'/>
                         <Link to={'/fashion'} className='text-[13px] text-gray-500'>Fashion</Link>
                         <PiGreaterThan className='text-[13px] text-gray-500 pt-1'/>
-                        <Link to={'/womens-clothing'} className='text-[13px] text-gray-500'>Women's Fashion</Link>
+                        <Link to={'/mens-clothing'} className='text-[13px] text-gray-500'>Men's Fashion</Link>
                     </Box>
                 </Box>
             </Box>
-            <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} py={2} mt={3} mb={5} className='bg-pink-500'>
+            {/* <Box rounded={'md'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} py={2} mt={2} mb={2} className='bg-pink-500'>
                 <Heading color={'white'} fontWeight={500} fontSize={20} textAlign={'center'} className='flex items-center gap-1 justify-center'>CALL TO ORDER 
                     <Link to={'tel:07047594667'}>07047594667</Link>
                 </Heading>
-            </Box>
+            </Box> */}
             
-            <Box bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} rounded={'md'} p={2} mt={4}>
-                <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '300px',md: '220px', base: '200px'}} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'top'} bgBlendMode={'multiply'} className='bg-slate-400' bgImage={'/hero2.jpg'} position={'relative'}>
+            <Box bg={'white'} maxW={{'2xl' : '80%', xl : '95%', lg : '100%', base: '97%'}} mx={'auto'} rounded={'md'} p={2} mt={2}>
+                <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '300px',md: '220px', base: '200px'}} rounded={'md'} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'top'} bgBlendMode={'multiply'} className='bg-slate-400' bgImage={'/hero2.jpg'} position={'relative'}>
                     <Box position={'absolute'}>
                         <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
                         <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Men's Fahion</Heading>
@@ -107,7 +107,7 @@ export default function Men_Clothing_page() {
         <Box>
             <Flex color='white' bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
                 <Heading fontWeight={500} fontSize={20}>{title}</Heading>
-                <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]' /></Link>
+                {/* <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]' /></Link> */}
             </Flex>
         </Box>
         <Box p={2}>

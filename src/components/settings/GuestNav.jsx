@@ -15,7 +15,7 @@ export default function GuestNav() {
     const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <div className=''>
+    <Box zIndex={''} className=''>
         <Menu className="bg-black">
             <MenuButton display={{base: 'block', md: 'block'}} bg={'transparent'} height={'30px'} color={'black'}
             _hover={{bg: 'transparent'}} as={Button} _focus={{bg: 'transparent'}} fontWeight={400} className=''>
@@ -57,6 +57,6 @@ export default function GuestNav() {
                 </MenuItem>
             </MenuList>
         </Menu>
-    </div>
+    </Box>
   )
 }

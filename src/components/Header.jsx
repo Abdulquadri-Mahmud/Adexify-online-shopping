@@ -180,8 +180,13 @@ export default function Header() {
                 <Link to={'/'} className='bg-white md:px-0 md:py-0 px-2 py-1 rounded-md flex items-center gap-2'>
                     <Image src='/Logo.png' alt='logo' w={{md:'150px', base:'100px'}}/>
                 </Link>
+                
                 <Box className="w-[30%] rounded hidden md:block">
                     <SearchInputField/>
+                </Box>
+
+                <Box display={{ md: 'none', base: 'block' }}>
+                    <MobileSearchInput/>
                 </Box>
                 <Box className="flex items-center">
                     <Box className="hidden md:block">
@@ -232,9 +237,6 @@ export default function Header() {
         <Box py={2} px={2} roundedTop={'xl'} bg={'white'} maxW={{'2xl' : '50%', xl : '60%', lg : '80%', base: '100%'}} mx={'auto'}>
             <Navs/>
             <MobileNav/>
-            <Box display={{ md: 'none', base: 'block' }} width="100%" mt={2}>
-                <MobileSearchInput/>
-            </Box>
         </Box>
     </Box>
   )

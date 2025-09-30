@@ -116,9 +116,9 @@ export default function Home_category() {
                 {
                   currentProducts.map((product) => (
                     <Box pos={'relative'} key={product._id} bg="white" borderRadius="md" overflow="hidden" shadow="md" transition="all 0.3s" _hover={{ shadow: 'lg', transform: 'scale(1.02)' }}>
-                      <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md flex items-center gap-2'>
+                      {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md flex items-center gap-2'>
                         <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
-                      </Link>
+                      </Link> */}
                       
                       <Link to={`/product-details/${product._id}`}>
                         <Image src={product.image?.[0] || '/placeholder.png'} alt={product.name} objectFit="cover" width="100%" height="180px" loading="lazy"/>

@@ -21,7 +21,7 @@ export default function Settings() {
     const {_id} = currentUser;
 
   return (
-    <div className=''>
+    <div className='z-100'>
         <Menu className="bg-black">
             <MenuButton display={{base: 'block', md: 'block'}} bg={'transparent'} height={'30px'} color={'black'}
             _hover={{bg: 'transparent'}} as={Button} _focus={{bg: 'transparent'}} fontWeight={400} className=''>
@@ -33,7 +33,7 @@ export default function Settings() {
                     <FaRegUser className='text-xl hover:text-black text-white md:text-pink-500' />
                 </Box>
             </MenuButton>
-            <MenuList p={2} bg={useColorModeValue('white')}>
+            <MenuList zIndex={100} p={2} bg={useColorModeValue('white')}>
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 font-medium'>
                     <Flex alignItems={'center'} gap={2}>
                         <Heading fontWeight={500} fontSize={20} className='text-pink-600'>Hi {currentUser.firstname}</Heading>
