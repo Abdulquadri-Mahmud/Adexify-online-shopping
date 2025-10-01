@@ -220,22 +220,22 @@ export default function SearchPage() {
             <Text color="gray.500">No products found.</Text>
           )}
 
-          <SimpleGrid columns={{ base: 2, sm: 2, md: 4, xl: 5 }} bg={"white"} p={{ md: 3 }} rounded={"xl"} gap={4} spacing={3}> 
+          <SimpleGrid columns={{ base: 2, sm: 3, md: 4, xl: 5 }} bg={"white"} p={{ md: 3 }} rounded={"xl"} gap={4} spacing={3}> 
             {products.map((item) => (
-              <GridItem key={item._id} pos={'relative'} bg="white" borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} position="relative">
+              <Box key={item._id} pos={'relative'} bg="white" borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} position="relative">
                 {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
                   <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
                 </Link> */}
                 
                 <Link to={`/product-details/${item._id}`}>
-                  <Flex  w={{ base: "full", md: "100%" }} p={2} h="150px"  mx="auto"  justify={"center"}  alignItems={"center"}>
+                  <Flex  w={{ base: "full", md: "100%" }} p={2} mx="auto"  justify={"center"}  alignItems={"center"}>
                     <Image
                       src={item.image?.length > 0 ? item.image[0] : "/placeholder.png"}
                       alt={item.name}
                       h="full"
                       objectFit="cover"
                       borderRadius="md"
-                      height={'140px'} width={'full'}
+                      height={'200px'} width={'full'}
                     />
                   </Flex>
                 </Link>
@@ -286,7 +286,7 @@ export default function SearchPage() {
                     Add to Cart
                   </Button> */}
                 </Box>
-              </GridItem>
+              </Box>
             ))}
           </SimpleGrid>
         </Box>

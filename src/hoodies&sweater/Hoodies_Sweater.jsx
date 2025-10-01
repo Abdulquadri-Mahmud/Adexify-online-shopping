@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Box, Button, Flex, Image, Spinner, Text, useToast, VStack } from '@chakra-ui/react';
 import { Hoodies_Sweater_Context } from '../pages/clothing_page/Men_Clothing_page';
 import {motion} from 'framer-motion';
-import { addToCart, clearError } from '../store/cart/cartSlice';
+import { addToCart } from '../store/cart/cartSlice';
 import { setCartCount } from '../store/cart/cartActions';
 import { addToWishlist, clearWishlistError } from '../store/cart/wishlistSlice';
 import { setWishlistCount } from '../store/cart/wishlishActions';
+import { useCart } from '../pages/cartsPage/CartCountContext';
+import { getCartToken } from '../store/cart/utils/cartToken';
 
 const MotionButton = motion.create(Button);
 
@@ -21,145 +23,80 @@ export default function Hoodies_Sweater() {
     const [loadingProductId, setLoadingProductId] = useState(null);
     const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
     const { currentUser } = useSelector((state) => state.user);
-    const guestCart = useSelector((state) => state.guestCart);
     const guestWishlist = useSelector((state) => state.guestWishlist);
-    const error = useSelector((state) => state.guestCart.error);
+    const { updateCart } = useCart();
 
-    const handleCart = async (product) => {
-        setLoadingProductId(product._id);
-
-        const cartItem = {
-            productId: product._id,
-            name: product.name,
-            stock: product.stock || 0,
-            price: product.price,
-            discount: product.discount || 0,
-            oldprice: product.oldprice || 0,
-            deal: product.deal || "",
-            category: product.category || "",
-            image: product.image || [],
-            description: product.description || "",
-            discountType: product.discountType || "",
-            trackingId: product.trackingId || "",
-            size: product.size || [],
-            selectedSize: product.size?.[0] || "",
-            quantity: 1,
-            gender: product.gender || "unisex",
-            brand: product.brand || "",
+    const handleCart = async (product, size, qty) => {
+      setLoadingProductId(product._id);
+  
+      const cartItem = {
+        productId: product._id,
+        name: product.name,
+        stock: product.stock || 0,
+        price: product.price,
+        discount: product.discount || 0,
+        oldprice: product.oldprice || 0,
+        deal: product.deal || "",
+        category: product.category || "",
+        image: product.image || [],
+        description: product.description || "",
+        discountType: product.discountType || "",
+        trackingId: product.trackingId || "",
+        size: product.size || [],
+        selectedSize: size || product.size?.[0] || "",
+        quantity: qty || 1,
+        gender: product.gender || "unisex",
+      };
+  
+      try {
+        const payload = {
+          userId: currentUser?._id || null,
+          cartToken: currentUser?._id ? null : getCartToken(),
+          product: cartItem,
         };
-
-        try {
-            if (!currentUser?._id) {
-                // =======================
-                // Guest Cart (Redux/localStorage)
-                // =======================
-                dispatch(addToCart(cartItem));
-                const count = guestCart.items.length;
-
-                dispatch(setCartCount(count));
-                
-                if (error) {
-                    toast({
-                        title: "Error",
-                        description: error,
-                        status: "error",
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                    
-                    // reset error for next action
-                    dispatch(clearError());
-                } else {
-                    toast({
-                        title: "Added to cart!",
-                        description: "Item added locally. Log in to save permanently.",
-                        status: "success",
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                    // dispatch(clearError());
-                }
-            } else {
-                
-            // =======================
-            // Logged-in Cart
-            // =======================
-
-            // 1. If guest cart exists, merge first
-
-            if (guestCart.length > 0) {
-                    const res = await fetch("https://adexify-api.vercel.app/api/cart/merge", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: currentUser._id, products: guestCart }),
-                });
-
-                if (!res || data.success === false) {
-                    toast({
-                        title: "Error",
-                        description: data.message,
-                        status: "error",
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                    return;
-                };
-
-                dispatch(setCartCount(count));
-
-                dispatch(clearCart()); // clear guest cart after merging
-            }
-
-            // 2. Add current product to DB cart
-            const payload = { userId: currentUser._id, product: cartItem };
-
-            const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json();
-
-            if (res.ok && data.success === true) {
-                toast({
-                    title: "Added to cart!",
-                    description: "Item added successfully.",
-                    status: "success",
-                    duration: 3000,
-                    isClosable: true,
-                });
-
-                // Refresh backend cart count
-                const cartRes = await fetch(
-                "https://adexify-api.vercel.app/api/cart/get-user-cart",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: currentUser._id }),
-                }
-                );
-
-                const cartData = await cartRes.json();
-                if (cartRes.ok && cartData.success === true) {
-                    const count = cartData.cart?.products?.length || 0;
-                    dispatch(setCartCount(count));
-                }
-            } else {
-                throw new Error(data.message || "Failed to add to cart");
-            }
-            }
-        } catch (error) {
+  
+        const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+  
+        const data = await res.json();
+  
+        if (res.ok && data.success) {
+          updateCart(data.cart); //instantly updates count everywhere
+          // ✅ Backend already merges or increments item if exists
+          toast({
+            title: "Success",
+            description: "Item added to cart.",
+            status: "success",
+            duration: 2000,
+            isClosable: true,
+          });
+        } else {
+          if (data.message?.includes("already")) {
             toast({
-                title: "Error",
-                description: error.message,
-                status: "error",
-                duration: 3000,
-                isClosable: true,
+              title: "Notice",
+              description: "Item already in cart.",
+              status: "info",
+              duration: 2000,
+              isClosable: true,
             });
-        } finally {
-            setLoadingProductId(null);
+          } else {
+            throw new Error(data.message);
+          }
         }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setLoadingProductId(null);
+      }
     };
     
     // Handle Add to Wishlist
@@ -285,12 +222,12 @@ export default function Hoodies_Sweater() {
     return (
       <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={1} bg="white">
         <VStack spacing={2} m={1} align="stretch">
-            <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-1 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
+            {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-1 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
                 <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
-            </Link>
+            </Link> */}
 
             <Link to={`/product-details/${product?._id}`}>
-                <Image mx="auto" src={product?.image?.[0] || "https://via.placeholder.com/150"} alt={product?.name} height={'150px'} width={'full'} objectFit="cover" borderRadius="md"/>
+                <Image mx="auto" src={product?.image?.[0] || "https://via.placeholder.com/150"} alt={product?.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
             </Link>
 
             {loadingWishlistProductId === product._id ? (
@@ -308,20 +245,22 @@ export default function Hoodies_Sweater() {
                 <Badge bg="gray.200" fontSize="10px" my={'2'} p={1} px={2} color="gray.800">
                     {product.category}
                 </Badge>
-                {/* <Text fontSize="sm" color="gray.600" isTruncated>
-                    {product.description}
-                </Text> */}
+                {product.oldprice && (
+                  <Box bg={'white'} pos={'absolute'} left={2} top={2} fontSize="xs" px={2} py={1} roundedRight="full" w={'60px'} color="pink.500" fontWeight="medium" display="flex" alignItems="center">
+                      {((product.oldprice - product.price) / product.oldprice * 100).toFixed(2)}%
+                  </Box>
+                )}
                 <Flex justifyContent={'space-between'} alignItems={'center'} mt={1}>
-                    <Text display="flex" alignItems="center">
-                        <FaNairaSign />
-                        <span className="font-medium">{product.price.toLocaleString()}.00</span>
-                    </Text>
+                  <Text display="flex" fontSize={'sm'} alignItems="center">
+                      <FaNairaSign />
+                      <span className="font-medium">{product.price.toLocaleString()}.00</span>
+                  </Text>
 
-                    {product.oldprice && (
-                        <Text fontSize="sm" color="gray.400" textDecoration="line-through">
-                            <FaNairaSign className="inline-block text-sm" />{product.oldprice}
-                        </Text>
-                    )}
+                  {product.oldprice && (
+                      <Text fontSize="12px" color="gray.400" textDecoration="line-through">
+                          <FaNairaSign className="inline-block text-[10px]" />{product.oldprice}
+                      </Text>
+                  )}
                 </Flex>
 
             <MotionButton
@@ -330,14 +269,13 @@ export default function Hoodies_Sweater() {
                 animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
                 transition={{ duration: 0.2 }}
                 disabled={loadingProductId === product._id}
-                _hover={{ bg: 'pink.500', color: 'white' }}
+                _hover={{ bg: 'pink.600', color: 'white' }}
                 onClick={() => handleCart(product)}
                 w="full"
                 mt={3}
-                bg="white"
                 border={'1px solid'}
-                borderColor={'pink.500'}
-                color="pink.500">
+                bg={'pink.500'}
+                color="white">
                 {loadingProductId === product._id ? (
                     <>
                     <Spinner size="sm" mr={2} /> Adding...

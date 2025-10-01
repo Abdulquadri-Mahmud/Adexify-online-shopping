@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, SimpleGrid, Text, useColorModeValue } from '@chakra-ui/react'
+import { Box, Flex, Heading, SimpleGrid, Text, useColorModeValue, useToast } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 import React, { createContext, Suspense, useEffect, useState } from 'react'
@@ -22,6 +22,8 @@ import Footer from '../../components/footer/Footer.jsx';
 import MenCategory from '../../components/Bottom_Categories/MenCategory.jsx';
 import FemaleSalesBanner from '../../components/banners/FemaleSalesBanner.jsx';
 import MaleSalesBanner from '../../components/banners/MaleSalesBanner.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearError, clearSuccess } from '../../store/cart/cartSlice.js';
 
 const SuggestedSection = () => {
   return (
@@ -110,10 +112,10 @@ export default function Men_Clothing_page() {
                 {/* <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]' /></Link> */}
             </Flex>
         </Box>
-        <Box p={2}>
+        <Box p={{md:3, base: 1}}>
           {loading ? (
             // 🔹 Skeleton loader grid
-            <SimpleGrid bg={"white"} rounded={"xl"} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={3} py={3} px={2}>
+            <SimpleGrid bg={"white"} rounded={"xl"} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={1} py={3} px={1}>
               {[...Array(8)].map((_, index) => (
                 <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
                   <Box h="150px" bg="gray.300" mb={4} />
@@ -125,7 +127,7 @@ export default function Men_Clothing_page() {
               ))}
             </SimpleGrid>
           ) : (
-            <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+            <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
               {filtered.map((product) => (
                 <context.Provider key={product._id} value={product}>
                   {/* 🔹 Direct render, no Suspense */}

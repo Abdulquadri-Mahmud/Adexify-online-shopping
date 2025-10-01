@@ -13,11 +13,13 @@ import { IoManOutline } from "react-icons/io5";
 import { BiSolidShoppingBags } from "react-icons/bi";
 import { GiConverseShoe } from "react-icons/gi";
 import All_category from './All_category';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SiPhpmyadmin } from 'react-icons/si';
 import SearchInputField from './searchs/SearchInputField';
 import GuestNav from './settings/GuestNav';
 import MobileSearchInput from './searchs/MobileSearchInput';
+import { useCart } from '../pages/cartsPage/CartCountContext';
+import { ShoppingBag } from 'lucide-react';
 
 export const OpenMenuCOntext = createContext();
 
@@ -105,21 +107,13 @@ const MobileNav = () => {
 
                 <Box className="md:hidden block">
                     <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/womens-clothing'}>
-                            <GrUserFemale className='text-lg'/>
+                        <Link to={'/fashion'}>
+                            <ShoppingBag className='text-lg'/>
                         </Link>
-                        <Link to={'/womens-clothing'} className='text-[10px]'>Women</Link>
+                        <Link to={'/fashion'} className='text-[10px]'>Fashion</Link>
                     </Box>
                 </Box>
-                
-                <Box className="md:hidden block">
-                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/mens-clothing'}>
-                            <IoManOutline className='text-lg'/>
-                        </Link>
-                        <Link to={'/mens-clothing'} className='text-[10px]'>Men</Link>
-                    </Box>
-                </Box>
+
                 <Box className="md:hidden block">
                     <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
                         <Link to={'/category?category=Shirt'}>
@@ -151,11 +145,12 @@ const MobileNav = () => {
 };
 
 export default function Header() {
+    const [cartLength, setCartLength] = useState(0);
     const { currentUser } = useSelector((state) => state.user);
     const { currentAdmin } = useSelector((state) => state.admin);
     
-    const cartCount = useSelector((state) => state.cart.count);
-
+    const { cartCount } = useCart();
+    
   return (
     <Box className="sticky top-0 z-20 bg-white">
         <Box className='bg-pink-500 hidden md:block'>

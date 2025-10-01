@@ -22,26 +22,28 @@ import {
 import React, { useEffect, useState } from 'react';
 import { BiLeftArrowAlt } from 'react-icons/bi';
 import { PiGreaterThan } from 'react-icons/pi';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CgMathMinus } from 'react-icons/cg';
 import { RiAddFill } from 'react-icons/ri';
 import { FaNairaSign } from 'react-icons/fa6';
-import { MdDelete } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
-import { setCartCount } from '../../store/cart/cartActions';
-import { removeFromCart } from '../../store/cart/cartSlice';
 
 // Lazy load image
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { getCartToken } from '../../store/cart/utils/cartToken';
+import { useCart } from './CartCountContext';
 
 export default function Carts_Page() {
   const { currentUser } = useSelector((state) => state.user);
   const [cartItems, setCartItems] = useState([]);
   const [alertMessage, setAlertMessage] = useState('');
+
+  const guestCart = useSelector((state) => state.guestCart.items);
+  const cartItemsToRender = currentUser ? cartItems : cartItems;
 
   const navigate = useNavigate();
 
@@ -58,23 +60,24 @@ export default function Carts_Page() {
   const[deleteLoading, setDeleteLoading] = useState(false);
   const[loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
-
+  const { updateCart } = useCart();
 
   // Fetch cart items from backend
   const fetchCart = async () => {
-    if (!currentUser?._id) return;
     setLoading(true);
     try {
-      const res = await fetch('https://adexify-api.vercel.app/api/cart/get-user-cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser._id }),
-      });
+      const payload = currentUser?._id
+      ? { userId: currentUser._id }
+      : { cartToken: getCartToken() };
+      
+      const query = new URLSearchParams(payload).toString();
+      
+      const res = await fetch(`https://adexify-api.vercel.app/api/cart/get?${query}`);
+
       const data = await res.json();
+
       if (res.ok && data.success) {
-        setLoading(false);
-        setCartItems(data.cart.products);
+        setCartItems(data.cart.products || []);
       } else {
         setCartItems([]);
       }
@@ -89,24 +92,39 @@ export default function Carts_Page() {
     fetchCart();
   }, [currentUser]);
 
-  // Update cart item quantity or size
-  const updateCartItem = async (productId, size, quantity) => {
+  
+  // Update cart item (size and/or quantity)
+  const updateCartItem = async (productId, oldSize, newSize, quantity) => {
     if (quantity < 1) return;
-
-    setUpdateLoading(`${productId}-${size}`);
+    setUpdateLoading(`${productId}-${oldSize}`);
 
     try {
-      const res = await fetch('https://adexify-api.vercel.app/api/cart/update-user-cart', {
+      const payload = currentUser?._id
+        ? { 
+            userId: currentUser._id, 
+            productId, 
+            oldSize,        // 🔑 send old size
+            newSize,        // 🔑 send new size
+            quantity 
+          }
+        : { 
+            cartToken: getCartToken(), 
+            productId, 
+            oldSize, 
+            newSize, 
+            quantity 
+          };
+
+      const res = await fetch('https://adexify-api.vercel.app/api/cart/update', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser._id, productId, selectedSize: size, quantity }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-      console.log(data);
 
-      if (res.ok && data.success === true) {
-        fetchCart();
+      if (res.ok && data.success) {
+        fetchCart(); 
         onCloseUpdateSize();
       } else {
         console.error('Update failed:', data.message);
@@ -122,46 +140,29 @@ export default function Carts_Page() {
   const deleteCartItem = async (productId, size) => {
     setDeleteLoading(productId);
 
-    if (productId) {
-      // ✅ Remove item from guest cart (Redux + localStorage)
-      dispatch(removeFromCart(productId));
-    }
-    
     try {
-      const res = await fetch('https://adexify-api.vercel.app/api/cart/delete-cart-item', {
+      const payload = currentUser?._id
+        ? { userId: currentUser._id, productId, selectedSize: size }
+        : { cartToken: getCartToken(), productId, selectedSize: size };
+
+      const res = await fetch('https://adexify-api.vercel.app/api/cart/remove', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser._id, productId, selectedSize: size }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
       if (res.ok && data.success) {
-        fetchCart();
-        // Fetch updated cart from backend to get latest product count
-        const cartRes = await fetch('https://adexify-api.vercel.app/api/cart/get-user-cart', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUser._id }),
-        });
-        
-        const cartData = await cartRes.json();
-        
-        if (cartRes.ok && cartData.success === true) {
-          // Get the count of products in the cart
-          const count = cartData.cart?.products?.length || 0;
-          
-          // Dispatch count to Redux so header badge can update immediately
-          dispatch(setCartCount(count));
-        }
-        setDeleteLoading(false);
+        updateCart(data.cart); //instantly updates count everywhere
+        fetchCart(); // refresh UI
       } else {
         console.error('Delete failed:', data.message);
-        setDeleteLoading(false);
       }
     } catch (error) {
       console.error('Delete error:', error);
-      setDeleteLoading(false);
+    } finally {
+      setDeleteLoading(null);
     }
   };
 
@@ -181,7 +182,14 @@ export default function Carts_Page() {
   // Confirm adding size & quantity on modal
   const handleAddSizeToCart = () => {
     if (!selectedItem || !selectedSize || selectedQty < 1) return;
-    updateCartItem(selectedItem.productId, selectedSize, selectedQty);
+    // oldSize = selectedItem.selectedSize
+    updateCartItem(
+      selectedItem.productId, 
+      selectedItem.selectedSize, 
+      selectedSize, 
+      selectedQty
+    );
+
     onClose();
   };
 
@@ -202,7 +210,6 @@ export default function Carts_Page() {
     // ✅ Pass cart items with state
     navigate("/checkout/summary", { state: { cartItems } });
   };
-
 
   // Calculate total price and total item count (including sizes)
   let total = 0;
@@ -226,9 +233,6 @@ export default function Carts_Page() {
     }
   });
 
-  const guestCart = useSelector((state) => state.guestCart.items);
-  const cartItemsToRender = currentUser ? cartItems : guestCart;
-
   return (
     <Box>
       <Header />
@@ -246,13 +250,7 @@ export default function Carts_Page() {
             <Box>
               <Heading fontSize={{ md: 25, base: 20 }} fontWeight={500} color="black">
                 My Carts
-                {
-                  currentUser ? (
-                    <Text fontSize={'12px'} color={'gray.400'} pt={2}>You have ( {cartItems.length >= 1 ? cartItems.length : 0} ) in your cart</Text>
-                  ) : (
-                    <Text fontSize={'12px'} color={'gray.400'} pt={2}>You have ( {guestCart.length >= 1 ? guestCart.length : 0} ) in your cart</Text>
-                  )
-                }
+                <Text fontSize={'12px'} color={'gray.400'} pt={2}>You have ( {cartItems.length >= 1 ? cartItems.length : 0} ) in your cart</Text>
               </Heading>
             </Box>
             <Box>
@@ -271,7 +269,7 @@ export default function Carts_Page() {
           </Flex>
         </Box>
 
-        <Box maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" mt={6}>
+        <Box maxW={{ '2xl': '80%', xl: '95%', lg: '97%', base: '97%' }} mx="auto" mt={3}>
           {/* Flex container: left = cart items, right = order summary */}
           <Flex justifyContent="space-between" flexWrap={{ md: 'nowrap', base: 'wrap' }} gap={{ md: 5, base: 4 }}>
             {/* Left side: Cart Items */}
@@ -293,23 +291,17 @@ export default function Carts_Page() {
                       return (
                         <Flex key={`${item.productId}-${size}`} bg="gray.100" border="1px solid" borderColor="gray.300" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
                           <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
-                            <LazyLoadImage 
-                              src={Array.isArray(item.image) ? item?.image[0] : item?.image} 
-                              width="50px" 
-                              objectFit="cover" 
-                              rounded="md"
-                            />
+                            <LazyLoadImage  src={Array.isArray(item.image) ? item?.image[0] : item?.image}  width="50px"  objectFit="cover"  rounded="md"/>
                             <Box>
                               <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
                               <Text fontSize="xs" color="gray.500">Size: {size}</Text>
                             </Box>
                           </Flex>
 
-                          {currentUser ? (
-                            // backend cart controls
-                            <Flex align="center" gap={2}>
+                          <Flex align="center" gap={2}>
+                              {/* Update quantity */}
                               <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
-                                  updateCartItem(item.productId, size, qty - 1)
+                                  updateCartItem(item.productId, size, size, qty - 1)
                                 }
                                 isDisabled={
                                   qty <= 1 ||
@@ -324,7 +316,7 @@ export default function Carts_Page() {
                               </Button>
                               <Text>{qty}</Text>
                               <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
-                                  updateCartItem(item.productId, size, qty + 1)
+                                  updateCartItem(item.productId, size, size, qty + 1)
                                 }
                                 isDisabled={updateLoading === `${item.productId}-${size}`}
                               >
@@ -335,40 +327,23 @@ export default function Carts_Page() {
                                 )}
                               </Button>
                             </Flex>
-                          ) : (
-                            // guest cart controls
-                            <Text bg={'white'} rounded={'md'} px={2} py={1}>Qty: {qty}</Text>
-                          )}
 
-                          <Flex align="center">
-                             
-                            <Text fontWeight="medium" ml={1}>
-                              {(item.price * qty).toLocaleString()}.00
-                            </Text>
-                          </Flex>
-
-                          {currentUser ? (
-                            <>
-                              <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
-                                Update Size
-                              </Button>
-                              
-                              <Button size="sm" colorScheme="red" onClick={() => deleteCartItem(item.productId, size)} isDisabled={deleteLoading === item.productId}>
-                                {deleteLoading === item.productId ? (
-                                  <Spinner size="sm" />
-                                ) : (
-                                  <MdDelete />
-                                )}
-                              </Button>
-                            </>
-                          ) : (
-                            <Button size="sm" colorScheme="red" onClick={() =>
-                                dispatch(removeFromCart(item.productId)) // Redux action for guest cart
-                              }
-                            >
-                              <MdDelete />
+                            <Flex align="center">
+                              <Text fontWeight="medium" ml={1}>
+                                {(item.price * qty).toLocaleString()}.00
+                              </Text>
+                            </Flex>
+                            <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
+                              Update Size
                             </Button>
-                          )}
+
+                            <Text cursor={'pointer'} fontSize="13px" color={'red.600'} onClick={() => deleteCartItem(item.productId, size)} isDisabled={deleteLoading === item.productId}>
+                              {deleteLoading === item.productId ? (
+                                'Removing Item...'
+                              ) : (
+                                'Remove item from cart'
+                              )}
+                            </Text>
                         </Flex>
                       );
                     }
@@ -392,22 +367,17 @@ export default function Carts_Page() {
                             {item.price.toLocaleString()}.00
                           </Text>
                         </Flex>
-                        {
-                          currentUser && (
-                            <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openSizeModal(item)}>
-                              Select Size
-                            </Button>
-                          )
-                        }
-
-                        <Button size="sm" colorScheme="red" onClick={() =>
-                            currentUser
-                              ? deleteCartItem(item.productId, null)
-                              : dispatch(removeFromCart(item.productId))
-                          }
-                        >
-                          <MdDelete />
+                        <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openSizeModal(item)}>
+                          Select Size
                         </Button>
+
+                        <Text fontSize="13px" color="red.600" cursor={'pointer'} onClick={() => deleteCartItem(item.productId, size)}>
+                          {deleteLoading === item.productId ? (
+                            'Removing Item...'
+                          ) : (
+                            'Remove item from cart'
+                          )}
+                        </Text>
                       </Flex>
                     );
                   })
@@ -434,7 +404,7 @@ export default function Carts_Page() {
                 <Box>
                   <Text fontWeight={500} className="flex items-center">
                     <FaNairaSign />
-                    {total.toLocaleString()}.00
+                    <Text>{total.toLocaleString()}.00</Text>
                   </Text>
                 </Box>
               </Flex>
@@ -442,7 +412,7 @@ export default function Carts_Page() {
                 <Heading fontSize={16} fontWeight={500}>Total</Heading>
                 <Text fontWeight={500} className="flex items-center">
                   <FaNairaSign />
-                  {total.toLocaleString()}.00
+                  <Text>{total.toLocaleString()}.00</Text>
                 </Text>
               </Flex>
               <Text className="text-[12px] text-yellow-600 text-end py-2">Excluding delivery charges</Text>
@@ -469,7 +439,7 @@ export default function Carts_Page() {
       {/* Modal for selecting size & quantity */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mx={'2'}>
           <ModalHeader>Select Size & Quantity</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -492,7 +462,7 @@ export default function Carts_Page() {
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="green" onClick={handleAddSizeToCart} isDisabled={!selectedSize}>
-              Add to Cart
+              {updateLoading ? <><Spinner size="sm" mr={2} /> Updating...</> : 'Update Cart'}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -501,7 +471,7 @@ export default function Carts_Page() {
       {/* Update only size modal */}
       <Modal isOpen={isOpenUpdateSize} onClose={onCloseUpdateSize} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mx={'2'}>
           <ModalHeader>Update Size</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -522,7 +492,7 @@ export default function Carts_Page() {
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="green" onClick={handleAddSizeToCart} isDisabled={!selectedSize} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-              {loading ? <><Spinner size="sm" mr={2} /> Updating...</> : 'Add to Cart'}
+              {updateLoading ? <><Spinner size="sm" mr={2} /> Updating...</> : 'Update Size'}
             </Button>
           </ModalFooter>
         </ModalContent>

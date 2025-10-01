@@ -234,7 +234,7 @@ export default function Items() {
                               <Td className=''>
                                 <Box className='flex items-center gap-1'>
                                   <Link to={`/product-details/${item._id}`}>
-                                    <img src={item.image} alt="" className='rounded-md max-w-[50px] max-h-[50px]'/>
+                                    <img src={item?.image?.[0]} alt="" className='rounded-md max-w-[50px] max-h-[50px]'/>
                                   </Link>
                                   <Box className='text-[13px] font-medium'>
                                     {item.name.slice(0, 16)}...

@@ -27,13 +27,13 @@ export default function Adverts() {
                 <Text fontSize={12} mt={2}>Yes, you can return items you bought for free and get refunded as soon as possible! We have a refund policy that grants you 7 days to return ALL eligible items bought from the official store on Adexify.</Text>
             </Box>
             <Box mb={5}>
-                <Heading fontWeight={500} fontSize={18}>What Is the Jumia Customer Care Line?</Heading>
-                <Text fontSize={12} mt={2}>We have a dedicated team that is always available to make sure your shopping experience on Adeixy is effortless. Simply dial 07047594667 to reach out to us for complaints and other inquiries. If you would like to place an order, please call us at 070-4759-4667. Whatever you do, we are always available to help.</Text>
+                <Heading fontWeight={500} fontSize={18}>What Is the Adexify Customer Care Line?</Heading>
+                <Text fontSize={12} mt={2}>We have a dedicated team that is always available to make sure your shopping experience on Adexify is effortless. Simply dial 07047594667 to reach out to us for complaints and other inquiries. If you would like to place an order, please call us at 070-4759-4667. Whatever you do, we are always available to help.</Text>
             </Box>
-            <Box mb={5}>
+            {/* <Box mb={5}>
                 <Heading fontWeight={500} fontSize={18}>How Can I Become a Seller on Adexify?</Heading>
                 <Text fontSize={12} mt={2}>No, Adexify is just an online shopping where women and men can buy there fashion needs, and this is only meant for Adexify.</Text>
-            </Box>
+            </Box> */}
         </Box>
   </div>
   )

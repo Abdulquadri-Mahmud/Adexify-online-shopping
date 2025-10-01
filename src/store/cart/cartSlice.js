@@ -1,49 +1,72 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Load cart from localStorage if it exists
-const initialCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+const initialState = {
+  items: localStorage.getItem("guestCart")
+    ? JSON.parse(localStorage.getItem("guestCart"))
+    : [],
+  error: null,
+  success: null,
+};
 
 const cartSlice = createSlice({
-  name: "guestCart",
-  initialState: {
-    items: initialCart,
-    error: null,
-  },
+  name: "cart",
+  initialState,
   reducers: {
     addToCart: (state, action) => {
-      const newItem = action.payload;
-      const exists = state.items.find(
+      const product = action.payload; // ✅ take product directly
+      const findProductIndex = state.items.findIndex(
         (item) =>
-          item.productId === newItem.productId &&
-          item.selectedSize === newItem.selectedSize
+          item.productId === product.productId &&
+          item.selectedSize === product.selectedSize // handle size uniqueness
       );
 
-      if (exists) {
+      if (findProductIndex >= 0) {
+        // Item already exists
         state.error = "This item is already in your cart.";
+        state.success = null;
       } else {
-        state.items.push({ ...newItem, quantity: newItem.quantity || 1 });
-        state.error = null; // reset error only on success
-        localStorage.setItem("guestCart", JSON.stringify(state.items));
+        // Add new item
+        state.items.push({ ...product, quantity: product.quantity || 1 });
+        state.error = null;
+        state.success = "Item added to cart!";
       }
-    },
-    clearError: (state) => {
-      state.error = null;
-    },
-
-    removeFromCart: (state, action) => {
-      const productId = action.payload;
-      state.items = state.items.filter((item) => item.productId !== productId);
 
       localStorage.setItem("guestCart", JSON.stringify(state.items));
     },
 
-    updateQuantity: (state, action) => {
-      const { productId, quantity } = action.payload;
-      const index = state.items.findIndex((item) => item.productId === productId);
+    changeQuantity: (state, action) => {
+      const { productId, selectedSize, quantity } = action.payload;
+      const findProductIndex = state.items.findIndex(
+        (item) =>
+          item.productId === productId && item.selectedSize === selectedSize
+      );
 
-      if (index >= 0) {
-        state.items[index].quantity = quantity;
+      if (findProductIndex >= 0) {
+        if (quantity > 0) {
+          state.items[findProductIndex].quantity = quantity;
+        } else {
+          state.items = state.items.filter(
+            (item) =>
+              !(
+                item.productId === productId &&
+                item.selectedSize === selectedSize
+              )
+          );
+        }
       }
+
+      localStorage.setItem("guestCart", JSON.stringify(state.items));
+    },
+
+    removeFromCart: (state, action) => {
+      const { productId, selectedSize } = action.payload;
+
+      state.items = state.items.filter(
+        (item) =>
+          !(
+            item.productId === productId && item.selectedSize === selectedSize
+          )
+      );
 
       localStorage.setItem("guestCart", JSON.stringify(state.items));
     },
@@ -53,13 +76,17 @@ const cartSlice = createSlice({
       localStorage.removeItem("guestCart");
     },
 
-    setCart: (state, action) => {
-      state.items = action.payload || [];
-      localStorage.setItem("guestCart", JSON.stringify(state.items));
+     clearError: (state) => {
+      state.error = null;
+    },
+
+    clearSuccess: (state) => {
+      state.success = null;
     },
   },
 });
 
-export const { addToCart, clearError, removeFromCart, updateQuantity, clearCart, setCart } =
+export const { addToCart, changeQuantity, removeFromCart, clearError, clearSuccess, clearCart } =
   cartSlice.actions;
+
 export default cartSlice.reducer;

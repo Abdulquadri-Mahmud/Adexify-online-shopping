@@ -50,7 +50,17 @@ export default function Uni() {
         <SimpleGrid columns={{ base: 2, sm: 2, md: 3, xl: 6 }} spacing={5}>
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
-                <Skeleton key={index} height="200px" borderRadius="md" />
+                <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
+                  {[...Array(8)].map((_, index) => (
+                    <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
+                      <Box h="150px" bg="gray.300" mb={4} />
+                      <Box h="2" bg="gray.300" w="75%" mb={2} />
+                      <Box h="2" bg="gray.300" w="50%" mb={2} />
+                      <Box h="2" bg="gray.300" w="50%" />
+                      <Box h="10" bg="gray.300" w="full" mt={3} />
+                    </SimpleGrid>
+                  ))}
+                </SimpleGrid>
               ))
             : products.map((product) => (
                 <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} transition="all 0.3s">

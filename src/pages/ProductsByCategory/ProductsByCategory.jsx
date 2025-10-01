@@ -15,6 +15,12 @@ import {
   Spinner, 
   Flex
 } from "@chakra-ui/react";
+import {
+  Modal, ModalOverlay, ModalContent, ModalHeader,
+  ModalFooter, ModalBody, ModalCloseButton, 
+  NumberInput, NumberInputField, useDisclosure
+} from "@chakra-ui/react";
+
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
@@ -30,8 +36,10 @@ import MaleSalesBanner from "../../components/banners/MaleSalesBanner";
 import { motion } from 'framer-motion';
 import { setCartCount } from "../../store/cart/cartActions";
 import { setWishlistCount } from "../../store/cart/wishlishActions";
-import { addToCart, clearError } from "../../store/cart/cartSlice";
+import { addToCart, clearError, clearSuccess, } from "../../store/cart/cartSlice";
 import { addToWishlist, clearWishlistError } from "../../store/cart/wishlistSlice";
+import { getCartToken } from "../../store/cart/utils/cartToken";
+import { useCart } from "../cartsPage/CartCountContext";
 
 const MotionButton = motion.create(Button);
 const SuggestedSection = () => {
@@ -61,6 +69,7 @@ const SuggestedSection = () => {
 const ProductsByCategory = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
+  const { updateCart } = useCart();
 
   const toast = useToast({ position: "top" });
   const dispatch = useDispatch();
@@ -70,7 +79,14 @@ const ProductsByCategory = () => {
   const [loading, setLoading] = useState(false);
   const [getError, setError] = useState("");
   
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   
+  const [loadingProductId, setLoadingProductId] = useState(null);
+  const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
+  const { currentUser } = useSelector((state) => state.user);
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -109,149 +125,80 @@ const ProductsByCategory = () => {
     }
   }, [category]);
 
-  const [loadingProductId, setLoadingProductId] = useState(null);
-  const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
-  const { currentUser } = useSelector((state) => state.user);
-  const guestCart = useSelector((state) => state.guestCart);
-  const guestWishlist = useSelector((state) => state.guestWishlist);
-  const error = useSelector((state) => state.guestCart.error);
+  
+  const handleAddToCart = async (product, size, qty) => {
+    setLoadingProductId(product._id);
 
-  const handleCart = async (product) => {
-      setLoadingProductId(product._id);
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      stock: product.stock || 0,
+      price: product.price,
+      discount: product.discount || 0,
+      oldprice: product.oldprice || 0,
+      deal: product.deal || "",
+      category: product.category || "",
+      image: product.image || [],
+      description: product.description || "",
+      discountType: product.discountType || "",
+      trackingId: product.trackingId || "",
+      size: product.size || [],
+      selectedSize: size || product.size?.[0] || "",
+      quantity: qty || 1,
+      gender: product.gender || "unisex",
+    };
 
-      const cartItem = {
-          productId: product._id,
-          name: product.name,
-          stock: product.stock || 0,
-          price: product.price,
-          discount: product.discount || 0,
-          oldprice: product.oldprice || 0,
-          deal: product.deal || "",
-          category: product.category || "",
-          image: product.image || [],
-          description: product.description || "",
-          discountType: product.discountType || "",
-          trackingId: product.trackingId || "",
-          size: product.size || [],
-          selectedSize: product.size?.[0] || "",
-          quantity: 1,
-          gender: product.gender || "unisex",
-          brand: product.brand || "",
+    try {
+      const payload = {
+        userId: currentUser?._id || null,
+        cartToken: currentUser?._id ? null : getCartToken(),
+        product: cartItem,
       };
 
-      try {
-          if (!currentUser?._id) {
-              // =======================
-              // Guest Cart (Redux/localStorage)
-              // =======================
-              dispatch(addToCart(cartItem));
-              const count = guestCart.items.length;
+      const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-              dispatch(setCartCount(count));
-              
-              if (error) {
-                  toast({
-                      title: "Error",
-                      description: error,
-                      status: "error",
-                      duration: 3000,
-                      isClosable: true,
-                  });
-                  
-                  // reset error for next action
-                  dispatch(clearError());
-              } else {
-                  toast({
-                      title: "Added to cart!",
-                      description: "Item added locally. Log in to save permanently.",
-                      status: "success",
-                      duration: 3000,
-                      isClosable: true,
-                  });
-                  // dispatch(clearError());
-              }
-          } else {
-              
-          // =======================
-          // Logged-in Cart
-          // =======================
+      const data = await res.json();
 
-          // 1. If guest cart exists, merge first
-
-          if (guestCart.length > 0) {
-                  const res = await fetch("https://adexify-api.vercel.app/api/cart/merge", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ userId: currentUser._id, products: guestCart }),
-              });
-
-              if (!res || data.success === false) {
-                  toast({
-                      title: "Error",
-                      description: data.message,
-                      status: "error",
-                      duration: 3000,
-                      isClosable: true,
-                  });
-                  return;
-              };
-
-              dispatch(setCartCount(count));
-
-              dispatch(clearCart()); // clear guest cart after merging
-          }
-
-          // 2. Add current product to DB cart
-          const payload = { userId: currentUser._id, product: cartItem };
-
-          const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-          });
-
-          const data = await res.json();
-
-          if (res.ok && data.success === true) {
-              toast({
-                  title: "Added to cart!",
-                  description: "Item added successfully.",
-                  status: "success",
-                  duration: 3000,
-                  isClosable: true,
-              });
-
-              // Refresh backend cart count
-              const cartRes = await fetch(
-              "https://adexify-api.vercel.app/api/cart/get-user-cart",
-              {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ userId: currentUser._id }),
-              }
-              );
-
-              const cartData = await cartRes.json();
-              if (cartRes.ok && cartData.success === true) {
-                  const count = cartData.cart?.products?.length || 0;
-                  dispatch(setCartCount(count));
-              }
-          } else {
-              throw new Error(data.message || "Failed to add to cart");
-          }
-          }
-      } catch (error) {
+      if (res.ok && data.success) {
+        updateCart(data.cart); //instantly updates count everywhere
+        // ✅ Backend already merges or increments item if exists
+        toast({
+          title: "Success",
+          description: "Item added to cart.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      } else {
+        if (data.message?.includes("already")) {
           toast({
-              title: "Error",
-              description: error.message,
-              status: "error",
-              duration: 3000,
-              isClosable: true,
+            title: "Notice",
+            description: "Item already in cart.",
+            status: "info",
+            duration: 2000,
+            isClosable: true,
           });
-      } finally {
-          setLoadingProductId(null);
+        } else {
+          throw new Error(data.message);
+        }
       }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoadingProductId(null);
+    }
   };
+
 
 // const error = useSelector((state) => state.guestWishlist.error);
 
@@ -416,17 +363,27 @@ const ProductsByCategory = () => {
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
+
+  const openCartModal = (product) => {
+    setSelectedProduct(product);
+    if (product.size?.length > 0) {
+      onOpen(); // open modal if sizes exist
+    } else {
+      handleAddToCart(product, "", 1); // directly add if no sizes
+    }
+  };
+
   return (
     <Box bg={''} className="bg-zinc-200">
       <Header />
       {/* {category === "Shirt" && <ShirtsBanner category={category} />} */}
       <ProductByCategroyBanner category={category} />
       
-      <Box maxW={{md:"95%", base: 'full'}} mx="auto" my={6} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
-        <Box bg={'gray.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={{md:'wrap'}}>
-          <Heading size={{md:"lg", base: 'sm', xs: 'sm'}} color={'gray.800'}>Browse Products in "<Text as={'span'} color={'pink.500'}>{category}</Text>"</Heading>
 
-          {/* Price Filter */}
+      <Box maxW={{md:"95%", base: 'full'}} mx="auto" my={0} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
+        {/* Price Filter */}
+        {/* <Box bg={'gray.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={{md:'wrap'}}>
+          <Heading size={{md:"lg", base: 'sm', xs: 'sm'}} color={'gray.800'}>Browse Products in "<Text as={'span'} color={'pink.500'}>{category}</Text>"</Heading>
           <Box >
             <Select bg={'white'} value={priceRange} onChange={(e) => handlePriceFilter(e.target.value)} w={{md:"200px"}}>
               <option value="all">All Prices</option>
@@ -438,7 +395,7 @@ const ProductsByCategory = () => {
               <option value="above100000">Above ₦100,000</option>
             </Select>
           </Box>
-        </Box>
+        </Box> */}
 
         <SimpleGrid bg={'white'} rounded={'xl'} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={3} py={3} px={2}>
           {
@@ -456,9 +413,9 @@ const ProductsByCategory = () => {
         {getError && <Text color="red.500">{getError}</Text>}
 
         {/* Product Grid */}
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
           {currentItems.map((product) => (
-            <Box key={product._id} position="relative" borderWidth="1px" borderRadius="xl" p={2} bg="white">
+            <Box key={product._id} position="relative" borderWidth="1px" borderColor={'gray.50'} borderRadius="xl" p={2} bg="white">
               <VStack spacing={2} align="stretch">
                 {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
                   <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
@@ -486,8 +443,15 @@ const ProductsByCategory = () => {
                   {/* <Text fontSize="sm" color="gray.600" isTruncated>
                     {product.description}
                   </Text> */}
+
+                  {product.oldprice && (
+                    <Box bg={'white'} pos={'absolute'} left={2} top={2} fontSize="xs" px={2} py={1} roundedRight="full" w={'60px'} color="pink.500" fontWeight="medium" display="flex" alignItems="center">
+                        {((product.oldprice - product.price) / product.oldprice * 100).toFixed(2)}%
+                    </Box>
+                  )}
+
                   <Flex justifyContent={'space-between'} alignItems="center" mt={1}>
-                    <Text display="flex" alignItems="center" fontWeight={'600'}>
+                    <Text fontSize={'sm'} display="flex" alignItems="center" fontWeight={'600'}>
                       <FaNairaSign />
                       <span className="font-medium">{product.price.toLocaleString()}.00</span>
                     </Text>
@@ -505,14 +469,13 @@ const ProductsByCategory = () => {
                     animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
                     transition={{ duration: 0.2 }}
                     disabled={loadingProductId === product._id}
-                    _hover={{ bg: 'pink.500', color: 'white' }}
-                    onClick={() => handleCart(product)}
+                    _hover={{ bg: 'pink.600', color: 'white' }}
+                    onClick={() => openCartModal(product)}
                     w="full"
                     mt={3}
-                    bg="white"
                     border={'1px solid'}
-                    borderColor={'pink.500'}
-                    color="pink.500">
+                    bg={'pink.500'}
+                    color="white">
                     {loadingProductId === product._id ? (
                       <>
                         <Spinner size="sm" mr={2} /> Adding...
@@ -531,7 +494,7 @@ const ProductsByCategory = () => {
         {/* Pagination */}
         {totalPages > 1 && (
           <Box mt={8} maxW={'sm'} mx={'auto'} py={3} rounded={'lg'} display="flex" justifyContent="center" gap={4} className="bg-pink-200">
-            <Button bg={'pink.500'} _hover={{bg:'pink.800'}} color={'white'} onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} isDisabled={currentPage === 1}>
+            <Button bg={'pink.500'} _hover={{bg:'pink'}} color={'white'} onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} isDisabled={currentPage === 1}>
               Prev
             </Button>
             <Text color={'white'} alignSelf="center">
@@ -552,6 +515,45 @@ const ProductsByCategory = () => {
       
       <FashionCategory/>
       
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Select Options</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {selectedProduct?.size?.length > 0 && (
+              <Select
+                placeholder="Select size"
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+              >
+                {selectedProduct.size.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </Select>
+            )}
+
+            <NumberInput
+              mt={4}
+              min={1}
+              value={quantity}
+              onChange={(val) => setQuantity(Number(val))}
+            >
+              <NumberInputField />
+            </NumberInput>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="pink" onClick={() => {
+              handleAddToCart(selectedProduct, selectedSize, quantity);
+              onClose();
+            }}>
+              Add to Cart
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <Box mb={12}>
         <Adverts/>
       </Box>

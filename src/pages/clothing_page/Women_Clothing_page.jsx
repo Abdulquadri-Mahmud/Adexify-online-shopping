@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
+import { Box, Flex, Heading, Image, SimpleGrid, Text, useToast } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 import React, { createContext, Suspense, useEffect, useState } from 'react'
@@ -29,6 +29,8 @@ import MaleSalesBanner from '../../components/banners/MaleSalesBanner.jsx';
 
 import { useColorModeValue } from '@chakra-ui/react';
 import MobileSearchInput from '../../components/searchs/MobileSearchInput.jsx';
+import { clearError, clearSuccess } from '../../store/cart/cartSlice.js';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SuggestedSection = () => {
   return (
@@ -77,7 +79,7 @@ const WomenHeader = () => {
                 <Flex justifyContent={'center'} alignItems={'center'} p={2} height={{'xl': '300px',md: '220px', base: '200px'}} rounded={'md'} bgRepeat={'no-repeat'} bgSize={'cover'} bgPos={'top'} bgBlendMode={'multiply'} className='bg-slate-400' bgImage={'/hero2.jpg'} position={'relative'}>
                     <Box position={'absolute'}>
                         <Text color={'white'} fontWeight={500} textAlign={'center'}>SHOP</Text>
-                        <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Men's Fahion</Heading>
+                        <Heading color={'white'} fontWeight={500} fontSize={{md: 40, base: 30}}>Women's Fahion</Heading>
                     </Box>
                 </Flex>
             </Box>
@@ -113,15 +115,15 @@ export default function Women_Clothing_page() {
     return (
       <Box maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'} className='mt-10 bg-white rounded-lg'>
         <Box>
-          <Flex color='white' bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
+          <Flex color='white' bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={{md:3, base:2}} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
             <Heading fontWeight={500} fontSize={20}>{title}</Heading>
             {/* <Link className='font-medium uppercase text-sm flex items-center'>See All <FaAngleRight className='text-[20px]' /></Link> */}
           </Flex>
         </Box>
-        <Box p={3}>
+        <Box p={{md:3, base: 1}}>
           {loading ? (
             // 🔹 Skeleton loader grid
-            <SimpleGrid bg={"white"} rounded={"xl"} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={3} py={3} px={2}>
+            <SimpleGrid bg={"white"} rounded={"xl"} gap={1} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={1} py={3} px={2}>
               {[...Array(8)].map((_, index) => (
                 <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
                   <Box h="150px" bg="gray.300" mb={4} />
@@ -133,7 +135,7 @@ export default function Women_Clothing_page() {
               ))}
             </SimpleGrid>
           ) : (
-            <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+            <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
               {filtered.map((product) => (
                 <context.Provider key={product._id} value={product}>
                   {/* Direct render, no Suspense */}

@@ -43,13 +43,13 @@ export default function TopDeals() {
         </Box>
       </Box>
 
-      <Box p={4}>
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+      <Box p={2}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
           {loading
             ? Array.from({ length: 12 }).map((_, index) => (
-                <SimpleGrid bg={"white"} rounded={"xl"} gap={4} spacing={3} py={3} px={2}>
+                <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
                   {[...Array(8)].map((_, index) => (
-                    <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
+                    <SimpleGrid key={index} bg="gray.200" p={2} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
                       <Box h="150px" bg="gray.300" mb={4} />
                       <Box h="2" bg="gray.300" w="75%" mb={2} />
                       <Box h="2" bg="gray.300" w="50%" mb={2} />
@@ -66,10 +66,10 @@ export default function TopDeals() {
                   </Link> */}
                   
                   <Link to={`/product-details/${product?._id}`}>
-                    <Image src={product.image?.[0]} alt={product.name} height={"150px"} width="100%" objectFit="cover" />
+                    <Image src={product.image?.[0]} alt={product.name} height={"200px"} width="100%" objectFit="cover" />
                   </Link>
                   
-                  <Box p={3}>
+                  <Box p={2}>
                     <Text fontSize="14px" noOfLines={1}>{product.name}</Text>
                     <Flex justify={'space-between'} align={'center'}>
                       <Badge color="pink.600" fontSize={'16px'}>₦{product.price.toLocaleString()}.00</Badge>
