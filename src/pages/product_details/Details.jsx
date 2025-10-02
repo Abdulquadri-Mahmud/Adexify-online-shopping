@@ -60,6 +60,7 @@ export default function Details() {
   const { updateCart } = useCart();
   const toast = useToast();
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
 
   const [product, setProduct] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -591,7 +592,7 @@ export default function Details() {
       {/* Size & Quantity Modal (existing) */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent mx={2}>
+        <ModalContent mx={3}>
           <ModalHeader>Select Size & Quantity</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -644,12 +645,12 @@ export default function Details() {
                 </Text>
               </Text>
             )}
-            <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.500'} alignItems={'center'}>
-              <Text mt={4} mb={3} color={"gray.50"}>
-                Product Code: <span className="text-pink-200 font-medium">{product?.trackingId}</span>
+            <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.50'} alignItems={'center'}>
+              <Text mt={4} mb={3} color={"gray.700"}>
+                Product Code: <span className="text-pink-600 font-medium">{product?.trackingId}</span>
               </Text>
-              <Text mt={2} mb={3} color={"gray.50"}>
-                Category: <span className="text-pink-200 font-medium">{product?.category}</span>
+              <Text mt={2} mb={3} color={"gray.700"}>
+                Category: <span className="text-pink-600 font-medium">{product?.category}</span>
               </Text>
             </Flex>
           </ModalBody>
