@@ -56,7 +56,7 @@ export default function All_category() {
             <Button bg={'transparent'} color={'white'} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-100">
                 <HiOutlineMenuAlt2 className='text-xl text-white' />
                 <h2 className="md:text-[15px] hidden md:block text-[10px] font-normal">Browse All</h2>
-                <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">All Categories</h2>
+                <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">Categories</h2>
             </Button>
             <Drawer isOpen={isOpen} placement='left' initialFocusRef={firstField} onClose={onClose} size={'md'}>
                 <DrawerOverlay />
