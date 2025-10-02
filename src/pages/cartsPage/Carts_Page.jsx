@@ -59,6 +59,10 @@ export default function Carts_Page() {
   const[updateLoading, setUpdateLoading] = useState(false);
   const[deleteLoading, setDeleteLoading] = useState(false);
   const[loading, setLoading] = useState(false);
+  // Inside your Carts_Page component, after fetchCart() and before return
+  const [itemsToShow, setItemsToShow] = useState(5); // initially show 5 items
+  const [loadingMore, setLoadingMore] = useState(false);
+
 
   const { updateCart } = useCart();
 
@@ -92,7 +96,17 @@ export default function Carts_Page() {
     fetchCart();
   }, [currentUser]);
 
+  const loadMoreItems = () => {
+    setLoadingMore(true);
+    setTimeout(() => {
+      setItemsToShow((prev) => prev + 5); // show 5 more items
+      setLoadingMore(false);
+    }, 300); // small delay to show spinner
+  };
+
   
+  const displayedItems = cartItemsToRender.slice(0, itemsToShow);
+
   // Update cart item (size and/or quantity)
   const updateCartItem = async (productId, oldSize, newSize, quantity) => {
     if (quantity < 1) return;
@@ -275,7 +289,7 @@ export default function Carts_Page() {
             {/* Left side: Cart Items */}
             <Box flex={1} bg="white" color="gray.800" p={{ lg: 4, base: 2 }} rounded="md" minW="0">
               <VStack spacing={4}>
-                {cartItemsToRender.length === 0 ? (
+                {displayedItems.length === 0 ? (
                   <Box textAlign="center" py={10}>
                     <Text color="gray.500" fontSize="lg">Your cart is empty.</Text>
                     <Button mt={4} bg="pink.600" color="white" _hover={{ bg: "pink.700" }} onClick={() => navigate("/fashion")}>
@@ -283,104 +297,65 @@ export default function Carts_Page() {
                     </Button>
                   </Box>
                 ) : (
-                  cartItemsToRender.map((item) => {
+                  displayedItems.map((item) => {
                     const size = item.selectedSize;
                     const qty = item.quantity;
 
-                    if (item.selectedSize) {
-                      return (
-                        <Flex key={`${item.productId}-${size}`} bg="gray.100" border="1px solid" borderColor="gray.300" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
-                          <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
-                            <LazyLoadImage  src={Array.isArray(item.image) ? item?.image[0] : item?.image}  width="50px"  objectFit="cover"  rounded="md"/>
-                            <Box>
-                              <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
-                              <Text fontSize="xs" color="gray.500">Size: {size}</Text>
-                            </Box>
-                          </Flex>
-
-                          <Flex align="center" gap={2}>
-                              {/* Update quantity */}
-                              <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
-                                  updateCartItem(item.productId, size, size, qty - 1)
-                                }
-                                isDisabled={
-                                  qty <= 1 ||
-                                  updateLoading === `${item.productId}-${size}`
-                                }
-                              >
-                                {updateLoading === `${item.productId}-${size}` ? (
-                                  <Spinner size="sm" />
-                                ) : (
-                                  <CgMathMinus />
-                                )}
-                              </Button>
-                              <Text>{qty}</Text>
-                              <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
-                                  updateCartItem(item.productId, size, size, qty + 1)
-                                }
-                                isDisabled={updateLoading === `${item.productId}-${size}`}
-                              >
-                                {updateLoading === `${item.productId}-${size}` ? (
-                                  <Spinner size="sm" />
-                                ) : (
-                                  <RiAddFill />
-                                )}
-                              </Button>
-                            </Flex>
-
-                            <Flex align="center">
-                              <Text fontWeight="medium" ml={1}>
-                                {(item.price * qty).toLocaleString()}.00
-                              </Text>
-                            </Flex>
-                            <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
-                              Update Size
-                            </Button>
-
-                            <Text cursor={'pointer'} fontSize="13px" color={'red.600'} onClick={() => deleteCartItem(item.productId, size)} isDisabled={deleteLoading === item.productId}>
-                              {deleteLoading === item.productId ? (
-                                'Removing Item...'
-                              ) : (
-                                'Remove item from cart'
-                              )}
-                            </Text>
-                        </Flex>
-                      );
-                    }
-
-                    // fallback if no size
                     return (
-                      <Flex key={`no-size-${item.productId}`} bg="gray.50" border="1px solid" borderColor="gray.200" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
+                      <Flex key={`${item.productId}-${size || 'nosize'}`} bg="gray.100" border="1px solid" borderColor="gray.300" rounded="md" p={4} w="full" justify="space-between" align="center" wrap="wrap" gap={4}>
                         <Flex gap={3} align="center" as={Link} to={`/product-details/${item.productId}`}>
-                          <Image src={item.image?.[0]} boxSize="50px" objectFit="cover" rounded="md"/>
+                          <LazyLoadImage
+                            src={Array.isArray(item.image) ? item.image[0] : item.image}
+                            width="50px"
+                            height="50px"
+                            effect="blur"
+                            style={{ borderRadius: '6px', objectFit: 'cover' }}
+                          />
                           <Box>
                             <Text fontSize="sm">{item.name?.slice(0, 20)}...</Text>
-                            <Text fontSize="xs" color="orange.500">
-                              No size selected yet.
-                            </Text>
+                            {size && <Text fontSize="xs" color="gray.500">Size: {size}</Text>}
                           </Box>
                         </Flex>
 
                         <Flex align="center" gap={2}>
-                          <FaNairaSign />
-                          <Text fontWeight="medium" ml={1}>
-                            {item.price.toLocaleString()}.00
-                          </Text>
+                          <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
+                              updateCartItem(item.productId, size, size, qty - 1)
+                            }
+                            isDisabled={qty <= 1 || updateLoading === `${item.productId}-${size}`}
+                          >
+                            {updateLoading === `${item.productId}-${size}` ? <Spinner size="sm" /> : <CgMathMinus />}
+                          </Button>
+                          <Text>{qty}</Text>
+                          <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
+                              updateCartItem(item.productId, size, size, qty + 1)
+                            }
+                            isDisabled={updateLoading === `${item.productId}-${size}`}
+                          >
+                            {updateLoading === `${item.productId}-${size}` ? <Spinner size="sm" /> : <RiAddFill />}
+                          </Button>
                         </Flex>
-                        <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openSizeModal(item)}>
-                          Select Size
+
+                        <Flex align="center">
+                          <Text fontWeight="medium" ml={1}>{(item.price * qty).toLocaleString()}.00</Text>
+                        </Flex>
+
+                        <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
+                          Update Size
                         </Button>
 
-                        <Text fontSize="13px" color="red.600" cursor={'pointer'} onClick={() => deleteCartItem(item.productId, size)}>
-                          {deleteLoading === item.productId ? (
-                            'Removing Item...'
-                          ) : (
-                            'Remove item from cart'
-                          )}
+                        <Text cursor={'pointer'} fontSize="13px" color={'red.600'} onClick={() => deleteCartItem(item.productId, size)}>
+                          {deleteLoading === item.productId ? 'Removing Item...' : 'Remove item from cart'}
                         </Text>
                       </Flex>
                     );
                   })
+                )}
+
+                {/* Load More Button */}
+                {itemsToShow < cartItemsToRender.length && (
+                  <Button onClick={loadMoreItems} isLoading={loadingMore} colorScheme="pink" variant="outline">
+                    Load More
+                  </Button>
                 )}
               </VStack>
             </Box>

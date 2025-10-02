@@ -9,7 +9,7 @@ import { BsCart4 } from 'react-icons/bs';
 import { RiTShirt2Line } from "react-icons/ri";
 import Settings from './settings/Settings';
 import { GrUserFemale } from "react-icons/gr";
-import { IoManOutline } from "react-icons/io5";
+import { IoManOutline, IoPhonePortrait } from "react-icons/io5";
 import { BiSolidShoppingBags } from "react-icons/bi";
 import { GiConverseShoe } from "react-icons/gi";
 import All_category from './All_category';
@@ -183,7 +183,7 @@ const MobileNav = () => {
         <Box className="remove">
           <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Mobiles") ? "#ffbdde" : "inherit" }}>
             <Link to={"/category?category=Mobiles"} className='flex flex-col items-center'>
-              <CiMobile3 className="md:text-2xl text-lg" />
+              <IoPhonePortrait className="md:text-2xl text-lg" />
                 <Text className="text-[10px]">
                     Mobiles
                 </Text>

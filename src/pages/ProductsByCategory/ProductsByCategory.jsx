@@ -122,7 +122,7 @@ const ProductsByCategory = () => {
   }, [category]);
 
   
-  const handleAddToCart = async (product, size, qty) => {
+  const handleCart = async (product, size, qty) => {
     setLoadingProductId(product._id);
 
     const cartItem = {
@@ -169,6 +169,7 @@ const ProductsByCategory = () => {
           duration: 2000,
           isClosable: true,
         });
+        onClose();
       } else {
         if (data.message?.includes("already")) {
           toast({
@@ -311,7 +312,7 @@ const ProductsByCategory = () => {
     if (product.size?.length > 0) {
       onOpen(); // open modal if sizes exist
     } else {
-      handleAddToCart(product, "", 1); // directly add if no sizes
+      handleCart(product, "", 1); // directly add if no sizes
     }
   };
 
@@ -517,10 +518,15 @@ const ProductsByCategory = () => {
               colorScheme="pink"
               onClick={() => {
                 handleCart(selectedProduct, selectedSize, quantity);
-                onClose();
               }}
             >
-              Add to Cart
+              {loadingProductId === selectedProduct?._id ? (
+                  <>
+                    <Spinner size="sm" mr={2} /> Adding...
+                  </>
+                ) : (
+                  'Add to Cart'
+                )}
             </Button>
           </ModalFooter>
         </ModalContent>
