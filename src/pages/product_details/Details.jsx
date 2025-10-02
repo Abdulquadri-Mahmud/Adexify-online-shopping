@@ -523,8 +523,8 @@ export default function Details() {
         </Box>
 
         {/* Product description */}
-        <Box py={4} px={3}>
-          <Box maxW={{ "2xl": "80%", xl: "10%", lg: "100%", base: "97%" }} mx={"auto"} bg={"white"} py={4} px={3} rounded={"md"} className="">
+        <Box py={4} px={2}>
+          <Box maxW={{ "2xl": "80%", xl: "100%", lg: "100%", base: "100%" }} mx={"auto"} bg={"white"} py={4} px={3} rounded={"md"} className="">
             <Box className="mb-2">
               <h2 className="font-medium text-xl">Description:</h2>
             </Box>

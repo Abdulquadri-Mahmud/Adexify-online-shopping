@@ -73,12 +73,12 @@ const Navs = () => {
             <Link to="/fashion" style={{ fontSize: '15px', display: 'inline-block' }}>
                 Fashions
             </Link>
-            <Link to="/womens-clothing" style={{ fontSize: '15px', display: 'inline-block' }}>
+            {/* <Link to="/womens-clothing" style={{ fontSize: '15px', display: 'inline-block' }}>
                 Women's Fashion
             </Link>
             <Link to="/mens-clothing" style={{ fontSize: '15px', display: 'inline-block' }}>
                 Men's Fashion
-            </Link>
+            </Link> */}
 
             {categories.map((category) => (
             <Link key={category} to={`/category?category=${category}`} style={{ fontSize: '15px', display: 'inline-block' }}> 
