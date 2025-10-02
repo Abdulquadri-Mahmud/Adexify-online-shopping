@@ -32,7 +32,7 @@ export default function TopDeals() {
 
   return (
     <Box className='my-10 bg-white rounded-md' maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'}>
-      <Box className='bg-white-500 pb-3 rounded-t-lg'>
+      <Box className='bg-white-500 pb-0 rounded-t-lg'>
         <Box bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
           <Heading fontWeight={500} fontSize={{ md: 20, base: 18 }} color={'white'} className='text-xl'>
             Top Deals

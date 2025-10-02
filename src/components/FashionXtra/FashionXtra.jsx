@@ -32,7 +32,7 @@ export default function FashionXtra() {
 
   return (
     <Box className='my-10 bg-white rounded-md' maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'}>
-      <Box className='bg-white-500 pb-3 rounded-t-lg'>
+      <Box className='bg-white-500 pb-1 rounded-t-lg'>
         <Box bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
           <Heading fontWeight={500} fontSize={{ md: 20, base: 18 }} color={'white'} className='text-xl'>
             FashionXtra
@@ -43,8 +43,8 @@ export default function FashionXtra() {
         </Box>
       </Box>
 
-      <Box p={4}>
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+      <Box p={1}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
           {loading
             ? Array.from({ length: 12 }).map((_, index) => (
                 <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>

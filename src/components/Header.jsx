@@ -1,10 +1,10 @@
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import { createContext, useEffect, useState } from 'react'
-import { FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaLaptop, FaTwitter } from 'react-icons/fa';
 import { IoLogoYoutube } from 'react-icons/io';
 import { MdHomeFilled, MdOutlineShoppingCart} from "react-icons/md";
 import { IoMdCall } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { BsCart4 } from 'react-icons/bs';
 import { RiTShirt2Line } from "react-icons/ri";
 import Settings from './settings/Settings';
@@ -20,6 +20,7 @@ import GuestNav from './settings/GuestNav';
 import MobileSearchInput from './searchs/MobileSearchInput';
 import { useCart } from '../pages/cartsPage/CartCountContext';
 import { ShoppingBag } from 'lucide-react';
+import { CiMobile3 } from 'react-icons/ci';
 
 export const OpenMenuCOntext = createContext();
 
@@ -92,56 +93,121 @@ const Navs = () => {
 
 // Mobile screen mene
 const MobileNav = () => {
-    return (
-        <Box className="block md:hidden text-black ">
-            <Flex justifyContent={'space-between'} alignItems={'center'} flex={1} mx={'auto'} className="hidden md:flex">
-                <All_category/>
-                <Box className="md:hidden block">
-                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/'}>
-                            <MdHomeFilled className='text-lg'/>
-                        </Link>
-                        <Link to={'/'} className='text-[10px]'>Home</Link>
-                    </Box>
-                </Box>
+  const location = useLocation();
 
-                <Box className="md:hidden block">
-                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/fashion'}>
-                            <ShoppingBag className='text-lg'/>
-                        </Link>
-                        <Link to={'/fashion'} className='text-[10px]'>Fashion</Link>
-                    </Box>
-                </Box>
+  // Helper function to determine active route
+  const isActive = (path) => (location.pathname + location.search) === path;
 
-                <Box className="md:hidden block">
-                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/category?category=Shirt'}>
-                            <RiTShirt2Line className='text-lg'/>
-                        </Link>
-                        <Link to={'/category?category=Shirt'} className='text-[10px]'>Shirts</Link>
-                    </Box>
-                </Box>
-                
-                <Box className="md:hidden block">
-                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/category?category=Bags'}>
-                            <BiSolidShoppingBags className='text-lg'/>
-                        </Link>
-                        <Link to={'/category?category=Bags'} className='text-[10px]'>Bags</Link>
-                    </Box>
-                </Box>
-                <Box className="md:hidden block remove">
-                    <Box className="flex justify-center items-center flex-col hover:text-pink-600 duration-200">
-                        <Link to={'/category?category=Shoes'}>
-                            <GiConverseShoe className='text-lg'/>
-                        </Link>
-                        <Link to={'/category?category=Shoes'} className='text-[10px]'>Shoes</Link>
-                    </Box>
-                </Box>
-            </Flex>
+  return (
+    <Box className="block md:hidden text-black">
+      <Flex justifyContent={"space-between"} alignItems={"center"} flex={1} mx={"auto"} className="hidden md:flex">
+        <All_category />
+        
+        {/* Home */}
+        <Box className="md:hidden block">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/") ? "#ec4899" : "inherit" }} // pink.500
+          >
+            <Link to={"/"}>
+              <MdHomeFilled className="text-lg" />
+            </Link>
+            <Link to={"/"} className="text-[10px]">
+              Home
+            </Link>
+          </Box>
         </Box>
-    )
+
+        {/* Fashion */}
+        <Box className="md:hidden block">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/fashion") ? "#ec4899" : "inherit" }}
+          >
+            <Link to={"/fashion"}>
+              <ShoppingBag className="text-lg" />
+            </Link>
+            <Link to={"/fashion"} className="text-[10px]">
+              Fashion
+            </Link>
+          </Box>
+        </Box>
+
+        {/* Shirts */}
+        <Box className="md:hidden block">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/category?category=Shirt") ? "#ec4899" : "inherit" }}
+          >
+            <Link to={"/category?category=Shirt"}>
+              <RiTShirt2Line className="text-lg" />
+            </Link>
+            <Link to={'/category?category=Shirt'} className="text-[10px]">
+              Shirts
+            </Link>
+          </Box>
+        </Box>
+
+        {/* Bags */}
+        <Box className="md:hidden block">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/category?category=Bags") ? "#ec4899" : "inherit" }}
+          >
+            <Link to={"/category?category=Bags"}>
+              <BiSolidShoppingBags className="text-lg" />
+            </Link>
+            <Link to={"/category?category=Bags"} className="text-[10px]">
+              Bags
+            </Link>
+          </Box>
+        </Box>
+
+        {/* Shoes */}
+        <Box className="md:hidden block remove">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/category?category=Shoes") ? "#ec4899" : "inherit" }}
+          >
+            <Link to={"/category?category=Shoes"}>
+              <GiConverseShoe className="text-lg" />
+            </Link>
+            <Link to={"/category?category=Shoes"} className="text-[10px]">
+              Shoes
+            </Link>
+          </Box>
+        </Box>
+
+        <Box className="md:hidden block remove">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/category?category=Laptops") ? "#ec4899" : "inherit" }}
+          >
+            <Link to={"/category?category=Laptops"}>
+              <FaLaptop className="text-lg" />
+            </Link>
+            <Link to={"/category?category=Laptops"} className="text-[10px]">
+              Laptops
+            </Link>
+          </Box>
+        </Box>
+
+        <Box className="md:hidden block remove">
+          <Box
+            className="flex justify-center items-center flex-col duration-200"
+            style={{ color: isActive("/category?category=Mobiles") ? "#ec4899" : "inherit" }}
+          >
+            <Link to={"/category?category=Mobiles"}>
+              <CiMobile3 className="text-lg" />
+            </Link>
+            <Link to={"/category?category=Mobiles"} className="text-[10px]">
+              Mobiles
+            </Link>
+          </Box>
+        </Box>
+      </Flex>
+    </Box>
+  );
 };
 
 export default function Header() {

@@ -27,21 +27,17 @@ import Footer from "../../components/footer/Footer";
 import { IoHeart } from "react-icons/io5";
 import { FaNairaSign } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { addWishlist } from "../../store/wishlists/Wishlists";
 import Adverts from "../../components/Adverts/Adverts";
 import FashionCategory from "../../components/Bottom_Categories/FashionCategory";
 import FemaleSalesBanner from "../../components/banners/FemaleSalesBanner";
 import ProductByCategroyBanner from "../clothing_page/Categories_Banner/ProductByCategroyBanner";
 import MaleSalesBanner from "../../components/banners/MaleSalesBanner";
 import { motion } from 'framer-motion';
-import { setCartCount } from "../../store/cart/cartActions";
-import { setWishlistCount } from "../../store/cart/wishlishActions";
-import { addToCart, clearError, clearSuccess, } from "../../store/cart/cartSlice";
-import { addToWishlist, clearWishlistError } from "../../store/cart/wishlistSlice";
 import { getCartToken } from "../../store/cart/utils/cartToken";
 import { useCart } from "../cartsPage/CartCountContext";
 
 const MotionButton = motion.create(Button);
+
 const SuggestedSection = () => {
   return (
     <Box mb={8} maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx="auto" bg={useColorModeValue('white', 'gray.800')} p={{ base: 4, md: 6 }} mt={6} rounded="2xl">
@@ -199,123 +195,68 @@ const ProductsByCategory = () => {
     }
   };
 
-  console.log(selectedProduct);
-
-// const error = useSelector((state) => state.guestWishlist.error);
-
   // Handle Add to Wishlist
   const handleWishlistItem = async (product) => {
+    if (!product) return;
     setLoadingWishlistProductId(product._id);
 
+    // Build wishlist item
     const wishlistItem = {
       productId: product._id,
       name: product.name,
       price: product.price,
       image: product.image || [],
-      category: product.category || '',
-      brand: product.brand || '',
-      gender: product.gender || '',
-      description: product.description || '',
+      category: product.category || "",
+      gender: product.gender || "unisex",
     };
 
     try {
-      // =======================
-      // Guest Wishlist
-      // =======================
-      if (!currentUser?._id) {
-        dispatch(addToWishlist(wishlistItem));
-        const count = guestWishlist.items.length;
-        dispatch(setWishlistCount(count));
+      const payload = {
+        userId: currentUser?._id || null,
+        cartToken: currentUser?._id ? null : getCartToken(),
+        product: wishlistItem,
+      };
 
-        if (guestWishlist.error) {
-          toast({
-            title: "Error",
-            description: guestWishlist.error,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          });
-          dispatch(clearWishlistError());
-          return;
-        } else {
-          toast({
-            title: "Added to wishlist!",
-            description: "Item saved locally. Log in to save permanently.",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
-        }
-        return;
-      }
-
-      // =======================
-      // Logged-in Wishlist
-      // =======================
-      // 1. Merge guest wishlist if exists
-      if (guestWishlist.items.length > 0) {
-        const res = await fetch("https://adexify-api.vercel.app/api/wishlist/merge", {
+      const res = await fetch(
+        "https://adexify-api.vercel.app/api/wishlist/add",
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: currentUser._id, products: guestWishlist.items }),
-        });
-
-        const data = await res.json();
-        if (!res.ok || data.success === false) {
-          toast({
-            title: "Error",
-            description: data.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          });
-          return;
+          body: JSON.stringify(payload),
         }
-
-        dispatch(clearWishlist()); // clear guest wishlist after merging
-      }
-
-      // 2. Add current product to DB wishlist
-      const payload = { userId: currentUser._id, product: wishlistItem };
-
-      const res = await fetch('https://adexify-api.vercel.app/api/wishlist/add-to-wishlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      );
 
       const data = await res.json();
 
-      if (res.ok && data.success === true) {
+      console.log("Wishlist response:", data);
+
+      if (res.ok && data.success) {
+        // Optionally, update Redux or local state if you track wishlist count
         toast({
-          title: 'Added to wishlist!',
-          description: 'Item saved successfully.',
-          status: 'success',
-          duration: 3000,
+          title: "Added to Wishlist",
+          description: "Item successfully added to wishlist.",
+          status: "success",
+          duration: 2000,
           isClosable: true,
         });
-
-        // Refresh wishlist count
-        const wishlistRes = await fetch('https://adexify-api.vercel.app/api/wishlist/get-wishlist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUser._id }),
-        });
-
-        const wishlistData = await wishlistRes.json();
-        if (wishlistRes.ok && wishlistData.success === true) {
-          const count = wishlistData.wishlist?.products?.length || 0;
-          dispatch(setWishlistCount(count));
-        }
       } else {
-        throw new Error(data.message || 'Failed to add to wishlist');
+        if (data.message?.includes("already")) {
+          toast({
+            title: "Notice",
+            description: "Item already in wishlist.",
+            status: "info",
+            duration: 2000,
+            isClosable: true,
+          });
+        } else {
+          throw new Error(data.message);
+        }
       }
-
     } catch (error) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error.message,
-        status: 'error',
+        status: "error",
         duration: 3000,
         isClosable: true,
       });
@@ -381,23 +322,7 @@ const ProductsByCategory = () => {
       <ProductByCategroyBanner category={category} />
       
 
-      <Box maxW={{md:"95%", base: 'full'}} mx="auto" my={0} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
-        {/* Price Filter */}
-        {/* <Box bg={'gray.100'} rounded={'lg'} mb={4} gap={4} py={2} px={4} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexWrap={{md:'wrap'}}>
-          <Heading size={{md:"lg", base: 'sm', xs: 'sm'}} color={'gray.800'}>Browse Products in "<Text as={'span'} color={'pink.500'}>{category}</Text>"</Heading>
-          <Box >
-            <Select bg={'white'} value={priceRange} onChange={(e) => handlePriceFilter(e.target.value)} w={{md:"200px"}}>
-              <option value="all">All Prices</option>
-              <option value="below5000">Below ₦5,000</option>
-              <option value="5000to10000">₦5,000 - ₦10,000</option>
-              <option value="10000to20000">₦10,000 - ₦20,000</option>
-              <option value="20000to50000">₦20,000 - ₦50,000</option>
-              <option value="50000to100000">₦50,000 - ₦100,000</option>
-              <option value="above100000">Above ₦100,000</option>
-            </Select>
-          </Box>
-        </Box> */}
-
+      <Box maxW={{md:"95%", base: '97%'}} mx="auto" my={0} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
         <SimpleGrid bg={'white'} rounded={'xl'} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={3} py={3} px={2}>
           {
             loading && [...Array(8)].map((_, index) => (
@@ -438,12 +363,6 @@ const ProductsByCategory = () => {
 
                 <Box>
                   <Text fontWeight="500" fontSize={'14'} isTruncated>{product.name}</Text>
-                  {/* <Badge bg="gray.200" fontSize="10px" p={1} px={2} color="gray.800">
-                    {product.category}
-                  </Badge> */}
-                  {/* <Text fontSize="sm" color="gray.600" isTruncated>
-                    {product.description}
-                  </Text> */}
 
                   {product.oldprice && (
                     <Box bg={'white'} pos={'absolute'} left={2} top={2} fontSize="xs" px={2} py={1} roundedRight="full" w={'60px'} color="pink.500" fontWeight="medium" display="flex" alignItems="center">
@@ -509,6 +428,19 @@ const ProductsByCategory = () => {
             </Button>
           </Box>
         )}
+        {
+          !products.length && !loading && (
+            <Box textAlign="center" py={10} px={6}> 
+              <Text fontSize="xl" mt={3} mb={2} color={'gray.700'}>
+                No products found in "{category}" category.
+              </Text>
+              <Link to="/">
+                <Button bg={'pink.500'} _hover={{bg:'pink.600'}} color={'white'}>Go to Home</Button>
+              </Link>
+            </Box>
+          )
+          
+        }
       </Box>
 
       {/* Also interested */}

@@ -7,13 +7,16 @@ import { Provider } from 'react-redux'
 import { persistor, store } from './store/index.js'
 import { PersistGate } from 'redux-persist/integration/react'
 import { CartProvider } from './pages/cartsPage/CartCountContext.jsx'
+import { WishlistProvider } from './pages/wishlist_page/WishlistCountContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ChakraProvider>
         <CartProvider>
-          <App />
+          <WishlistProvider>
+            <App />
+          </WishlistProvider>
         </CartProvider>
       </ChakraProvider>
     </PersistGate>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { getCartToken, setCartToken } from "../../store/cart/utils/cartToken";
+import { getCartToken } from "../../store/cart/utils/cartToken";
 
 const ProductViews = ({ productId }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -27,9 +27,9 @@ const ProductViews = ({ productId }) => {
         }
 
         // Save new cartToken returned from backend if guest
-        if (!currentUser && res.data?.cartToken) {
-          setCartToken(res.data.cartToken);
-        }
+        // if (!currentUser && res.data?.cartToken) {
+        //   setCartToken(res.data.cartToken);
+        // }
       } catch (err) {
         console.error("Failed to record product view:", err);
       } finally {

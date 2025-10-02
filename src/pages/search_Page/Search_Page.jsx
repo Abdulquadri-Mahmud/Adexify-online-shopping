@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaNairaSign } from "react-icons/fa6";
 import { TbCurrencyNaira } from "react-icons/tb";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Heading,
@@ -14,32 +14,31 @@ import {
   Grid,
   HStack,
   SimpleGrid,
-  Container,
-  GridItem,
   Badge,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  DrawerOverlay,
-  Drawer,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
-  useDisclosure,
+  useToast,
+  Spinner,
 } from "@chakra-ui/react";
-import { IoBagHandle, IoHeart } from "react-icons/io5";
-import { IoMdCart } from "react-icons/io";
+
+import {
+  Modal, ModalOverlay, ModalContent, ModalHeader,
+  ModalFooter, ModalBody, ModalCloseButton, 
+  NumberInput, NumberInputField, useDisclosure
+} from "@chakra-ui/react";
+
 import Header from "../../components/Header";
-// import { addToCart } from "../../store/cart/cartsReucer";
 import { addWishlist } from "../../store/wishlists/Wishlists";
 import Footer from "../../components/footer/Footer";
 import SearchLoader from "../../components/searchs/SearchLoader/SearchLoader";
-import { HiOutlineMenuAlt2 } from "react-icons/hi";
-import { FaRegUserCircle } from "react-icons/fa";
-import { FiUserX } from "react-icons/fi";
+import { useCart } from "../cartsPage/CartCountContext";
+import { getCartToken } from "../../store/cart/utils/cartToken";
+import { motion } from "framer-motion";
+import { IoHeart } from "react-icons/io5";
+
+const MotionButton = motion.create(Button);
 
 export default function SearchPage() {
   const [products, setProducts] = useState([]);
@@ -48,6 +47,15 @@ export default function SearchPage() {
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [size, setSize] = useState("");
   const [deal, setDeal] = useState("");
+  const { updateCart } = useCart();
+  const [loadingProductId, setLoadingProductId] = useState(null); 
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [quantity, setQuantity] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const toast = useToast({ position: "top" });
+  const { currentUser } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -110,16 +118,77 @@ export default function SearchPage() {
     navigate(`/search?${params.toString()}`);
   };
 
-  const handleAddToCart = (product) => {
+  const handleCart = async (product, size, qty) => {
+    setLoadingProductId(product._id);
+
     const cartItem = {
-      productID: product._id,
-      productImage: product.image?.length > 0 ? product.image[0] : "/placeholder.png",
-      productName: product.name,
-      productPrice: product.price,
-      quantity: 1,
+      productId: product._id,
+      name: product.name,
+      stock: product.stock || 0,
+      price: product.price,
+      discount: product.discount || 0,
+      oldprice: product.oldprice || 0,
+      deal: product.deal || "",
+      category: product.category || "",
+      image: product.image || [],
+      description: product.description || "",
+      discountType: product.discountType || "",
+      trackingId: product.trackingId || "",
+      size: product.size || [],
+      selectedSize: size || product.size?.[0] || "",
+      quantity: qty || 1,
+      gender: product.gender || "unisex",
     };
 
-    dispatch(addToCart(cartItem));
+    try {
+      const payload = {
+        userId: currentUser?._id || null,
+        cartToken: currentUser?._id ? null : getCartToken(),
+        product: cartItem,
+      };
+
+      const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        updateCart(data.cart); //instantly updates count everywhere
+        // ✅ Backend already merges or increments item if exists
+        toast({
+          title: "Success",
+          description: "Item added to cart.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      } else {
+        if (data.message?.includes("already")) {
+          toast({
+            title: "Notice",
+            description: "Item already in cart.",
+            status: "info",
+            duration: 2000,
+            isClosable: true,
+          });
+        } else {
+          throw new Error(data.message);
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoadingProductId(null);
+    }
   };
 
   const handleWishlistItem = (product) => {
@@ -134,7 +203,14 @@ export default function SearchPage() {
     dispatch(addWishlist(cartItem));
   };
 
-  const handleBack = () => navigate(-1);
+  const openCartModal = (product) => {
+    setSelectedProduct(product);
+    if (product.size?.length > 0) {
+      onOpen(); // open modal if sizes exist
+    } else {
+      handleCart(product, "", 1); // directly add if no sizes
+    }
+  };
 
   return (
     <Box className="bg-zinc-200">
@@ -220,12 +296,9 @@ export default function SearchPage() {
             <Text color="gray.500">No products found.</Text>
           )}
 
-          <SimpleGrid columns={{ base: 2, sm: 3, md: 4, xl: 5 }} bg={"white"} p={{ md: 3 }} rounded={"xl"} gap={4} spacing={3}> 
+          <SimpleGrid columns={{ base: 2, sm: 2, md: 4, xl: 5 }} bg={"white"} p={{ md: 3 }} rounded={"xl"} gap={4} spacing={1}> 
             {products.map((item) => (
               <Box key={item._id} pos={'relative'} bg="white" borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} position="relative">
-                {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md rounded-tl-md flex items-center gap-2'>
-                  <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
-                </Link> */}
                 
                 <Link to={`/product-details/${item._id}`}>
                   <Flex  w={{ base: "full", md: "100%" }} p={2} mx="auto"  justify={"center"}  alignItems={"center"}>
@@ -242,54 +315,131 @@ export default function SearchPage() {
                 <Flex zIndex={1} justifyContent={"center"} alignItems={"center"} fontSize={"2xl"} onClick={() => handleWishlistItem(item)} aria-label="Add to wishlist" position="absolute" top="2" right="2" w="30px" h="30px" bg="gray.300" color="white" rounded="full" _hover={{ color: "pink.600", bg: "gray.400" }} _active={{ color: "pink.600", bg: "gray.400" }}>
                   <IoHeart />
                 </Flex>
-                <Box p={2}>
-                  <Heading as={"h2"} fontWeight={500} fontSize={'md'} color={"gray.600"} isTruncated className="truncate">
-                    {item.name}
-                  </Heading>
-                  {/* <Text color="gray.600" fontSize="12px" rounded="md" isTruncated className="truncate" mb={1}>
-                    {item.description}
-                  </Text> */}
-                  <Flex justify="space-between" align="center" mt={1} w="full">
-                    <Box>
-                      {item.oldprice ? (
-                        <Badge bg="pink.100" fontWeight={500} color="gray.800" variant="subtle" mt={2} fontSize="xs">
-                          {(
-                            ((item.oldprice - item.price) / item.oldprice) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </Badge>
-                      ) : (
-                        <Badge bg="gray.100" fontWeight={500} color="gray.800" variant="subtle" fontSize="12px" mt={2}> 
-                          No Discount Available
+                <Box p={1}>
+                  <Text fontWeight="500" fontSize={'14'} isTruncated>{item?.name}</Text>
+                  
+                    {item?.oldprice && (
+                      <Box bg={'white'} pos={'absolute'} left={2} top={2} fontSize="xs" px={2} py={1} roundedRight="full" w={'60px'} color="pink.500" fontWeight="medium" display="flex" alignItems="center">
+                          {((item?.oldprice - item?.price) / item?.oldprice * 100).toFixed(2)}%
+                      </Box>
+                    )}
+  
+                    <Flex justifyContent={'space-between'} alignItems="center" mt={1}>
+                      <Text fontSize={'sm'} display="flex" alignItems="center" fontWeight={'600'}>
+                        <FaNairaSign />
+                        <span className="font-medium">{item?.price.toLocaleString()}.00</span>
+                      </Text>
+  
+                      {item?.oldprice && (
+                        <Badge fontSize="12px" fontWeight={400} color="gray.400" textDecoration="line-through">
+                          <FaNairaSign className="inline-block text-[12px]" />{item?.oldprice}
                         </Badge>
                       )}
-                    </Box>
-
-                    {/* <Badge bg="gray.100" color="gray.800" variant="subtle" fontSize="12px">
-                      {item.category}
-                    </Badge> */}
-                  </Flex>
-                  <Flex justify="space-between" mt={1}>
-                    <Badge display={"flex"} alignItems={"center"} fontWeight="bold" color="pink.600" fontSize="lg">
-                      <TbCurrencyNaira className="" />
-                      {item.price?.toLocaleString() || "N/A"}.00
-                    </Badge>
-                    {item.oldprice && (
-                      <Flex fontSize="sm" color="gray.400" textDecoration="line-through" align="center" ml="3">
-                        <TbCurrencyNaira fontSize="13px" />
-                        <Text ml="1">{item.oldprice}</Text>
-                      </Flex>
-                    )}
-                  </Flex>
-                  {/* <Button onClick={() => handleAddToCart(item)} mt={4} w="full" bg="pink.600" color="white" leftIcon={<IoMdCart />}>
-                    Add to Cart
-                  </Button> */}
+                    </Flex>
+                    <MotionButton
+                      whileTap={{ scale: 0.95 }}
+                      initial={{ opacity: 1 }}
+                      animate={{ opacity: loadingProductId === item._id ? 0.7 : 1 }}
+                      transition={{ duration: 0.2 }}
+                      disabled={loadingProductId === item._id}
+                      _hover={{ bg: 'pink.600', color: 'white' }}
+                      onClick={() => openCartModal(item)}
+                      w="full"
+                      mt={3}
+                      border={'1px solid'}
+                      bg={'pink.500'}
+                      color="white">
+                      {loadingProductId === item._id ? (
+                        <>
+                          <Spinner size="sm" mr={2} /> Adding...
+                        </>
+                      ) : (
+                        'Add to Cart'
+                      )}
+                    </MotionButton>
                 </Box>
               </Box>
             ))}
           </SimpleGrid>
         </Box>
+
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent mx={3}>
+            <ModalHeader>Select Size & Quantity</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Text isTruncated mb={4}>{selectedProduct?.name}</Text>
+              <Flex bg={'pink.50'} alignItems="center" justifyContent={"space-between"} mt={4} gap={3} width={"100%"} p={2} rounded={"md"}>
+                <Heading fontSize="md" fontWeight={500} display="flex" alignItems="center">
+                  <FaNairaSign /> {selectedProduct?.price?.toLocaleString()}
+                </Heading>
+                {selectedProduct?.oldprice && (
+                  <Text fontSize="md" display={"flex"} alignItems={"center"} textDecor="line-through" color="gray.500">
+                    <FaNairaSign /> {selectedProduct?.oldprice?.toLocaleString()}
+                  </Text>
+                )}
+              </Flex>
+  
+              <Box my={4}>
+                  {selectedProduct?.stock > 0 ? (
+                    <Badge bg="pink.500" color={'white'} fontWeight={500} px={2} py={1} rounded="sm">
+                      In Stock
+                    </Badge>
+                  ) : (
+                    <Badge colorScheme="red" px={2} py={1} rounded="md">
+                      Out of Stock
+                    </Badge>
+                  )}
+                </Box>
+  
+              {selectedProduct?.size?.length > 0 && (
+                <Select
+                  placeholder="Select size"
+                  value={selectedSize}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                >
+                  {selectedProduct.size.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </Select>
+              )}
+              <NumberInput mt={4} min={1} value={quantity} onChange={(val) => setQuantity(Number(val))}>
+                <NumberInputField />
+              </NumberInput>
+  
+              {selectedProduct?.oldprice && (
+                <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
+                  You save <FaNairaSign />{" "}
+                  <Text as="span" fontWeight="medium" color="green.600">
+                    {(selectedProduct.oldprice - selectedProduct.price).toLocaleString()}
+                  </Text>
+                </Text>
+              )}
+              <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.50'} alignItems={'center'}>
+                <Text mt={4} mb={3} color={"gray.700"}>
+                  Product Code: <span className="text-pink-600 font-medium">{selectedProduct?.trackingId}</span>
+                </Text>
+                <Text mt={2} mb={3} color={"gray.700"}>
+                  Category: <span className="text-pink-600 font-medium">{selectedProduct?.category}</span>
+                </Text>
+              </Flex>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                colorScheme="pink"
+                onClick={() => {
+                  handleCart(selectedProduct, selectedSize, quantity);
+                  onClose();
+                }}
+              >
+                Add to Cart
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Flex>
       <Footer />
     </Box>
