@@ -293,7 +293,7 @@ export default function Details() {
         <Box maxW={{ "2xl": "80%", xl: "100%", lg: "100%", base: "97%" }} mx={"auto"} className="md:p-4 p- flex justify-center gap-2 flex-wrap">
           <Flex gap={{ md: 2, base: 2 }} wrap="wrap" className="w-full">
             {/* Gallery column */}
-            <Box className="flex-1 bg-white p-4 rounded-md" style={{ minWidth: 350, minWidth: 400 }} mx={'auto'}> 
+            <Box className="flex-1 bg-white p-4 rounded-md" style={{ minWidth: 350, maxWidth: 400 }} mx={'auto'}> 
               {/* Main large preview */}
               {images.length > 0 && (
                 <Zoom>
@@ -301,7 +301,7 @@ export default function Details() {
                     ref={displayImage}
                     src={images[activeIndex]}
                     alt={product?.name}
-                    className="w-full h-[420px] md:h-[100%] object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
+                    className="w-full h-[100%] md:h-[100%] object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
                     onClick={() => openLightboxAt(activeIndex)}
                   />
                 </Zoom>
