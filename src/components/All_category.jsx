@@ -20,6 +20,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { useSelector } from 'react-redux';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { BsCart4 } from 'react-icons/bs';
+import { useCart } from '../pages/cartsPage/CartCountContext';
 
 export default function All_category() {
     const { items } = useSelector((state) => state.cart);
@@ -29,7 +30,7 @@ export default function All_category() {
     const { currentUser } = useSelector((state) => state.user);
     const [categories, setCategories] = useState([]);
 
-    const cartCount = useSelector((state) => state.cart.count);
+    const { cartCount } = useCart();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -67,7 +68,7 @@ export default function All_category() {
                             <Link to={'/'} className='bg-white rounded-md flex items-center gap-2'>
                                 <Image src='/Logo.png' alt='logo' w={'150px'}/>
                             </Link>
-                            
+                             
                             <div className="pr-6">
                                 <Link to={'/view-carts'}>
                                     <Flex gap={0} alignItems={'center'}>
@@ -114,7 +115,7 @@ export default function All_category() {
                             </Flex>
                         )}
                         <Box mt={5} rounded={'lg'} p={0} bg={'white'}>
-                            <Text mb={{ md: 0, base: 2 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
+                            {/* <Text mb={{ md: 0, base: 2 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
                             <Box className='py-2 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
                                 <Link to={`/fashion`} className='text-md ml-5 hover:text-pink-500 duration-200 text-[14px]'>
                                     Fashion
@@ -129,11 +130,11 @@ export default function All_category() {
                                 <Link to={`/womens-clothing`} className='text-md ml-5 hover:text-pink-500 duration-200 text-[14px]'>
                                     Women's wear
                                 </Link>
-                            </Box>
-                            <Text mb={{ md: 0, base: 5 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
-                            <div className="flex justify-start flex-col items-start gap-1">
+                            </Box> */}
+                            <Text mb={{ md: 0, base: 0 }} display={{ md: 'none', base: 'block' }} fontWeight={'500'} fontSize={20}>Categories</Text>
+                            <div className=" flex justify-start flex-col items-start gap-1">
                                 {categories.map((category, index) => (
-                                    <Box key={index} className='py-3 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
+                                    <Box key={index} className='py-3 pl-5 px-2 hover:translate-x-3 duration-200 w-full' borderBottom={'1px solid #e2e8f0'} borderRadius={'md'} _hover={{ bg: 'pink.50' }}>
                                         <Link to={`/category?category=${category}`} className='text-md hover:text-pink-500 duration-200 text-[14px]'>
                                             {category}
                                         </Link>

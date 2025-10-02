@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaBookmark, FaNairaSign } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Box,Button,Container,Flex, Heading, HStack, Image, Radio, RadioGroup, Stack, Text } from '@chakra-ui/react';
+import { Box,Button,Container,Flex, Heading, HStack, Image, Radio, RadioGroup, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 // import { toast } from 'react-toastify';
 import {
   Grid,
@@ -179,7 +179,7 @@ export default function CheckOutPage() {
                 {/* Customer Address */}
                 <Box width={'full'} bg={'white'} p={4} rounded={'lg'} pos={'relative'}>
                   <Flex alignItems={'center'} gap={2}>
-                    <Box bg={'pink.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
+                    <Box className='animate-pulse' bg={'pink.300'} w={4} h={4} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
                     <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>1.CUSTOMER ADDRESS</Heading>
                   </Flex>
                   <Box mt={3} px={3}>
@@ -224,24 +224,24 @@ export default function CheckOutPage() {
                 {/* Products */}
                 <Box bg={'white'} p={4} rounded={'lg'} pos={'relative'} mt={5}>
                   <Flex alignItems={'center'} gap={2}>
-                    <Box bg={'pink.500'} w={6} h={6} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
+                    <Box className='animate-pulse' bg={'pink.300'} w={4} h={4} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
                     <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>2.PRODUCTS</Heading>
                   </Flex>
-                  <Flex flexWrap={'wrap'} justifyContent={'start'} alignItems={'center'} gap={3} mt={3} px={3} py={3} bg={'gray.100'} rounded={'lg'} borderBottom={'1px solid'} borderColor={'gray.200'}>
+                  <SimpleGrid columns={{ base: 2,sm: 3, md: 5, xl: 6 }} spacing={1} mt={3} px={3} py={3} bg={'gray.100'} rounded={'lg'} borderBottom={'1px solid'} borderColor={'gray.200'}>
                     {
                       cartItems.length > 0 && (
                         cartItems.map((item) => {
                           return(
-                            <Box key={item._id} display={'flex'} width={'140px'}
+                            <Box key={item._id} display={'flex'} width={''}
                               flexDirection={'column'} justifyContent={'center'} 
                               alignItems={'center'} gap={2} bg={'white'} 
-                              p={2} rounded={'lg'} border={'1px solid'} 
+                              p={1} rounded={'lg'} border={'1px solid'} 
                               borderColor={'gray.200'}>
                               <Box bg={'white'} p={1} rounded={'lg'}>
-                                <Image src={item?.image?.[0]} alt={item?.name} width={{md: '70px', base: '80px'}} rounded={'lg'}/>
+                                <Image src={item?.image?.[0]} alt={item?.name} width={{md: '70px',sm: '80px', base: '100%'}} rounded={'lg'}/>
                               </Box>
                               <Text fontSize={'sm'} color={'gray.600'} isTruncated width={'full'}>{item?.name}</Text>
-                              <Flex fontSize={'13px'} justifyContent={'space-between'} alignItems={'center'} width={'full'} gap={2}>
+                              <Flex fontSize={'13px'} justifyContent={'space-between'} alignItems={'center'} width={'full'} gap={1}>
                                 <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'}
                                 display={'flex'} alignItems={'center'} >QTY: {item?.quantity}</Text>
                                 <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'}
@@ -252,7 +252,7 @@ export default function CheckOutPage() {
                         }
                       ) )
                     }
-                  </Flex>
+                  </SimpleGrid>
                   <Flex justifyContent={'center'} alignItems={'center'} pt={3} color={'pink.500'} fontWeight={'500'}>
                     <Link to={'/view-carts'}>Modify Cart</Link>
                   </Flex>
@@ -261,7 +261,7 @@ export default function CheckOutPage() {
                 {/* Payment Method */}
                 <Box bg={"white"} p={4} rounded={"lg"} pos={"relative"} mt={5}>
                   <Flex alignItems={"center"} gap={2}>
-                    <Box bg={"pink.500"} w={6} h={6} rounded={"full"} display={"flex"} justifyContent={"center"} alignItems={"center"}></Box>
+                    <Box className='animate-pulse' bg={"pink.300"} w={4} h={4} rounded={"full"} display={"flex"} justifyContent={"center"} alignItems={"center"}></Box>
                     <Heading as={"h3"} fontSize={"md"} fontWeight={600} color={"gray.600"}>
                       3. PAYMENT METHOD
                     </Heading>

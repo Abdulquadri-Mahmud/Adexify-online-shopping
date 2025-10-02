@@ -32,9 +32,10 @@ import FashionCategory from "../../components/Bottom_Categories/FashionCategory"
 import FemaleSalesBanner from "../../components/banners/FemaleSalesBanner";
 import ProductByCategroyBanner from "../clothing_page/Categories_Banner/ProductByCategroyBanner";
 import MaleSalesBanner from "../../components/banners/MaleSalesBanner";
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence  } from 'framer-motion';
 import { getCartToken } from "../../store/cart/utils/cartToken";
 import { useCart } from "../cartsPage/CartCountContext";
+import MotionHeart from "../../components/motion_heart/MotionHeart";
 
 const MotionButton = motion.create(Button);
 
@@ -68,7 +69,9 @@ const ProductsByCategory = () => {
   const { updateCart } = useCart();
 
   const toast = useToast({ position: "top" });
-  const dispatch = useDispatch();
+
+  const [likedItems, setLikedItems] = useState({});
+
 
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -84,6 +87,7 @@ const ProductsByCategory = () => {
   const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
   // Pagination states
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   
@@ -205,9 +209,19 @@ const ProductsByCategory = () => {
     const wishlistItem = {
       productId: product._id,
       name: product.name,
+      stock: product.stock || 0,
       price: product.price,
-      image: product.image || [],
+      discount: product.discount || 0,
+      oldprice: product.oldprice || 0,
+      deal: product.deal || "",
       category: product.category || "",
+      image: product.image || [],
+      description: product.description || "",
+      discountType: product.discountType || "",
+      trackingId: product.trackingId || "",
+      size: product.size || [],
+      selectedSize: product.size?.[0] || "",
+      quantity: product?.quantity || 1,
       gender: product.gender || "unisex",
     };
 
@@ -324,7 +338,7 @@ const ProductsByCategory = () => {
       
 
       <Box maxW={{md:"95%", base: '97%'}} mx="auto" my={0} bg={'white'} rounded={'lg'} p={{lg:4, base: 2}}>
-        <SimpleGrid bg={'white'} rounded={'xl'} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={3} py={3} px={2}>
+        <SimpleGrid bg={'white'} rounded={'xl'} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={1} py={3} px={2}>
           {
             loading && [...Array(8)].map((_, index) => (
               <GridItem key={index} bg="gray.200" p={4} borderRadius="lg" border={'1px solid'} borderColor={'gray.200'} opacity={0.6}>
@@ -340,7 +354,7 @@ const ProductsByCategory = () => {
         {getError && <Text color="red.500">{getError}</Text>}
 
         {/* Product Grid */}
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
+        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={1}>
           {currentItems.map((product) => (
             <Box key={product._id} position="relative" borderWidth="1px" borderColor={'gray.50'} borderRadius="xl" p={2} bg="white">
               <VStack spacing={2} align="stretch">
@@ -352,19 +366,40 @@ const ProductsByCategory = () => {
                   <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
                 </Link>
 
-                {loadingWishlistProductId === product._id ? (
-                    <Flex justifyContent='center' alignItems='center' bg={'pink.600'} rounded={'full'} className="absolute top-2 right-2 w-[26px] h-[26px]">
-                      <Spinner color="gray.50" size="sm" mr={2} />
+                <AnimatePresence>
+                  {loadingWishlistProductId === product._id ? (
+                    <Flex justifyContent="center" alignItems="center" bg={'pink.600'} rounded={'full'} className="absolute bg-slate-500 top-2 right-2 w-[26px] h-[26px]">
+                      <Spinner color="gray.50" size="sm" />
                     </Flex>
                   ) : (
-                    <button onClick={() => handleWishlistItem(product)} className="absolute top-2 right-2 w-[26px] h-[26px] bg-pink-200 flex justify-center items-center rounded-full">
-                      <IoHeart className="text-xl text-white hover:text-pink-600" />
-                    </button>
+                    <MotionHeart
+                      isLiked={likedItems[product._id] || false}
+                      onClick={() => {
+                        handleWishlistItem(product);
+                        setLikedItems(prev => ({ ...prev, [product._id]: !prev[product._id] }));
+                      }}
+                    />
                   )}
+                </AnimatePresence>
 
                 <Box>
                   <Text fontWeight="500" fontSize={'14'} isTruncated>{product.name}</Text>
-
+                  {product.stock !== undefined && (
+                    <Box my={3}>
+                      <Text fontSize="xs" color="gray.500" mb={1}>
+                        Stock left: {product.stock}
+                      </Text>
+                      <Box bg="gray.200" h="6px" w="100%" borderRadius="full" overflow="hidden">
+                        <Box
+                          h="100%"
+                          w={`${(product.stock / 100) * 100}%`}
+                          bg="pink.600"
+                          borderRadius="full"
+                          transition="width 0.3s ease"
+                        />
+                      </Box>
+                    </Box>
+                  )}
                   {product.oldprice && (
                     <Box bg={'white'} pos={'absolute'} left={2} top={2} fontSize="xs" px={2} py={1} roundedRight="full" w={'60px'} color="pink.500" fontWeight="medium" display="flex" alignItems="center">
                         {((product.oldprice - product.price) / product.oldprice * 100).toFixed(2)}%
@@ -387,25 +422,26 @@ const ProductsByCategory = () => {
                   <MotionButton
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 1 }}
-                    animate={{ opacity: loadingProductId === product._id ? 0.7 : 1 }}
-                    transition={{ duration: 0.2 }}
-                    disabled={loadingProductId === product._id}
+                    animate={{
+                      opacity: loadingProductId === product._id ? 0.7 : 1,
+                      x: product.stock < 1 ? [0, -5, 5, -5, 5, 0] : 0, // shake effect if out of stock
+                    }}
+                    transition={{ duration: 0.3, type: "spring" }}
+                    disabled={loadingProductId === product._id || product.stock < 1}
                     _hover={{ bg: 'pink.600', color: 'white' }}
                     onClick={() => openCartModal(product)}
                     w="full"
                     mt={3}
                     border={'1px solid'}
                     bg={'pink.500'}
-                    color="white">
+                    color="white"
+                  >
                     {loadingProductId === product._id ? (
                       <>
                         <Spinner size="sm" mr={2} /> Adding...
                       </>
-                    ) : (
-                      'Add to Cart'
-                    )}
+                    ) : product.stock < 1 ? 'Out of Stock' : 'Add to Cart'}
                   </MotionButton>
-
                 </Box>
               </VStack>
             </Box>

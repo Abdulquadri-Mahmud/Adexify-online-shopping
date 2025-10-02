@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  GridItem,
   Heading,
   SimpleGrid,
   Spinner,
@@ -10,87 +11,152 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaNairaSign } from "react-icons/fa6";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
 import { MdDelete } from "react-icons/md";
-import { removeFromWishlist } from "../../store/cart/wishlistSlice";
 
 // Lazy load image
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { getCartToken } from "../../store/cart/utils/cartToken";
+import { useSelector } from "react-redux";
 
-export default function Wishlist_Page() {
-  const { currentUser } = useSelector((state) => state.user);
-  const guestWishlist = useSelector((state) => state.guestWishlist); // <-- guest wishlist state
-  const dispatch = useDispatch();
+export default function Wishlist_Page({ guestToken }) {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const [wishlistItems, setWishlistItems] = useState([]); // unified state
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(null);
-
-  // Fetch wishlist from backend if logged in
+  const [loadingProductId, setLoadingProductId] = useState(null);
+  // const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
+  const { currentUser } = useSelector((state) => state.user);
+  // Fetch wishlist from backend
   const fetchWishlist = async () => {
-    if (!currentUser?._id) return;
     setLoading(true);
     try {
-      const res = await fetch(
-        "https://adexify-api.vercel.app/api/wishlist/get-wishlist",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: currentUser._id }),
-        }
-      );
+      const payload = currentUser?._id
+        ? { userId: currentUser._id }
+        : { cartToken: getCartToken() };
+        
+        const query = new URLSearchParams(payload).toString();
+            
+        const res = await fetch(
+          `https://adexify-api.vercel.app/api/wishlist/get?${query}`);
 
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setWishlistItems(data.wishlist.products || []);
-      } else {
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          setWishlistItems(data.cart.products || []);
+        } else {
+          setWishlistItems([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch wishlist:", error);
         setWishlistItems([]);
-      }
-    } catch (error) {
-      console.error("Failed to fetch wishlist:", error);
-      setWishlistItems([]);
-    } finally {
-      setLoading(false);
+      } finally {
+        setLoading(false);
     }
   };
 
-  // Load wishlist depending on user status
   useEffect(() => {
-    if (currentUser?._id) {
-      fetchWishlist();
-    } else {
-      setWishlistItems(guestWishlist.items || []); // <-- local storage items
-    }
-  }, [currentUser, guestWishlist]);
+    fetchWishlist();
+  }, [currentUser, guestToken]);
 
+// ✅ Add to Cart
+  const handleCart = async (product, size, qty) => {
+    setLoadingProductId(product._id);
+
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      stock: product.stock || 0,
+      price: product.price,
+      discount: product.discount || 0,
+      oldprice: product.oldprice || 0,
+      deal: product.deal || "",
+      category: product.category || "",
+      image: product.image || [],
+      description: product.description || "",
+      discountType: product.discountType || "",
+      trackingId: product.trackingId || "",
+      size: product.size || [],
+      selectedSize: size || product.size?.[0] || "",
+      quantity: qty || 1,
+      gender: product.gender || "unisex",
+    };
+
+    try {
+      const payload = {
+        userId: currentUser?._id || null,
+        cartToken: currentUser?._id ? null : getCartToken(),
+        product: cartItem,
+      };
+
+      const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        updateCart(data.cart);
+        toast({
+          title: "Success",
+          description: "Item added to cart.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+        onClose?.();
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoadingProductId(null);
+    }
+  };
   // Delete wishlist item
   const handleRemoveItem = async (productId) => {
-    if (!currentUser?._id) {
-      // Guest wishlist
-      dispatch(removeFromWishlist(productId)); // your redux reducer for guest wishlist
-      return;
-    }
-
-    // Logged-in user
     setDeleteLoading(productId);
     try {
+      const payload = currentUser?._id
+        ? { userId: currentUser._id, productId }
+        : { cartToken: guestToken, productId };
+
       const res = await fetch(
-        "https://adexify-api.vercel.app/api/wishlist/delete-wishlist",
+        "https://adexify-api.vercel.app/api/wishlist/remove",
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: currentUser._id, productId }),
+          body: JSON.stringify(payload),
         }
       );
+
       const data = await res.json();
+      console.log("delete data:", data);
+
       if (res.ok && data.success) {
-        fetchWishlist(); // refresh backend wishlist
+        fetchWishlist();
+
+        toast({
+          title: "Deleted",
+          description: "Item removed from wishlist.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
       } else {
         toast({
           title: "Error",
@@ -112,18 +178,37 @@ export default function Wishlist_Page() {
       <Header />
 
       <Box pb={10} pt={7} px={2} bg="gray.100">
-        <Box  maxW={{ md: "80%", base: "100%" }}  mx="auto"  py={2}  bg="white"  px={6}  rounded="md">
-          <Heading fontSize={24} fontWeight={500}>
-            My Wishlist
+        <Box  maxW={{ md: "80%", base: "100%" }}  mx="auto"  py={4}  bg="white"  px={6}  rounded="md" boxShadow="sm">
+          <Heading fontSize={24} fontWeight={600} color="pink.600">
+            {currentUser ? `Hi, ${currentUser.firstname} 👋` : "Hi User 👋"}
           </Heading>
-          <Text fontSize={13} color="gray.500" mt={2}>
-            You have ({wishlistItems.length}) items in your wishlist
+
+          <Text fontSize={14} color="gray.600" mt={1}>
+            {currentUser 
+              ? `Welcome back! You have (${wishlistItems.length}) item${wishlistItems.length !== 1 ? "s" : ""} saved in your wishlist. ✨`
+              : `You have (${wishlistItems.length}) item${wishlistItems.length !== 1 ? "s" : ""} in your wishlist. Sign in to save them permanently!`}
+          </Text>
+
+          <Text fontSize={12} color="gray.400" mt={2} fontStyle="italic">
+            {wishlistItems.length > 0 
+              ? "Keep exploring, your dream products are just a click away 💖" 
+              : "Your wishlist is empty. Start adding your favorite items today! 🛍️"}
           </Text>
         </Box>
 
         <Box maxW={{ md: "80%", base: "100%" }} mx="auto" mt={6}>
-          <Box bg="white" p={4} rounded="md">
-            {wishlistItems.length === 0 ? (
+          <Box bg={'white'} spacing={3}p={4} rounded="md">
+            {loading ? (
+              loading && [...Array(8)].map((_, index) => (
+                <SimpleGrid rounded={'xl'} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={1} key={index} bg="white" p={4} borderRadius="lg" border={'1px solid'} borderColor={'gray.200'} opacity={0.6}>
+                  <Box h="150px" bg="gray.300" mb={4} />
+                  <Box h="2" bg="gray.300" w="3/4" mb={2} />
+                  <Box h="2" bg="gray.300" w="1/2" mb={2}/>
+                  <Box h="2" bg="gray.300" w="1/2" />
+                  <Box h="10" bg="gray.300" w="full" mt={3} />
+                </SimpleGrid>
+              ))
+            ) : wishlistItems.length === 0 ? (
               <Box textAlign="center" py={10}>
                 <Text color="gray.500" fontSize="lg">
                   Your wishlist is empty.
@@ -139,32 +224,20 @@ export default function Wishlist_Page() {
                 </Button>
               </Box>
             ) : (
-              <SimpleGrid
-                columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-                spacing={3}
-              >
+              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={3}>
                 {wishlistItems.map((item, index) => (
-                  <Box
-                    key={index}
-                    borderWidth="1px"
-                    rounded="md"
-                    overflow="hidden"
-                  >
+                  <Box key={index} borderWidth="1px" rounded="md" overflow="hidden">
                     <Link to={`/product-details/${item.productId}`}>
                       <LazyLoadImage
-                        src={
-                          Array.isArray(item.image) ? item.image[0] : item.image
-                        }
+                        src={Array.isArray(item.image) ? item.image[0] : item.image}
                         alt={item.name}
-                        height="180px"
-                        width="100%"
-                        effect="blur" // 👈 blur effect on load
-                        style={{ objectFit: "cover" }}
+                        effect="blur"
+                        style={{ objectFit: "cover" }} className="h-[200px]"
                       />
                     </Link>
-                    <Box p={4}>
-                      <Text fontWeight={500} mb={2} isTruncated>
-                        {item.name}
+                    <Box p={2} mt={0}>
+                      <Text fontWeight={500} py={3} color={'gray.700'} isTruncated>
+                        {item?.name}
                       </Text>
                       <Flex align="center" mb={3}>
                         <FaNairaSign />
@@ -175,16 +248,21 @@ export default function Wishlist_Page() {
                       <Flex direction="column" gap={2}>
                         <Button
                           size="sm"
+                          colorScheme="blue"
+                          isLoading={loadingProductId === item.productId}
+                          onClick={() => handleCart(item, item.selectedSize, 1)}
+                        >
+                          Add to Cart
+                        </Button>
+                        
+                        <Button
+                          size="sm"
                           colorScheme="red"
                           leftIcon={<MdDelete />}
                           onClick={() => handleRemoveItem(item.productId)}
-                          width="full"
+                          
                         >
-                          {deleteLoading === item.productId ? (
-                            <Spinner size="sm" />
-                          ) : (
-                            "Delete"
-                          )}
+                          {deleteLoading === item.productId ? 'Removing Item...' : "Remove Item"}
                         </Button>
                       </Flex>
                     </Box>

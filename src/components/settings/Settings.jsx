@@ -25,12 +25,8 @@ export default function Settings() {
         <Menu className="bg-black">
             <MenuButton display={{base: 'block', md: 'block'}} bg={'transparent'} height={'30px'} color={'black'}
             _hover={{bg: 'transparent'}} as={Button} _focus={{bg: 'transparent'}} fontWeight={400} className=''>
-                <Flex display={{md: 'block', base: 'none'}} className=''>
-                    <Text>My Account</Text>
-                    <MdKeyboardArrowDown/>
-                </Flex>
-                <Box  display={{md: 'none', base: 'block'}}>
-                    <FaRegUser className='text-xl hover:text-black text-white md:text-pink-500' />
+                <Box p={2} rounded={'full'} bg={{md:'pink.500', base: 'white'}}>
+                    <FaRegUser className='text-xl hover:text-black md:text-white text-pink-500' />
                 </Box>
             </MenuButton>
             <MenuList zIndex={100} p={2} bg={useColorModeValue('white')}>

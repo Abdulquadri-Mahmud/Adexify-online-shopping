@@ -55,7 +55,7 @@ const categories = [
   {
     name: "Women's Fashion",
     url: '/womens-clothing',
-    image: '/w-cloth.jpg',
+    image: '/w-cloth.png',
   },
   {
     name: 'Shoes',
@@ -75,7 +75,7 @@ const categories = [
   {
     name: 'Electronics',
     url: '/category?category=desktops',
-    image: '/electronics.jpg',
+    image: '/electronics.png',
   },
 ];
 
@@ -98,8 +98,8 @@ const CategoryCards = () => {
             alignItems="center"
             textAlign="center"
           >
-            <Box className='bg-white/80' px={4} py={1} rounded="md">
-              <Text fontSize={{ base: '10px', md: '14px' }} fontWeight={500} color="pink.500">
+            <Box className='bg-white/60' px={4} py={1} rounded="md">
+              <Text fontSize={{ base: '8px', md: '14px' }} fontWeight={500} color="pink.500">
                 {cat.name}
               </Text>
             </Box>

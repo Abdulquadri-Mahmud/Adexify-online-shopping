@@ -44,7 +44,7 @@ export default function Top_sneakers() {
       </Box>
 
       <Box p={2}>
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
+        <SimpleGrid columns={{ base: 2, sm: 4, md: 5, xl: 6 }} spacing={1}>
           {loading
             ? Array.from({ length: 12 }).map((_, index) => (
                 <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>

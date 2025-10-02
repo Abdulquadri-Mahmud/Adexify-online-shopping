@@ -44,7 +44,7 @@ export default function FashionXtra() {
       </Box>
 
       <Box p={1}>
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={1}>
+        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={1}>
           {loading
             ? Array.from({ length: 12 }).map((_, index) => (
                 <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
@@ -81,7 +81,7 @@ export default function FashionXtra() {
                         <Box bg="gray.200" h="6px" w="100%" borderRadius="full" overflow="hidden">
                           <Box
                             h="100%"
-                            w={`${(product.stock / maxStock) * 1000}%`}
+                            w={`${(product.stock / maxStock) * 100}%`}
                             bg="pink.600"
                             borderRadius="full"
                             transition="width 0.3s ease"

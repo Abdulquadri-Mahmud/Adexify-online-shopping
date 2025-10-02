@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaAngleRight } from 'react-icons/fa';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export default function TodaysDeal() {
   const [products, setProducts] = useState([]);
@@ -41,22 +42,22 @@ export default function TodaysDeal() {
 
   return (
     <Box className='my-10 bg-white rounded-md' maxW={{ '2xl': '80%', xl: '95%', lg: '100%', base: '97%' }} mx={'auto'}>
-      <Box className='bg-white-500 pb-3 rounded-t-lg'>
+      <Box className='bg-white-500 pb-1 rounded-t-lg'>
         <Box bg={'pink.500'} borderBottomWidth={'1px'} borderBottom={'solid gray.300'} p={3} mx={'auto'} className=' rounded-t-lg flex justify-between items-center gap-4 '>
           <Heading fontWeight={500} fontSize={{ md: 20, base: 18 }} color={'white'} className='text-xl'>
             Today's Deals
           </Heading>
-          <Link to={'/'} className='text-[12px] font-medium text-white uppercase flex items-center'>
+          <Link to={'/fashion'} className='text-[12px] font-medium text-white uppercase flex items-center'>
             See All <FaAngleRight className='text-[20px]' />
           </Link>
         </Box>
       </Box>
 
-      <Box p={4}>
-        <SimpleGrid columns={{ base: 2, sm: 2, md: 5, xl: 6 }} spacing={3}>
+      <Box p={1}>
+        <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={1}>
           {loading
             ? Array.from({ length: 12 }).map((_, index) => (
-                <SimpleGrid bg={"white"} rounded={"xl"} gap={4} spacing={3} py={3} px={2}>
+                <SimpleGrid bg={"white"} rounded={"xl"} gap={4} spacing={1} py={3} px={2}>
                   {[...Array(8)].map((_, index) => (
                     <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
                       <Box h="150px" bg="gray.300" mb={4} />
@@ -69,13 +70,15 @@ export default function TodaysDeal() {
                 </SimpleGrid>
               ))
             : products.map((product) => (
-                <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} pos={'relative'} transition="all 0.3s">
+                <Box key={product._id} borderWidth="1px" borderRadius="md" overflow="hidden" bg="white" _hover={{ shadow: 'md' }} pos={'relative'} transition="all 0.3s" className='product-card'>
                   {/* <Link to={'/'} className='absolute top-0 left-0 bg-pink-200 md:px-2 md:py-0 px-2 py-1 rounded-br-md flex items-center gap-2'>
                     <Image src='/Logo.png' alt='logo' w={{md:'80px', base:'65px'}}/>
                   </Link> */}
                   
                   <Link to={`/product-details/${product?._id}`}>
-                    <Image src={product.image?.[0]} alt={product.name} height={"150px"} width="100%" objectFit="cover" />
+                    <LazyLoadImage src={product.image?.[0]}
+                    alt={product.name} height={"10px"} width="100%" 
+                    objectFit="cover" className='h-[200px]'/>
                   </Link>
                   
                   <Box p={3}>

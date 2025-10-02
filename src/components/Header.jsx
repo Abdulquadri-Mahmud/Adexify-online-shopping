@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, Icon } from '@chakra-ui/react';
 import { createContext, useEffect, useState } from 'react'
 import { FaFacebookF, FaInstagram, FaLaptop, FaTwitter } from 'react-icons/fa';
 import { IoLogoYoutube } from 'react-icons/io';
@@ -8,8 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { BsCart4 } from 'react-icons/bs';
 import { RiTShirt2Line } from "react-icons/ri";
 import Settings from './settings/Settings';
-import { GrUserFemale } from "react-icons/gr";
-import { IoManOutline, IoPhonePortrait } from "react-icons/io5";
+import { IoPhonePortrait } from "react-icons/io5";
 import { BiSolidShoppingBags } from "react-icons/bi";
 import { GiConverseShoe } from "react-icons/gi";
 import All_category from './All_category';
@@ -19,9 +18,8 @@ import SearchInputField from './searchs/SearchInputField';
 import GuestNav from './settings/GuestNav';
 import MobileSearchInput from './searchs/MobileSearchInput';
 import { useCart } from '../pages/cartsPage/CartCountContext';
-import { ShoppingBag } from 'lucide-react';
-import { CiMobile3 } from 'react-icons/ci';
-import { FiShoppingBag } from 'react-icons/fi';
+import { FiMapPin, FiShoppingBag, FiZap } from 'react-icons/fi';
+import Marquee from "react-fast-marquee";
 
 export const OpenMenuCOntext = createContext();
 
@@ -92,6 +90,29 @@ const Navs = () => {
   );
 };
 
+const TopBar = () => {
+
+  const {currentUser} = useSelector((state) => state.user);
+
+  return(
+    <Marquee gradient={true} gradientColor={'black'} speed={50} pauseOnHover>
+      <Flex align="center" py={1} gap={4}>
+        {/* Lightning icon */}
+        <Icon as={FiZap} boxSize={5} color="pink.400" />
+
+        {/* Marquee text */}
+        <Text color="white" fontWeight="semibold" fontSize={{ base: "sm", md: "md" }} letterSpacing="wider" textAlign={{ base: "center", md: "left" }}>
+          {currentUser
+            ? `👋 Welcome back, ${currentUser.firstname}! We’re thrilled to see you again. Explore the latest arrivals, grab exclusive deals, and enjoy a seamless shopping experience tailored just for you.`
+            : `👋 Welcome to Adexify! Your one-stop destination for fashion, gadgets, and lifestyle essentials. Discover trending products, enjoy amazing deals, and make your shopping experience simple, fast, and fun.`}
+        </Text>
+        {/* Location/Pin icon */}
+        <Icon as={FiMapPin} boxSize={5} color="pink.400" />
+      </Flex>
+    </Marquee>
+  )
+}
+
 // Mobile screen mene
 const MobileNav = () => {
   const location = useLocation();
@@ -100,7 +121,7 @@ const MobileNav = () => {
   const isActive = (path) => (location.pathname + location.search) === path;
 
   return (
-    <Box className="block md:hidde text-white md:bg-pink-500 bg-pink-500 py-2 px-2 md:rounded-t-xl">
+    <Box className="block md:hidde text-white md:bg-pink-500 bg-pink-900 py-2 px-2 md:rounded-t-xl">
       <Flex justifyContent={"space-between"} alignItems={"center"} flex={1} mx={"auto"} className="hidden md:flex">
         <All_category />
         
@@ -199,22 +220,8 @@ export default function Header() {
     
   return (
     <Box className="sticky top-0 z-20 bg-white">
-        <Box className='bg-pink-500 hidden md:block'>
-            <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '97%'}} mx={'auto'}  className="relative flex justify-between items-center px-2 md:px-6 text-white">
-                <Box className="flex items-center">
-                    <IoMdCall/>
-                    <Link to='tel:+2347047594667' className='text-[12px]'>+234-704-7594-667</Link>
-                </Box>
-                <Box className="md:max-w-[40%] max-w-[30%] mx-auto " >
-                    <marquee behavior="sliding" direction="" className={'text-[12px] capitalize'}>Welcome To ADEXIFY, We Give The Best.</marquee>
-                </Box>
-                <Box className=" flex gap-x-2">
-                    <Link to='#'><FaFacebookF className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
-                    <Link to='#'><FaInstagram className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
-                    <Link to='#'><FaTwitter className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
-                    <Link to='#'><IoLogoYoutube className="text-[12px] duration-200 hover:-translate-y-1"/></Link>
-                </Box>
-            </Box>
+        <Box className='bg-pink-800 hidde md:block'>
+          <TopBar/>
         </Box>
         <Box top={0} position={'sticky'} className='bg-white text-white'>
             <Box maxW={{'2xl' : '80%', xl : '90%', lg : '100%', base: '100%'}} mx={'auto'}  className='flex justify-between items-center py-2 md:px-6 px-2 md:bg-white bg-pink-600'>
@@ -232,7 +239,7 @@ export default function Header() {
                 <Box className="flex items-center">
                     <Box className="hidden md:block">
                         <Link to={'/view-carts'}>
-                            <Box className="bg-white text-black flex justify-between gap-2 p-1 px-3 rounded-md">
+                            <Box className="bg-white text-black flex justify-between gap-2 p-1 px-3 mt-1 rounded-md">
                                 <Flex gap={0} alignItems={'center'}>
                                     <Text fontWeight={600} color={'gray.100'} px={3} roundedLeft={'full'} mr={-2} bg={'pink.500'}>My Cart</Text>
                                     <Box bg={'pink.500'} p={2} zIndex={2} rounded={'full'} color={'white'} className="md:block text-xl relative">
