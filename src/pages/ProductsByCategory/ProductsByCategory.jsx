@@ -199,6 +199,7 @@ const ProductsByCategory = () => {
     }
   };
 
+  console.log(selectedProduct);
 
 // const error = useSelector((state) => state.guestWishlist.error);
 
@@ -515,12 +516,36 @@ const ProductsByCategory = () => {
       
       <FashionCategory/>
       
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Select Options</ModalHeader>
+        <ModalContent mx={3}>
+          <ModalHeader>Select Size & Quantity</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <Text isTruncated mb={4}>{selectedProduct?.name}</Text>
+            <Flex bg={'pink.50'} alignItems="center" justifyContent={"space-between"} mt={4} gap={3} width={"100%"} p={2} rounded={"md"}>
+              <Heading fontSize="md" fontWeight={500} display="flex" alignItems="center">
+                <FaNairaSign /> {selectedProduct?.price?.toLocaleString()}
+              </Heading>
+              {selectedProduct?.oldprice && (
+                <Text fontSize="md" display={"flex"} alignItems={"center"} textDecor="line-through" color="gray.500">
+                  <FaNairaSign /> {selectedProduct?.oldprice?.toLocaleString()}
+                </Text>
+              )}
+            </Flex>
+
+            <Box my={4}>
+                {selectedProduct?.stock > 0 ? (
+                  <Badge bg="pink.500" color={'white'} fontWeight={500} px={2} py={1} rounded="sm">
+                    In Stock
+                  </Badge>
+                ) : (
+                  <Badge colorScheme="red" px={2} py={1} rounded="md">
+                    Out of Stock
+                  </Badge>
+                )}
+              </Box>
+
             {selectedProduct?.size?.length > 0 && (
               <Select
                 placeholder="Select size"
@@ -528,26 +553,41 @@ const ProductsByCategory = () => {
                 onChange={(e) => setSelectedSize(e.target.value)}
               >
                 {selectedProduct.size.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </Select>
             )}
-
-            <NumberInput
-              mt={4}
-              min={1}
-              value={quantity}
-              onChange={(val) => setQuantity(Number(val))}
-            >
+            <NumberInput mt={4} min={1} value={quantity} onChange={(val) => setQuantity(Number(val))}>
               <NumberInputField />
             </NumberInput>
-          </ModalBody>
 
+            {selectedProduct?.oldprice && (
+              <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
+                You save <FaNairaSign />{" "}
+                <Text as="span" fontWeight="medium" color="green.600">
+                  {(selectedProduct.oldprice - selectedProduct.price).toLocaleString()}
+                </Text>
+              </Text>
+            )}
+            <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.50'} alignItems={'center'}>
+              <Text mt={4} mb={3} color={"gray.700"}>
+                Product Code: <span className="text-pink-600 font-medium">{selectedProduct?.trackingId}</span>
+              </Text>
+              <Text mt={2} mb={3} color={"gray.700"}>
+                Category: <span className="text-pink-600 font-medium">{selectedProduct?.category}</span>
+              </Text>
+            </Flex>
+          </ModalBody>
           <ModalFooter>
-            <Button colorScheme="pink" onClick={() => {
-              handleAddToCart(selectedProduct, selectedSize, quantity);
-              onClose();
-            }}>
+            <Button
+              colorScheme="pink"
+              onClick={() => {
+                handleCart(selectedProduct, selectedSize, quantity);
+                onClose();
+              }}
+            >
               Add to Cart
             </Button>
           </ModalFooter>

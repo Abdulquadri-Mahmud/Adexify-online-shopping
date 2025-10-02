@@ -42,11 +42,12 @@ import { FaNairaSign } from "react-icons/fa6";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import ProductViews from "../../components/ProductViews/ProductViews";
 
 const MotionButton = motion.create(Button);
 export const quantityContext = createContext();
 
-export default function Details() {
+export default function Details({ productViews }) {
   const { proId } = useParams();
 
   // size modal (Chakra)
@@ -667,6 +668,8 @@ export default function Details() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {product && <ProductViews productId={product._id} />}
 
       <Adverts />
       <Footer />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";// your existing function
+import { useSelector } from "react-redux";
 import axios from "axios";
-import { getCartToken } from "../../store/cart/utils/cartToken";
+import { getCartToken, setCartToken } from "../../store/cart/utils/cartToken";
 
 const ProductViews = ({ productId }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -11,20 +11,24 @@ const ProductViews = ({ productId }) => {
   useEffect(() => {
     const recordView = async () => {
       try {
-        const cartToken = getCartToken(); // for guest users
+        // Get existing cartToken from localStorage (for guest) or null
+        let cartToken = getCartToken();
 
         const res = await axios.post(
-          "https://adexify-api.vercel.app/api/product-views/views", // replace with your API
-          { productId, cartToken },
+          "https://adexify-api.vercel.app/api/product-views/views",
           {
-            headers: {
-              ...(currentUser && { Authorization: `Bearer ${currentUser.token}` }),
-            },
+            productId,
+            cartToken,
           }
         );
 
         if (res.data?.views !== undefined) {
           setViews(res.data.views);
+        }
+
+        // Save new cartToken returned from backend if guest
+        if (!currentUser && res.data?.cartToken) {
+          setCartToken(res.data.cartToken);
         }
       } catch (err) {
         console.error("Failed to record product view:", err);
@@ -33,7 +37,9 @@ const ProductViews = ({ productId }) => {
       }
     };
 
-    recordView();
+    if (productId) {
+      recordView();
+    }
   }, [productId, currentUser]);
 
   if (loading) return <p>Loading views...</p>;
