@@ -14,6 +14,8 @@ const App = () => {
     const syncCart = async () => {
       const token = getCartToken();
 
+      console.log("Syncing cart. User:", currentUser?._id, "Token:", token);
+      
       if (currentUser?._id && !hasMergedRef.current) {
         // ✅ Merge guest cart into user cart only once
         hasMergedRef.current = true;
@@ -33,13 +35,13 @@ const App = () => {
           } else {
             // Fetch user cart if no guest cart
             const res = await fetch(
-              `https://adexify-api.vercel.app/api/cart/get-user-cart/${currentUser._id}`
+              `https://adexify-api.vercel.app/api/cart/get/${currentUser._id}`
             );
             const data = await res.json();
             if (data.success && data.cart) updateCart(data.cart);
           }
         } catch (error) {
-          console.error("❌ Failed to merge cart:", error);
+          console.error("Failed to merge cart:", error);
         }
       } else if (!currentUser?._id && token) {
         // Guest mode → fetch cart once

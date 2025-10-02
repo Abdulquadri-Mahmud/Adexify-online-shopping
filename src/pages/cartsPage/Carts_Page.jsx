@@ -476,9 +476,9 @@ export default function Carts_Page() {
       {/* Modal to alert user to sign in or cart empty */}
       <Modal isOpen={isOpen2} onClose={onClose2} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mx={'2'} bg={'pink.100'}>
           <ModalHeader>
-            <Box bg="red.50" py={2} rounded="md" textAlign="center">
+            <Box color="red.600" py={2} rounded="md" textAlign="start">
               Error Message
             </Box>
           </ModalHeader>
@@ -486,8 +486,11 @@ export default function Carts_Page() {
           <ModalBody>
             <Text fontWeight={500}>{alertMessage}</Text>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose2}>Close</Button>
+          <ModalFooter gap={4}>
+            <Button onClick={onClose2} bg={'red.500'} color={'white'}>Close</Button>
+            <Link to={'/signin'}>
+              <Button bg={'green.500'} _hover={{bg: 'green.700'}} color={'white'}>Login</Button>
+            </Link>
           </ModalFooter>
         </ModalContent>
       </Modal>

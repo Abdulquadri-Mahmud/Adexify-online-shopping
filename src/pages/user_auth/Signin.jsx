@@ -72,7 +72,7 @@ export default function Signin() {
             }
 
             dispatch(signinSuccess(data));
-            navigate('/');
+            navigate(-1);
             
         } catch (error) {
             console.log(error);

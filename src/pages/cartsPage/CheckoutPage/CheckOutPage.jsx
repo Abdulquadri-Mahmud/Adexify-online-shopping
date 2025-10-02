@@ -169,8 +169,8 @@ export default function CheckOutPage() {
           </Box> */}
           {/* Basic Info */}
           <Box maxW={{'2xl' : '80%', xl : '100%', lg : '100%', base: '97%'}} mx={'auto'} py={2} px={{md:0, base: 0}}>
-            <Box mb={2} p={2} bg="pink.600" borderTopRadius="md">
-              <Heading as="h2" fontSize="2xl" fontWeight="medium" color="white">
+            <Box mb={2} p={2} bg="pink.500" borderTopRadius="md">
+              <Heading as="h2" fontSize="2xl" fontWeight="medium" color="gray.50">
                 Basic Information
               </Heading>
             </Box>
@@ -232,7 +232,7 @@ export default function CheckOutPage() {
                       cartItems.length > 0 && (
                         cartItems.map((item) => {
                           return(
-                            <Box key={item._id} display={'flex'} width={'150px'}
+                            <Box key={item._id} display={'flex'} width={'140px'}
                               flexDirection={'column'} justifyContent={'center'} 
                               alignItems={'center'} gap={2} bg={'white'} 
                               p={2} rounded={'lg'} border={'1px solid'} 
