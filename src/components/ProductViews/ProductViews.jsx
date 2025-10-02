@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { getCartToken } from "../store/cart/utils/cartToken"; // your existing function
+import { useSelector } from "react-redux";// your existing function
 import axios from "axios";
+import { getCartToken } from "../../store/cart/utils/cartToken";
 
 const ProductViews = ({ productId }) => {
   const { currentUser } = useSelector((state) => state.user);
@@ -14,7 +14,7 @@ const ProductViews = ({ productId }) => {
         const cartToken = getCartToken(); // for guest users
 
         const res = await axios.post(
-          "https://your-api-url.com/api/products/views", // replace with your API
+          "https://adexify-api.vercel.app/api/product-views/views", // replace with your API
           { productId, cartToken },
           {
             headers: {

@@ -536,7 +536,7 @@ export default function Details() {
       {/* Lightbox Modal (Chakra) */}
       <Modal isOpen={isLightboxOpen} onClose={closeLightbox} size="6xl" isCentered>
         <ModalOverlay />
-        <ModalContent bg="transparent" boxShadow="none" maxW="90%">
+        <ModalContent bg="transparent" boxShadow="none" maxW={{md:"90%", base: '100%'}}>
           <ModalBody className="p-0">
             <div className="relative bg-black rounded-md overflow-hidden">
               {/* Close button */}
@@ -589,12 +589,36 @@ export default function Details() {
       </Modal>
 
       {/* Size & Quantity Modal (existing) */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mx={2}>
           <ModalHeader>Select Size & Quantity</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <Text isTruncated mb={4}>{product?.name}</Text>
+            <Flex bg={'pink.50'} alignItems="center" justifyContent={"space-between"} mt={4} gap={3} width={"100%"} p={2} rounded={"md"}>
+              <Heading fontSize="md" fontWeight={500} display="flex" alignItems="center">
+                <FaNairaSign /> {product?.price?.toLocaleString()}
+              </Heading>
+              {product?.oldprice && (
+                <Text fontSize="md" display={"flex"} alignItems={"center"} textDecor="line-through" color="gray.500">
+                  <FaNairaSign /> {product?.oldprice?.toLocaleString()}
+                </Text>
+              )}
+            </Flex>
+
+            <Box my={4}>
+                {product?.stock > 0 ? (
+                  <Badge bg="pink.500" color={'white'} fontWeight={500} px={2} py={1} rounded="sm">
+                    In Stock
+                  </Badge>
+                ) : (
+                  <Badge colorScheme="red" px={2} py={1} rounded="md">
+                    Out of Stock
+                  </Badge>
+                )}
+              </Box>
+
             {selectedProduct?.size?.length > 0 && (
               <Select
                 placeholder="Select size"
@@ -611,6 +635,23 @@ export default function Details() {
             <NumberInput mt={4} min={1} value={quantity} onChange={(val) => setQuantity(Number(val))}>
               <NumberInputField />
             </NumberInput>
+
+            {product?.oldprice && (
+              <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
+                You save <FaNairaSign />{" "}
+                <Text as="span" fontWeight="medium" color="green.600">
+                  {(product.oldprice - product.price).toLocaleString()}
+                </Text>
+              </Text>
+            )}
+            <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.500'} alignItems={'center'}>
+              <Text mt={4} mb={3} color={"gray.50"}>
+                Product Code: <span className="text-pink-200 font-medium">{product?.trackingId}</span>
+              </Text>
+              <Text mt={2} mb={3} color={"gray.50"}>
+                Category: <span className="text-pink-200 font-medium">{product?.category}</span>
+              </Text>
+            </Flex>
           </ModalBody>
           <ModalFooter>
             <Button
