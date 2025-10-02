@@ -45,7 +45,7 @@ const Navs = () => {
   }, []);
 
   return (
-    <Box display={{ md: 'block', base: 'none' }} width="100%">
+    <Box display={{ md: 'none', base: 'none' }} width="100%">
         <Box px={2} display="flex" alignItems="center" overflowX="auto" whiteSpace="nowrap" gap={4} css={{
             scrollbarWidth: 'thin', // Firefox
             scrollbarColor: '#c0c0c0 transparent', // Firefox
@@ -99,109 +99,94 @@ const MobileNav = () => {
   const isActive = (path) => (location.pathname + location.search) === path;
 
   return (
-    <Box className="block md:hidden text-black">
+    <Box className="block md:hidde text-white md:bg-pink-500 bg-pink-500 py-2 px-2 md:rounded-t-xl">
       <Flex justifyContent={"space-between"} alignItems={"center"} flex={1} mx={"auto"} className="hidden md:flex">
         <All_category />
         
         {/* Home */}
-        <Box className="md:hidden block">
+        <Box className="">
           <Box
             className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/") ? "#ec4899" : "inherit" }} // pink.500
+            style={{ color: isActive("/") ? "#ffbdde" : "inherit" }} // pink.500
           >
-            <Link to={"/"}>
-              <MdHomeFilled className="text-lg" />
-            </Link>
-            <Link to={"/"} className="text-[10px]">
-              Home
+            <Link to={"/"} className='flex flex-col items-center'>
+              <MdHomeFilled className="md:text-2xl text-lg" />
+              <Text className="text-[10px]">
+                Home
+              </Text>
             </Link>
           </Box>
         </Box>
 
         {/* Fashion */}
-        <Box className="md:hidden block">
+        <Box className="">
           <Box
             className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/fashion") ? "#ec4899" : "inherit" }}
+            style={{ color: isActive("/fashion") ? "#ffbdde" : "inherit" }}
           >
-            <Link to={"/fashion"}>
-              <ShoppingBag className="text-lg" />
-            </Link>
-            <Link to={"/fashion"} className="text-[10px]">
-              Fashion
+            <Link to={"/fashion"} className='flex flex-col items-center'>
+              <ShoppingBag className="md:text-2xl text-lg" />
+                <Text className="text-[10px]">
+                    Fashion
+                </Text>
             </Link>
           </Box>
         </Box>
 
         {/* Shirts */}
-        <Box className="md:hidden block">
-          <Box
-            className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/category?category=Shirt") ? "#ec4899" : "inherit" }}
-          >
-            <Link to={"/category?category=Shirt"}>
-              <RiTShirt2Line className="text-lg" />
-            </Link>
-            <Link to={'/category?category=Shirt'} className="text-[10px]">
-              Shirts
+        <Box className="">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Shirt") ? "#ffbdde" : "inherit" }} >
+            <Link to={"/category?category=Shirt"} className='flex flex-col items-center'>
+              <RiTShirt2Line className="md:text-2xl text-lg" />
+                <Text className="text-[10px]">
+                    Shirts
+                </Text>
             </Link>
           </Box>
         </Box>
 
         {/* Bags */}
-        <Box className="md:hidden block">
-          <Box
-            className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/category?category=Bags") ? "#ec4899" : "inherit" }}
-          >
-            <Link to={"/category?category=Bags"}>
-              <BiSolidShoppingBags className="text-lg" />
-            </Link>
-            <Link to={"/category?category=Bags"} className="text-[10px]">
-              Bags
+        <Box className="">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Bags") ? "#ffbdde" : "inherit" }}> 
+            <Link to={"/category?category=Bags"} className='flex flex-col items-center'>
+              <BiSolidShoppingBags className="md:text-2xl text-lg" />
+              <Text className="text-[10px]">
+                Bags
+              </Text>
             </Link>
           </Box>
         </Box>
 
         {/* Shoes */}
-        <Box className="md:hidden block remove">
-          <Box
-            className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/category?category=Shoes") ? "#ec4899" : "inherit" }}
-          >
-            <Link to={"/category?category=Shoes"}>
-              <GiConverseShoe className="text-lg" />
-            </Link>
-            <Link to={"/category?category=Shoes"} className="text-[10px]">
-              Shoes
+        <Box className=" remove">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Shoes") ? "#ffbdde" : "inherit" }}>
+            <Link to={"/category?category=Shoes"} className='flex flex-col items-center'>
+              <GiConverseShoe className="md:text-2xl text-lg" />
+                <Text className="text-[10px]">
+                    Shoes
+                </Text>
             </Link>
           </Box>
         </Box>
 
-        <Box className="md:hidden block remove">
-          <Box
-            className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/category?category=Laptops") ? "#ec4899" : "inherit" }}
-          >
-            <Link to={"/category?category=Laptops"}>
-              <FaLaptop className="text-lg" />
-            </Link>
-            <Link to={"/category?category=Laptops"} className="text-[10px]">
-              Laptops
+        <Box className=" remove">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Laptops") ? "#ffbdde" : "inherit" }}>
+            <Link to={"/category?category=Laptops"} className='flex flex-col items-center'>
+              <FaLaptop className="md:text-2xl text-lg" />
+              <Text className="text-[10px]">
+                Laptops
+              </Text>
             </Link>
           </Box>
         </Box>
 
-        <Box className="md:hidden block remove">
-          <Box
-            className="flex justify-center items-center flex-col duration-200"
-            style={{ color: isActive("/category?category=Mobiles") ? "#ec4899" : "inherit" }}
-          >
-            <Link to={"/category?category=Mobiles"}>
-              <CiMobile3 className="text-lg" />
-            </Link>
-            <Link to={"/category?category=Mobiles"} className="text-[10px]">
-              Mobiles
+        <Box className="remove">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Mobiles") ? "#ffbdde" : "inherit" }}>
+            <Link to={"/category?category=Mobiles"} className='flex flex-col items-center'>
+              <CiMobile3 className="md:text-2xl text-lg" />
+                <Text className="text-[10px]">
+                    Mobiles
+                </Text>
             </Link>
           </Box>
         </Box>
@@ -295,8 +280,8 @@ export default function Header() {
                 </Box>
             </Box>
         </Box>
-        <Box py={2} px={2} roundedTop={'xl'} bg={'white'} maxW={{'2xl' : '50%', xl : '60%', lg : '80%', base: '100%'}} mx={'auto'}>
-            <Navs/>
+        <Box py={0} px={0} roundedTop={'xl'} bg={'white'} maxW={{'2xl' : '50%', xl : '60%', lg : '80%', base: '100%'}} mx={'auto'}>
+            {/* <Navs/> */}
             <MobileNav/>
         </Box>
     </Box>
