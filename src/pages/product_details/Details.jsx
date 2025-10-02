@@ -40,6 +40,8 @@ import { useCart } from "../cartsPage/CartCountContext";
 import { getCartToken } from "../../store/cart/utils/cartToken";
 import { FaNairaSign } from "react-icons/fa6";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const MotionButton = motion.create(Button);
 export const quantityContext = createContext();
@@ -67,11 +69,7 @@ export default function Details() {
   const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
 
   const displayImage = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
-  const { currentAdmin } = useSelector((state) => state.admin);
-
-  // --- Gallery state ---
-  const [images, setImages] = useState([]); // exactly 5 images (pad if needed)
+  const [images, setImages] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Fetch product
@@ -90,25 +88,20 @@ export default function Details() {
     fetchProduct();
   }, [proId]);
 
-  // Build gallery images (pad/truncate to 5)
+  // Build gallery images dynamically
   useEffect(() => {
     if (!product) return;
-
-    // Ensure it's always an array
     const imgs = Array.isArray(product.image) ? [...product.image] : [];
-
     setImages(imgs);
     setActiveIndex(0);
 
-    // Set main display image if available
+    // Set main display image
     setTimeout(() => {
-      if (displayImage.current && imgs[0]) {
-        displayImage.current.src = imgs[0];
-      }
+      if (displayImage.current && imgs[0]) displayImage.current.src = imgs[0];
     }, 0);
   }, [product]);
 
-  // Update displayImage when activeIndex changes (main preview)
+  // Update main display image when activeIndex changes
   useEffect(() => {
     if (displayImage.current && images[activeIndex]) {
       displayImage.current.src = images[activeIndex];
@@ -120,19 +113,14 @@ export default function Details() {
     if (!isLightboxOpen) return;
 
     const onKey = (e) => {
-      if (e.key === "ArrowRight") {
-        setActiveIndex((i) => (i + 1) % images.length);
-      } else if (e.key === "ArrowLeft") {
-        setActiveIndex((i) => (i - 1 + images.length) % images.length);
-      } else if (e.key === "Escape") {
-        closeLightbox();
-      }
+      if (e.key === "ArrowRight") setActiveIndex((i) => (i + 1) % images.length);
+      else if (e.key === "ArrowLeft") setActiveIndex((i) => (i - 1 + images.length) % images.length);
+      else if (e.key === "Escape") setIsLightboxOpen(false);
     };
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isLightboxOpen, images.length]);
-
   // --- Add to cart (keeps your existing logic) ---
   const handleCart = async (productArg, size, qty) => {
     if (!productArg) return;
@@ -307,21 +295,21 @@ export default function Details() {
             {/* Gallery column */}
             <Box className="flex-1 bg-white p-4 rounded-md" style={{ minWidth: 350, minWidth: 400 }} mx={'auto'}> 
               {/* Main large preview */}
-              <div className="w-full">
-                {images.length > 0 && (
-                  <img
+              {images.length > 0 && (
+                <Zoom>
+                  <motion.img
                     ref={displayImage}
                     src={images[activeIndex]}
                     alt={product?.name}
-                    className="w-full h-[100%] md:h-[100%] object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.01]"
+                    className="w-full h-[420px] md:h-[100%] object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
                     onClick={() => openLightboxAt(activeIndex)}
                   />
-                )}
-              </div>
+                </Zoom>
+              )}
 
-              {/* Thumbnails (below main) */}
+              {/* Thumbnails */}
               {images.length > 1 && (
-                <div className="mt-3 flex gap-2 justify-start flex-wrap">
+                <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
                   {images.map((img, idx) => (
                     <button
                       key={idx}
@@ -332,13 +320,59 @@ export default function Details() {
                           : "border-gray-200"
                       }`}
                     >
-                      <img
-                        src={img}
-                        alt={`thumb-${idx}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
                     </button>
                   ))}
+                </div>
+              )}
+
+              {/* Lightbox modal */}
+              {isLightboxOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4">
+                  <button
+                    className="absolute top-5 right-5 text-white text-2xl"
+                    onClick={() => setIsLightboxOpen(false)}
+                  >
+                    <X />
+                  </button>
+
+                  <button
+                    className="absolute left-5 text-white text-3xl"
+                    onClick={() => setActiveIndex((i) => (i - 1 + images.length) % images.length)}
+                  >
+                    <ChevronLeft />
+                  </button>
+
+                  <motion.img
+                    src={images[activeIndex]}
+                    alt={`lightbox-${activeIndex}`}
+                    className="max-h-[80vh] max-w-[90vw] object-contain rounded-md"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+
+                  <button
+                    className="absolute right-5 text-white text-3xl"
+                    onClick={() => setActiveIndex((i) => (i + 1) % images.length)}
+                  >
+                    <ChevronRight />
+                  </button>
+
+                  {/* Lightbox thumbnails */}
+                  <div className="absolute bottom-5 flex gap-2 overflow-x-auto w-full px-4 scrollbar-hide justify-center">
+                    {images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveIndex(idx)}
+                        className={`w-16 h-16 rounded overflow-hidden border-2 focus:outline-none ${
+                          activeIndex === idx ? "border-white ring-2 ring-pink-500" : "border-gray-200"
+                        }`}
+                      >
+                        <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </Box>
@@ -420,11 +454,11 @@ export default function Details() {
                 )}
               </Button>
 
-              {currentAdmin && (
+              {/* {currentAdmin && (
                 <Link to={`/admin/update-products/${product._id}`} className="block mt-3 text-pink-600">
                   Update Product
                 </Link>
-              )}
+              )} */}
             </Box>
 
             {/* Right column (info) */}
