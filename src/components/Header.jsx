@@ -17,7 +17,7 @@ import { SiPhpmyadmin } from 'react-icons/si';
 import SearchInputField from './searchs/SearchInputField';
 import GuestNav from './settings/GuestNav';
 import MobileSearchInput from './searchs/MobileSearchInput';
-import { useCart } from '../pages/cartsPage/CartCountContext';
+import { useCart } from '../Context_APIs/CartCountContext';
 import { FiMapPin, FiShoppingBag, FiZap } from 'react-icons/fi';
 import Marquee from "react-fast-marquee";
 
@@ -121,13 +121,13 @@ const MobileNav = () => {
   const isActive = (path) => (location.pathname + location.search) === path;
 
   return (
-    <Box className="block md:hidde text-white md:bg-pink-500 bg-pink-900 py-2 px-2 md:rounded-t-xl">
+    <Box className="block md:hidde md:text-white text-gray-800 md:bg-pink-500 bg-white md:py-2 py-1 px-2 md:rounded-t-xl">
       <Flex justifyContent={"space-between"} alignItems={"center"} flex={1} mx={"auto"} className="hidden md:flex">
         <All_category />
         
         {/* Home */}
         <Box className="">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/") ? "#ffbdde" : "inherit" }}>
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/") ? "#fa2b93" : "inherit" }}>
             <Link to={"/"} className='flex flex-col items-center'>
               <MdHomeFilled className="md:text-2xl text-xl" />
               <Text className="text-[10px]">
@@ -139,7 +139,7 @@ const MobileNav = () => {
 
         {/* Fashion */}
         <Box className="">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/fashion") ? "#ffbdde" : "inherit" }}>
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/fashion") ? "#fa2b93" : "inherit" }}>
             <Link to={"/fashion"} className='flex flex-col items-center'>
               <FiShoppingBag className="md:text-2xl text-xl" />
                 <Text className="text-[10px]">
@@ -151,7 +151,7 @@ const MobileNav = () => {
 
         {/* Shirts */}
         <Box className="">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Shirt") ? "#ffbdde" : "inherit" }} >
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Shirt") ? "#fa2b93" : "inherit" }} >
             <Link to={"/category?category=Shirt"} className='flex flex-col items-center'>
               <RiTShirt2Line className="md:text-2xl text-xl" />
                 <Text className="text-[10px]">
@@ -163,7 +163,7 @@ const MobileNav = () => {
 
         {/* Bags */}
         <Box className="">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Bags") ? "#ffbdde" : "inherit" }}> 
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Bags") ? "#fa2b93" : "inherit" }}> 
             <Link to={"/category?category=Bags"} className='flex flex-col items-center'>
               <BiSolidShoppingBags className="md:text-2xl text-xl" />
               <Text className="text-[10px]">
@@ -175,7 +175,7 @@ const MobileNav = () => {
 
         {/* Shoes */}
         <Box className=" remove">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Shoes") ? "#ffbdde" : "inherit" }}>
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Shoes") ? "#fa2b93" : "inherit" }}>
             <Link to={"/category?category=Shoes"} className='flex flex-col items-center'>
               <GiConverseShoe className="md:text-2xl text-xl" />
                 <Text className="text-[10px]">
@@ -185,8 +185,8 @@ const MobileNav = () => {
           </Box>
         </Box>
 
-        <Box className=" remove">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Laptops") ? "#ffbdde" : "inherit" }}>
+        <Box className="hidden md:block remove">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Laptops") ? "#fa2b93" : "inherit" }}>
             <Link to={"/category?category=Laptops"} className='flex flex-col items-center'>
               <FaLaptop className="md:text-2xl text-xl" />
               <Text className="text-[10px]">
@@ -196,8 +196,8 @@ const MobileNav = () => {
           </Box>
         </Box>
 
-        <Box className="remove">
-          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Mobiles") ? "#ffbdde" : "inherit" }}>
+        <Box className="remove hidden md:block">
+          <Box className="flex justify-center items-center flex-col duration-200" style={{ color: isActive("/category?category=Mobiles") ? "#fa2b93" : "inherit" }}>
             <Link to={"/category?category=Mobiles"} className='flex flex-col items-center'>
               <IoPhonePortrait className="md:text-2xl text-xl" />
                 <Text className="text-[10px]">
@@ -220,7 +220,7 @@ export default function Header() {
     
   return (
     <Box className="sticky top-0 z-20 bg-white">
-        <Box className='bg-pink-800 hidde md:block'>
+        <Box className='bg-pink-800 hidden md:block'>
           <TopBar/>
         </Box>
         <Box top={0} position={'sticky'} className='bg-white text-white'>

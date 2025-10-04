@@ -17,10 +17,10 @@ export default function GuestNav() {
   return (
     <Box zIndex={''} className=''>
         <Menu className="bg-black">
-            <MenuButton display={{base: 'block', md: 'block'}} bg={'transparent'} height={'30px'} color={'black'}
+            <MenuButton mr={2} display={{base: 'block', md: 'block'}} bg={'transparent'} height={'30px'} width={'40px'} color={'black'}
             _hover={{bg: 'transparent'}} as={Button} _focus={{bg: 'transparent'}} fontWeight={400} className=''>
                 
-                <Box p={2} rounded={'full'} bg={{md:'pink.500', base: 'white'}}>
+                <Box p={2} width={'35px'} rounded={'full'} bg={{md:'pink.500', base: 'white'}}>
                     <FaRegUser className='text-xl hover:text-black md:text-white text-pink-500' />
                 </Box>
             </MenuButton>

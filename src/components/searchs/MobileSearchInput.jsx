@@ -79,7 +79,7 @@ const MobileSearchInput = () => {
         {open && (
           <Box as="form" onSubmit={handleSearch} position="fixed" top={0} left={0} right={0} bottom={0} bg="rgba(0,0,0,0.5)" zIndex={15} display="flex" justifyContent="center" alignItems="start" pt="60px">
             <Box
-              pr={{md:'2.5rem', base: '2rem', sm: '1.5rem'}}
+              pr={{md:'2.5rem', base: '0.5rem', sm: '1.5rem'}}
               ref={ref}
               display="flex"
               flexDirection="column"

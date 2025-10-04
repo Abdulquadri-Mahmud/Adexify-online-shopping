@@ -1,6 +1,6 @@
 import { useEffect, useRef  } from "react";
 import PageRoutes from "./pages_routes/PageRoutes";
-import { useCart } from "./pages/cartsPage/CartCountContext";
+import { useCart } from "./Context_APIs/CartCountContext";
 import { getCartToken } from './store/cart/utils/cartToken';
 import { useSelector } from "react-redux";
 
@@ -14,7 +14,7 @@ const App = () => {
     const syncCart = async () => {
       const token = getCartToken();
 
-      console.log("Syncing cart. User:", currentUser?._id, "Token:", token);
+      // console.log("Syncing cart. User:", currentUser?._id, "Token:", token);
       
       if (currentUser?._id && !hasMergedRef.current) {
         // ✅ Merge guest cart into user cart only once

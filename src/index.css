@@ -67,6 +67,7 @@ tr:nth-child(even) {
 
 .addTocartCont:hover > .addTocart{
     height: 40px;
+    color: #fa2b93;
 }
 
 @media screen and (max-width: 320px) {

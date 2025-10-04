@@ -23,9 +23,9 @@ export default function Settings() {
   return (
     <div className='z-100'>
         <Menu className="bg-black">
-            <MenuButton display={{base: 'block', md: 'block'}} bg={'transparent'} height={'30px'} color={'black'}
+            <MenuButton mr={2} display={{base: 'block', md: 'block'}} w={'30px'} h={'30px'} bg={'transparent'} height={'30px'} color={'black'}
             _hover={{bg: 'transparent'}} as={Button} _focus={{bg: 'transparent'}} fontWeight={400} className=''>
-                <Box p={2} rounded={'full'} bg={{md:'pink.500', base: 'white'}}>
+                <Box p={2} width={'35px'}  rounded={'full'} bg={{md:'pink.500', base: 'white'}}>
                     <FaRegUser className='text-xl hover:text-black md:text-white text-pink-500' />
                 </Box>
             </MenuButton>
@@ -39,13 +39,13 @@ export default function Settings() {
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>
                     <Flex alignItems={'center'} gap={2}> 
                         <FiUser/>
-                        <Link to={`/profile/${_id}`} className="text-sm md:text-[16px]">My Account</Link>
+                        <Link to={`/profile`} className="text-sm md:text-[16px]">My Account</Link>
                     </Flex>
                 </MenuItem>
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>
                     <Flex alignItems={'center'} gap={2}> 
                         <AiTwotoneShopping/>
-                        <Link to={`/profile/${_id}`} className="text-sm md:text-[16px]">My Order</Link>
+                        <Link to={`/profile`} className="text-sm md:text-[16px]">My Order</Link>
                     </Flex>
                 </MenuItem>
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>
@@ -57,13 +57,13 @@ export default function Settings() {
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>
                     <Flex alignItems={'center'} gap={2}> 
                         <CiLocationOn/>
-                        <Link to={`/profile/${_id}`} className="text-sm md:text-[16px]">Track My Order</Link>
+                        <Link to={`/profile`} className="text-sm md:text-[16px]">Track My Order</Link>
                     </Flex>
                 </MenuItem>
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>
                     <Flex alignItems={'center'} gap={2}> 
                         <IoLogOutOutline/>
-                        <Link to={`/profile/${_id}`} className="text-sm md:text-[16px]">Logout</Link>
+                        <Link to={`/profile`} className="text-sm md:text-[16px]">Logout</Link>
                     </Flex>
                 </MenuItem>
                 <MenuItem color={'black'} rounded={5} padding={2.5} mb={1} transitionDuration={200} className='hover:-translate-y-1 hover:text-pink-600 duration-200'>

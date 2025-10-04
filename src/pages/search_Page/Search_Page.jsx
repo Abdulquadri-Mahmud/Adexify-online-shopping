@@ -33,7 +33,7 @@ import Header from "../../components/Header";
 import { addWishlist } from "../../store/wishlists/Wishlists";
 import Footer from "../../components/footer/Footer";
 import SearchLoader from "../../components/searchs/SearchLoader/SearchLoader";
-import { useCart } from "../cartsPage/CartCountContext";
+import { useCart } from "../../Context_APIs/CartCountContext";
 import { getCartToken } from "../../store/cart/utils/cartToken";
 import { motion } from "framer-motion";
 import { IoHeart } from "react-icons/io5";

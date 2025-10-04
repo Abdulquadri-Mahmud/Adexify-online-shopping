@@ -6,38 +6,24 @@ import {
   SimpleGrid,
   Image,
   VStack,
-  useToast,
   Badge,
   Button,
-  Select,
   GridItem,
   useColorModeValue,
-  Spinner, 
   Flex
-} from "@chakra-ui/react";
-import {
-  Modal, ModalOverlay, ModalContent, ModalHeader,
-  ModalFooter, ModalBody, ModalCloseButton, 
-  NumberInput, NumberInputField, useDisclosure
 } from "@chakra-ui/react";
 
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
-import { IoHeart } from "react-icons/io5";
 import { FaNairaSign } from "react-icons/fa6";
-import { useDispatch, useSelector } from "react-redux";
 import Adverts from "../../components/Adverts/Adverts";
 import FashionCategory from "../../components/Bottom_Categories/FashionCategory";
 import FemaleSalesBanner from "../../components/banners/FemaleSalesBanner";
 import ProductByCategroyBanner from "../clothing_page/Categories_Banner/ProductByCategroyBanner";
 import MaleSalesBanner from "../../components/banners/MaleSalesBanner";
-import { motion, AnimatePresence  } from 'framer-motion';
-import { getCartToken } from "../../store/cart/utils/cartToken";
-import { useCart } from "../cartsPage/CartCountContext";
-import MotionHeart from "../../components/motion_heart/MotionHeart";
-
-const MotionButton = motion.create(Button);
+import AddToWishlistButton from "../../hooks/AddToWishlistButton";
+import AddToCartButton from "../../hooks/AddToCartButton";
 
 const SuggestedSection = () => {
   return (
@@ -66,28 +52,12 @@ const SuggestedSection = () => {
 const ProductsByCategory = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
-  const { updateCart } = useCart();
-
-  const toast = useToast({ position: "top" });
-
-  const [likedItems, setLikedItems] = useState({});
-
 
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [getError, setError] = useState("");
   
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  
-  const [loadingProductId, setLoadingProductId] = useState(null);
-  const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
-  const { currentUser } = useSelector((state) => state.user);
-  // Pagination states
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   
@@ -125,193 +95,37 @@ const ProductsByCategory = () => {
     }
   }, [category]);
 
-  
-  const handleCart = async (product, size, qty) => {
-    setLoadingProductId(product._id);
+  // // Filter by price
+  // const handlePriceFilter = (range) => {
+  //   setPriceRange(range);
+  //   let filtered = [...products];
 
-    const cartItem = {
-      productId: product._id,
-      name: product.name,
-      stock: product.stock || 0,
-      price: product.price,
-      discount: product.discount || 0,
-      oldprice: product.oldprice || 0,
-      deal: product.deal || "",
-      category: product.category || "",
-      image: product.image || [],
-      description: product.description || "",
-      discountType: product.discountType || "",
-      trackingId: product.trackingId || "",
-      size: product.size || [],
-      selectedSize: size || product.size?.[0] || "",
-      quantity: qty || 1,
-      gender: product.gender || "unisex",
-    };
+  //   switch (range) {
+  //     case "below5000":
+  //       filtered = filtered.filter(p => p.price < 5000);
+  //       break;
+  //     case "5000to10000":
+  //       filtered = filtered.filter(p => p.price >= 5000 && p.price <= 10000);
+  //       break;
+  //     case "10000to20000":
+  //       filtered = filtered.filter(p => p.price > 10000 && p.price <= 20000);
+  //       break;
+  //     case "20000to50000":
+  //       filtered = filtered.filter(p => p.price > 20000 && p.price <= 50000);
+  //       break;
+  //     case "50000to100000":
+  //       filtered = filtered.filter(p => p.price > 50000 && p.price <= 100000);
+  //       break;
+  //     case "above100000":
+  //       filtered = filtered.filter(p => p.price > 100000);
+  //       break;
+  //     default:
+  //       filtered = [...products];
+  //   }
 
-    try {
-      const payload = {
-        userId: currentUser?._id || null,
-        cartToken: currentUser?._id ? null : getCartToken(),
-        product: cartItem,
-      };
-
-      const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        updateCart(data.cart); //instantly updates count everywhere
-        // ✅ Backend already merges or increments item if exists
-        toast({
-          title: "Success",
-          description: "Item added to cart.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-        onClose();
-      } else {
-        if (data.message?.includes("already")) {
-          toast({
-            title: "Notice",
-            description: "Item already in cart.",
-            status: "info",
-            duration: 2000,
-            isClosable: true,
-          });
-        } else {
-          throw new Error(data.message);
-        }
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoadingProductId(null);
-    }
-  };
-
-  // Handle Add to Wishlist
-  const handleWishlistItem = async (product) => {
-    if (!product) return;
-    setLoadingWishlistProductId(product._id);
-
-    // Build wishlist item
-    const wishlistItem = {
-      productId: product._id,
-      name: product.name,
-      stock: product.stock || 0,
-      price: product.price,
-      discount: product.discount || 0,
-      oldprice: product.oldprice || 0,
-      deal: product.deal || "",
-      category: product.category || "",
-      image: product.image || [],
-      description: product.description || "",
-      discountType: product.discountType || "",
-      trackingId: product.trackingId || "",
-      size: product.size || [],
-      selectedSize: product.size?.[0] || "",
-      quantity: product?.quantity || 1,
-      gender: product.gender || "unisex",
-    };
-
-    try {
-      const payload = {
-        userId: currentUser?._id || null,
-        cartToken: currentUser?._id ? null : getCartToken(),
-        product: wishlistItem,
-      };
-
-      const res = await fetch(
-        "https://adexify-api.vercel.app/api/wishlist/add",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const data = await res.json();
-
-      console.log("Wishlist response:", data);
-
-      if (res.ok && data.success) {
-        // Optionally, update Redux or local state if you track wishlist count
-        toast({
-          title: "Added to Wishlist",
-          description: "Item successfully added to wishlist.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-      } else {
-        if (data.message?.includes("already")) {
-          toast({
-            title: "Notice",
-            description: "Item already in wishlist.",
-            status: "info",
-            duration: 2000,
-            isClosable: true,
-          });
-        } else {
-          throw new Error(data.message);
-        }
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoadingWishlistProductId(null);
-    }
-  };
-
-
-  // Filter by price
-  const handlePriceFilter = (range) => {
-    setPriceRange(range);
-    let filtered = [...products];
-
-    switch (range) {
-      case "below5000":
-        filtered = filtered.filter(p => p.price < 5000);
-        break;
-      case "5000to10000":
-        filtered = filtered.filter(p => p.price >= 5000 && p.price <= 10000);
-        break;
-      case "10000to20000":
-        filtered = filtered.filter(p => p.price > 10000 && p.price <= 20000);
-        break;
-      case "20000to50000":
-        filtered = filtered.filter(p => p.price > 20000 && p.price <= 50000);
-        break;
-      case "50000to100000":
-        filtered = filtered.filter(p => p.price > 50000 && p.price <= 100000);
-        break;
-      case "above100000":
-        filtered = filtered.filter(p => p.price > 100000);
-        break;
-      default:
-        filtered = [...products];
-    }
-
-    setFilteredProducts(filtered);
-    setCurrentPage(1); // reset to first page on filter change
-  };
+  //   setFilteredProducts(filtered);
+  //   setCurrentPage(1); // reset to first page on filter change
+  // };
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -319,16 +133,6 @@ const ProductsByCategory = () => {
   const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-
-  const openCartModal = (product) => {
-    setSelectedProduct(product);
-    if (product.size?.length > 0) {
-      onOpen(); // open modal if sizes exist
-    } else {
-      handleCart(product, "", 1); // directly add if no sizes
-    }
-  };
 
   return (
     <Box bg={''} className="bg-zinc-200">
@@ -365,23 +169,7 @@ const ProductsByCategory = () => {
                 <Link to={`/product-details/${product._id}`}>
                   <Image mx="auto" src={product.image?.[0] || "https://via.placeholder.com/150"} alt={product.name} height={'200px'} width={'full'} objectFit="cover" borderRadius="md"/>
                 </Link>
-
-                <AnimatePresence>
-                  {loadingWishlistProductId === product._id ? (
-                    <Flex justifyContent="center" alignItems="center" bg={'pink.600'} rounded={'full'} className="absolute bg-slate-500 top-2 right-2 w-[26px] h-[26px]">
-                      <Spinner color="gray.50" size="sm" />
-                    </Flex>
-                  ) : (
-                    <MotionHeart
-                      isLiked={likedItems[product._id] || false}
-                      onClick={() => {
-                        handleWishlistItem(product);
-                        setLikedItems(prev => ({ ...prev, [product._id]: !prev[product._id] }));
-                      }}
-                    />
-                  )}
-                </AnimatePresence>
-
+                
                 <Box>
                   <Text fontWeight="500" fontSize={'14'} isTruncated>{product.name}</Text>
                   {product.stock !== undefined && (
@@ -419,29 +207,11 @@ const ProductsByCategory = () => {
                     )}
                   </Flex>
 
-                  <MotionButton
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 1 }}
-                    animate={{
-                      opacity: loadingProductId === product._id ? 0.7 : 1,
-                      x: product.stock < 1 ? [0, -5, 5, -5, 5, 0] : 0, // shake effect if out of stock
-                    }}
-                    transition={{ duration: 0.3, type: "spring" }}
-                    disabled={loadingProductId === product._id || product.stock < 1}
-                    _hover={{ bg: 'pink.600', color: 'white' }}
-                    onClick={() => openCartModal(product)}
-                    w="full"
-                    mt={3}
-                    border={'1px solid'}
-                    bg={'pink.500'}
-                    color="white"
-                  >
-                    {loadingProductId === product._id ? (
-                      <>
-                        <Spinner size="sm" mr={2} /> Adding...
-                      </>
-                    ) : product.stock < 1 ? 'Out of Stock' : 'Add to Cart'}
-                  </MotionButton>
+                  {/* Add to cart component */}
+                  <AddToCartButton product={product}/>
+                  {/* Add to wislist component */}
+                  <AddToWishlistButton product={product} />
+
                 </Box>
               </VStack>
             </Box>
@@ -484,89 +254,6 @@ const ProductsByCategory = () => {
       <SuggestedSection/>
       
       <FashionCategory/>
-      
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent mx={3}>
-          <ModalHeader>Select Size & Quantity</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text isTruncated mb={4}>{selectedProduct?.name}</Text>
-            <Flex bg={'pink.50'} alignItems="center" justifyContent={"space-between"} mt={4} gap={3} width={"100%"} p={2} rounded={"md"}>
-              <Heading fontSize="md" fontWeight={500} display="flex" alignItems="center">
-                <FaNairaSign /> {selectedProduct?.price?.toLocaleString()}
-              </Heading>
-              {selectedProduct?.oldprice && (
-                <Text fontSize="md" display={"flex"} alignItems={"center"} textDecor="line-through" color="gray.500">
-                  <FaNairaSign /> {selectedProduct?.oldprice?.toLocaleString()}
-                </Text>
-              )}
-            </Flex>
-
-            <Box my={4}>
-                {selectedProduct?.stock > 0 ? (
-                  <Badge bg="pink.500" color={'white'} fontWeight={500} px={2} py={1} rounded="sm">
-                    In Stock
-                  </Badge>
-                ) : (
-                  <Badge colorScheme="red" px={2} py={1} rounded="md">
-                    Out of Stock
-                  </Badge>
-                )}
-              </Box>
-
-            {selectedProduct?.size?.length > 0 && (
-              <Select
-                placeholder="Select size"
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
-              >
-                {selectedProduct.size.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </Select>
-            )}
-            <NumberInput mt={4} min={1} value={quantity} onChange={(val) => setQuantity(Number(val))}>
-              <NumberInputField />
-            </NumberInput>
-
-            {selectedProduct?.oldprice && (
-              <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
-                You save <FaNairaSign />{" "}
-                <Text as="span" fontWeight="medium" color="green.600">
-                  {(selectedProduct.oldprice - selectedProduct.price).toLocaleString()}
-                </Text>
-              </Text>
-            )}
-            <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.50'} alignItems={'center'}>
-              <Text mt={4} mb={3} color={"gray.700"}>
-                Product Code: <span className="text-pink-600 font-medium">{selectedProduct?.trackingId}</span>
-              </Text>
-              <Text mt={2} mb={3} color={"gray.700"}>
-                Category: <span className="text-pink-600 font-medium">{selectedProduct?.category}</span>
-              </Text>
-            </Flex>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              colorScheme="pink"
-              onClick={() => {
-                handleCart(selectedProduct, selectedSize, quantity);
-              }}
-            >
-              {loadingProductId === selectedProduct?._id ? (
-                  <>
-                    <Spinner size="sm" mr={2} /> Adding...
-                  </>
-                ) : (
-                  'Add to Cart'
-                )}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       <Box mb={12}>
         <Adverts/>

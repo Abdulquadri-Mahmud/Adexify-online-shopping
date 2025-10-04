@@ -14,13 +14,15 @@ import { FaNairaSign } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdShoppingCart } from "react-icons/md";
 
 // Lazy load image
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { getCartToken } from "../../store/cart/utils/cartToken";
 import { useSelector } from "react-redux";
+import { useCart } from "../../Context_APIs/CartCountContext";
+import { LucideTrash2 } from "lucide-react";
 
 export default function Wishlist_Page({ guestToken }) {
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ export default function Wishlist_Page({ guestToken }) {
   const [loadingProductId, setLoadingProductId] = useState(null);
   // const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
+  const { updateCart } = useCart();
   // Fetch wishlist from backend
   const fetchWishlist = async () => {
     setLoading(true);
@@ -66,7 +69,7 @@ export default function Wishlist_Page({ guestToken }) {
 
 // ✅ Add to Cart
   const handleCart = async (product, size, qty) => {
-    setLoadingProductId(product._id);
+    setLoadingProductId(product.productId || product._id);
 
     const cartItem = {
       productId: product._id,
@@ -127,29 +130,24 @@ export default function Wishlist_Page({ guestToken }) {
       setLoadingProductId(null);
     }
   };
-  // Delete wishlist item
-  const handleRemoveItem = async (productId) => {
+  const handleRemoveItem = async (productId, selectedSize) => {
     setDeleteLoading(productId);
     try {
       const payload = currentUser?._id
-        ? { userId: currentUser._id, productId }
-        : { cartToken: guestToken, productId };
+        ? { userId: currentUser._id, productId, selectedSize }
+        : { cartToken: guestToken, productId, selectedSize };
 
-      const res = await fetch(
-        "https://adexify-api.vercel.app/api/wishlist/remove",
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      const res = await fetch("https://adexify-api.vercel.app/api/wishlist/remove", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
       const data = await res.json();
       console.log("delete data:", data);
 
       if (res.ok && data.success) {
         fetchWishlist();
-
         toast({
           title: "Deleted",
           description: "Item removed from wishlist.",
@@ -177,7 +175,7 @@ export default function Wishlist_Page({ guestToken }) {
     <Box>
       <Header />
 
-      <Box pb={10} pt={7} px={2} bg="gray.100">
+      <Box pb={10} pt={3} px={2} bg="gray.100">
         <Box  maxW={{ md: "80%", base: "100%" }}  mx="auto"  py={4}  bg="white"  px={6}  rounded="md" boxShadow="sm">
           <Heading fontSize={24} fontWeight={600} color="pink.600">
             {currentUser ? `Hi, ${currentUser.firstname} 👋` : "Hi User 👋"}
@@ -197,10 +195,10 @@ export default function Wishlist_Page({ guestToken }) {
         </Box>
 
         <Box maxW={{ md: "80%", base: "100%" }} mx="auto" mt={6}>
-          <Box bg={'white'} spacing={3}p={4} rounded="md">
+          <Box bg={'white'} spacing={1}p={2} rounded="md">
             {loading ? (
               loading && [...Array(8)].map((_, index) => (
-                <SimpleGrid rounded={'xl'} gap={4} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={1} key={index} bg="white" p={4} borderRadius="lg" border={'1px solid'} borderColor={'gray.200'} opacity={0.6}>
+                <SimpleGrid rounded={'xl'} gap={2} columns={{ base: 2, md: 3, lg: 4, xl: 5 }} spacing={1} key={index} bg="white" p={2} borderRadius="lg" border={'1px solid'} borderColor={'gray.200'} opacity={0.6}>
                   <Box h="150px" bg="gray.300" mb={4} />
                   <Box h="2" bg="gray.300" w="3/4" mb={2} />
                   <Box h="2" bg="gray.300" w="1/2" mb={2}/>
@@ -224,7 +222,7 @@ export default function Wishlist_Page({ guestToken }) {
                 </Button>
               </Box>
             ) : (
-              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={3}>
+              <SimpleGrid columns={{ base: 2, sm: 2, md: 3, lg: 4 }} spacing={3}>
                 {wishlistItems.map((item, index) => (
                   <Box key={index} borderWidth="1px" rounded="md" overflow="hidden">
                     <Link to={`/product-details/${item.productId}`}>
@@ -235,8 +233,8 @@ export default function Wishlist_Page({ guestToken }) {
                         style={{ objectFit: "cover" }} className="h-[200px]"
                       />
                     </Link>
-                    <Box p={2} mt={0}>
-                      <Text fontWeight={500} py={3} color={'gray.700'} isTruncated>
+                    <Box p={1} mt={0}>
+                      <Text fontWeight={500} fontSize={'sm'} py={1} color={'gray.700'} isTruncated>
                         {item?.name}
                       </Text>
                       <Flex align="center" mb={3}>
@@ -245,25 +243,25 @@ export default function Wishlist_Page({ guestToken }) {
                           {item.price?.toLocaleString()}.00
                         </Text>
                       </Flex>
-                      <Flex direction="column" gap={2}>
-                        <Button
-                          size="sm"
-                          colorScheme="blue"
-                          isLoading={loadingProductId === item.productId}
+                      <Flex justifyContent={'space-between'} alignItems={'center'} gap={2}>
+                        <button className="bg-pink-600 text-white px-3 py-2 rounded flex items-center gap-1"
                           onClick={() => handleCart(item, item.selectedSize, 1)}
                         >
-                          Add to Cart
-                        </Button>
+                          {
+                            loadingProductId === (item.productId || item._id)
+                              ? <Spinner size="sm" />
+                              : item.stock < 1
+                                ? "Out of Stock"
+                                : <MdShoppingCart />
+                          }
+
+                        </button>
                         
-                        <Button
-                          size="sm"
-                          colorScheme="red"
-                          leftIcon={<MdDelete />}
-                          onClick={() => handleRemoveItem(item.productId)}
-                          
+                        <button className="bg-red-600 text-white px-3 py-2 rounded flex items-center gap-1"
+                          onClick={() => handleRemoveItem(item.productId, item.selectedSize)} 
                         >
-                          {deleteLoading === item.productId ? 'Removing Item...' : "Remove Item"}
-                        </Button>
+                          {deleteLoading === item.productId ? <Spinner /> : <MdDelete />}
+                        </button>
                       </Flex>
                     </Box>
                   </Box>

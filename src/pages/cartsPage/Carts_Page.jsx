@@ -35,7 +35,9 @@ import Footer from '../../components/footer/Footer';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { getCartToken } from '../../store/cart/utils/cartToken';
-import { useCart } from './CartCountContext';
+import { useCart } from '../../Context_APIs/CartCountContext';
+import UpdateSizeModal from '../../components/modals/UpdateSizeModal';
+import { MdDelete } from 'react-icons/md';
 
 export default function Carts_Page() {
   const { currentUser } = useSelector((state) => state.user);
@@ -54,13 +56,14 @@ export default function Carts_Page() {
   const { isOpen: isOpenUpdateSize, onOpen: onOpenUpdateSize, onClose: onCloseUpdateSize } = useDisclosure();
 
   const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedQty, setSelectedQty] = useState('1');
   const[updateLoading, setUpdateLoading] = useState(false);
   const[deleteLoading, setDeleteLoading] = useState(false);
+  const[sizeIncrementLoading, setSizeIncrementLoading] = useState(false);
+  const[sizeDecrementLoading, setSizeDecrementLoading] = useState(false);
+  
   const[loading, setLoading] = useState(false);
   // Inside your Carts_Page component, after fetchCart() and before return
-  const [itemsToShow, setItemsToShow] = useState(5); // initially show 5 items
+  const [itemsToShow, setItemsToShow] = useState(3); // initially show 5 items
   const [loadingMore, setLoadingMore] = useState(false);
 
 
@@ -99,36 +102,42 @@ export default function Carts_Page() {
   const loadMoreItems = () => {
     setLoadingMore(true);
     setTimeout(() => {
-      setItemsToShow((prev) => prev + 5); // show 5 more items
+      setItemsToShow((prev) => prev + 3); // show 5 more items
       setLoadingMore(false);
     }, 300); // small delay to show spinner
   };
 
-  
   const displayedItems = cartItemsToRender.slice(0, itemsToShow);
 
   // Update cart item (size and/or quantity)
-  const updateCartItem = async (productId, oldSize, newSize, quantity) => {
+  const updateCartItem = async (productId, oldSize, newSize, quantity, actionType) => {
     if (quantity < 1) return;
-    setUpdateLoading(`${productId}-${oldSize}`);
 
+     // Only set the specific loading state
+    if (actionType === "increment") {
+      setSizeIncrementLoading(`${productId}-${oldSize}`);
+    } else if (actionType === "decrement") {
+      setSizeDecrementLoading(`${productId}-${oldSize}`);
+    }
+    
+    setUpdateLoading(`${productId}-${oldSize}`);
     try {
       const payload = currentUser?._id
-        ? { 
-            userId: currentUser._id, 
-            productId, 
-            oldSize,        // 🔑 send old size
+      ? { 
+        userId: currentUser._id, 
+        productId, 
+        oldSize,        // 🔑 send old size
             newSize,        // 🔑 send new size
             quantity 
           }
         : { 
-            cartToken: getCartToken(), 
+          cartToken: getCartToken(), 
             productId, 
             oldSize, 
             newSize, 
             quantity 
           };
-
+          
       const res = await fetch('https://adexify-api.vercel.app/api/cart/update', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -146,7 +155,13 @@ export default function Carts_Page() {
     } catch (error) {
       console.error('Update error:', error);
     } finally {
-      setUpdateLoading(null);
+      // Reset only the one that was set
+      if (actionType === "increment") {
+        setSizeIncrementLoading(null);
+      } else if (actionType === "decrement") {
+        setSizeDecrementLoading(null);
+      }
+      setUpdateLoading(false);
     }
   };
 
@@ -180,48 +195,26 @@ export default function Carts_Page() {
     }
   };
 
-  // Open modal for selecting size & quantity for items without size
-  const openSizeModal = (item) => {
-    setSelectedItem(item);
-    setSelectedSize('');
-    setSelectedQty(1);
-    onOpen();
-  };
+  // when clicking "Update Size" button on cart item
   const openOnlySizeModal = (item) => {
     setSelectedItem(item);
-    setSelectedSize('');
     onOpenUpdateSize();
   };
-
-  // Confirm adding size & quantity on modal
-  const handleAddSizeToCart = () => {
-    if (!selectedItem || !selectedSize || selectedQty < 1) return;
-    // oldSize = selectedItem.selectedSize
-    updateCartItem(
-      selectedItem.productId, 
-      selectedItem.selectedSize, 
-      selectedSize, 
-      selectedQty
-    );
-
-    onClose();
-  };
-
   // Redirect to checkout or show alert
   const handleRedirect = (cartItems) => {
-    console.log(cartItems);
     if (cartItems.length <= 0) {
       setAlertMessage("You need at least one item in your cart.");
       onOpen2();
       return;
     }
+
     if (!currentUser) {
-      setAlertMessage("You must be logged in to proceed.");
-      onOpen2();
+      // ✅ Redirect to login with "redirect" param
+      navigate("/signin", { state: { from: "/checkout/summary", cartItems } });
       return;
     }
 
-    // ✅ Pass cart items with state
+    // ✅ User is logged in, go straight to checkout
     navigate("/checkout/summary", { state: { cartItems } });
   };
 
@@ -318,20 +311,24 @@ export default function Carts_Page() {
                         </Flex>
 
                         <Flex align="center" gap={2}>
-                          <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
-                              updateCartItem(item.productId, size, size, qty - 1)
-                            }
-                            isDisabled={qty <= 1 || updateLoading === `${item.productId}-${size}`}
-                          >
-                            {updateLoading === `${item.productId}-${size}` ? <Spinner size="sm" /> : <CgMathMinus />}
+                          {/* Decrement button */}
+                          <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() => updateCartItem(item.productId, size, size, qty - 1, "decrement")} isDisabled={qty <= 1 || sizeDecrementLoading === `${item.productId}-${size}`}>
+                            {sizeDecrementLoading === `${item.productId}-${size}` ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              <CgMathMinus />
+                            )}
                           </Button>
+
                           <Text>{qty}</Text>
-                          <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() =>
-                              updateCartItem(item.productId, size, size, qty + 1)
-                            }
-                            isDisabled={updateLoading === `${item.productId}-${size}`}
-                          >
-                            {updateLoading === `${item.productId}-${size}` ? <Spinner size="sm" /> : <RiAddFill />}
+
+                          {/* Increment button */}
+                          <Button h="30px" w="30px" bg="pink.500" _hover={{ bg: "pink.800" }} color="white" onClick={() => updateCartItem(item.productId, size, size, qty + 1, "increment")} isDisabled={sizeIncrementLoading === `${item.productId}-${size}`}>
+                            {sizeIncrementLoading === `${item.productId}-${size}` ? (
+                              <Spinner size="sm" />
+                            ) : (
+                              <RiAddFill />
+                            )}
                           </Button>
                         </Flex>
 
@@ -339,13 +336,17 @@ export default function Carts_Page() {
                           <Text fontWeight="medium" ml={1}>{(item.price * qty).toLocaleString()}.00</Text>
                         </Flex>
 
-                        <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
-                          Update Size
-                        </Button>
+                        {
+                          item.selectedSize && (
+                            <Button size="sm" bg="green.500" _hover={{bg: 'green.800'}} color="white" onClick={() => openOnlySizeModal(item)}>
+                              Update Size
+                            </Button>
+                          )
+                        }
 
-                        <Text cursor={'pointer'} fontSize="13px" color={'red.600'} onClick={() => deleteCartItem(item.productId, size)}>
-                          {deleteLoading === item.productId ? 'Removing Item...' : 'Remove item from cart'}
-                        </Text>
+                        <button className='bg-red-500 p-2 rounded-md text-lg text-white'  onClick={() => deleteCartItem(item.productId, size)}>
+                          {deleteLoading === item.productId ? <Spinner size="sm" /> : <MdDelete />}
+                        </button>
                       </Flex>
                     );
                   })
@@ -392,108 +393,29 @@ export default function Carts_Page() {
               </Flex>
               <Text className="text-[12px] text-yellow-600 text-end py-2">Excluding delivery charges</Text>
               <Box borderBottomWidth={1} borderBottomColor={'gray.100'}>
-                <Link to={currentUser && !(cartItems.length <= 0) ? "/checkout/summary" : "/view-carts"}>
-                  <Button
-                    bg={'green.500'}
-                    color={'white'}
-                    _hover={{ bg: 'green.700' }}
-                    onClick={() => handleRedirect(cartItems)}
-                    className="w-full my-3 rounded-md py-2 font-medium"
-                  >
-                    Continue to Checkout
-                  </Button>
-                </Link>
+                <Button
+                  bg={'green.500'}
+                  color={'white'}
+                  _hover={{ bg: 'green.700' }}
+                  onClick={() => handleRedirect(cartItems)}
+                  className="w-full my-3 rounded-md py-2 font-medium"
+                >
+                  Continue to Checkout
+                </Button>
               </Box>
             </Box>
           </Flex>
         </Box>
       </Box>
 
-      {/* The modals remain unchanged */}
-
-      {/* Modal for selecting size & quantity */}
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent mx={'2'}>
-          <ModalHeader>Select Size & Quantity</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text fontWeight={500}>{selectedItem?.name}</Text>
-            <Select mt={4} placeholder="Select size" value={selectedSize} onChange={(e) => setSelectedSize(e.target.value)}> 
-              <option value="XS">XS</option>
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
-            </Select>
-            <NumberInput
-              mt={3}
-              min={1}
-              value={selectedQty}
-              onChange={(val) => setSelectedQty(val)}
-            >
-              <NumberInputField />
-            </NumberInput>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="green" onClick={handleAddSizeToCart} isDisabled={!selectedSize}>
-              {updateLoading ? <><Spinner size="sm" mr={2} /> Updating...</> : 'Update Cart'}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
       {/* Update only size modal */}
-      <Modal isOpen={isOpenUpdateSize} onClose={onCloseUpdateSize} isCentered>
-        <ModalOverlay />
-        <ModalContent mx={'2'}>
-          <ModalHeader>Update Size</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text fontWeight={500}>{selectedItem?.name}</Text>
-            <Text mt={3} fontWeight={'600'} color={'pink.500'} bg={'pink.100'} width={'130px'} px={2} py={1} rounded={'5px'}>{selectedItem?.selectedSize ? `Current size: ${selectedItem.selectedSize}` : "Select size"}</Text>
-            <Select
-              mt={4}
-              placeholder={selectedItem?.selectedSize ? `Current size: ${selectedItem.selectedSize}` : "Select size"}
-              value={selectedSize}
-              onChange={(e) => setSelectedSize(e.target.value)}
-            > 
-              <option value="XS">XS</option>
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
-            </Select>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="green" onClick={handleAddSizeToCart} isDisabled={!selectedSize} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-              {updateLoading ? <><Spinner size="sm" mr={2} /> Updating...</> : 'Update Size'}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/* Modal to alert user to sign in or cart empty */}
-      <Modal isOpen={isOpen2} onClose={onClose2} isCentered>
-        <ModalOverlay />
-        <ModalContent mx={'2'} bg={'pink.100'}>
-          <ModalHeader>
-            <Box color="red.600" py={2} rounded="md" textAlign="start">
-              Error Message
-            </Box>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text fontWeight={500}>{alertMessage}</Text>
-          </ModalBody>
-          <ModalFooter gap={4}>
-            <Button onClick={onClose2} bg={'red.500'} color={'white'}>Close</Button>
-            <Link to={'/signin'}>
-              <Button bg={'green.500'} _hover={{bg: 'green.700'}} color={'white'}>Login</Button>
-            </Link>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <UpdateSizeModal
+        isOpen={isOpenUpdateSize}
+        onClose={onCloseUpdateSize}
+        selectedItem={selectedItem}
+        updateCartItem={updateCartItem}
+        updateLoading={updateLoading}
+      />
 
       <Footer />
     </Box>

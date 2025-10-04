@@ -6,8 +6,12 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { Provider } from 'react-redux'
 import { persistor, store } from './store/index.js'
 import { PersistGate } from 'redux-persist/integration/react'
-import { CartProvider } from './pages/cartsPage/CartCountContext.jsx'
-import { WishlistProvider } from './pages/wishlist_page/WishlistCountContext.jsx'
+import { CartProvider } from './Context_APIs/CartCountContext.jsx'
+import { WishlistProvider } from './Context_APIs/WishlistCountContext.jsx'
+import { ApiProvider } from './Context_APIs/ApiContext.jsx'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
@@ -15,7 +19,11 @@ createRoot(document.getElementById('root')).render(
       <ChakraProvider>
         <CartProvider>
           <WishlistProvider>
-            <App />
+            <ApiProvider>
+              <QueryClientProvider client={queryClient}>
+                <App />
+              </QueryClientProvider>
+            </ApiProvider>
           </WishlistProvider>
         </CartProvider>
       </ChakraProvider>

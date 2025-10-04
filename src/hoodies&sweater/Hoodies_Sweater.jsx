@@ -10,7 +10,7 @@ import { addToCart } from '../store/cart/cartSlice';
 import { setCartCount } from '../store/cart/cartActions';
 import { addToWishlist, clearWishlistError } from '../store/cart/wishlistSlice';
 import { setWishlistCount } from '../store/cart/wishlishActions';
-import { useCart } from '../pages/cartsPage/CartCountContext';
+import { useCart } from '../Context_APIs/CartCountContext';
 import { getCartToken } from '../store/cart/utils/cartToken';
 
 const MotionButton = motion.create(Button);

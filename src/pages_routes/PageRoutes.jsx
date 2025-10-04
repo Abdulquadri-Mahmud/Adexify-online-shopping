@@ -6,7 +6,6 @@ import Signin from '../pages/user_auth/Signin';
 import Sign_up from '../pages/user_auth/Sign_up';
 import Private_Routes from '../components/private_routes/Private_Routes';
 import ContactUs from '../pages/ContactUs';
-import UserProfile from '../pages/profile/UserProfile';
 import NotFound from '../pages/NotFound';
 import Carts_Page from '../pages/cartsPage/Carts_Page';
 import Men_Clothing_page from '../pages/clothing_page/Men_Clothing_page';
@@ -29,6 +28,8 @@ import GreateDeals from '../pages/GreateDeals';
 import Fashion from '../pages/Fashion';
 import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
 import CheckOutPage from '../pages/cartsPage/CheckoutPage/CheckOutPage';
+import Profile from '../pages/profile/Profile';
+import AddressManager from '../pages/profile/address/AddressManager';
 
 export default function PageRoutes() {
   return (
@@ -37,7 +38,8 @@ export default function PageRoutes() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route element={<Private_Routes/>}>
-          <Route path='/profile/:userID' element={<UserProfile/>}/>
+          <Route path='/profile' element={<Profile/>}/>
+          <Route path='/address' element={<AddressManager/>}/>
         </Route>
         <Route path='/product-details/:proId' element={<Details/>}/>
 

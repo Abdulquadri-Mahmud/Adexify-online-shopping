@@ -7,6 +7,7 @@ import { RiMenu5Line } from 'react-icons/ri';
 import { IoCallOutline, IoLocationOutline } from 'react-icons/io5';
 import { FaHandSparkles, FaRegStar } from 'react-icons/fa';
 import { CiShoppingTag } from 'react-icons/ci';
+import { TfiMenuAlt } from "react-icons/tfi";
 import {
     Drawer,
     DrawerBody,
@@ -20,7 +21,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { useSelector } from 'react-redux';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { BsCart4 } from 'react-icons/bs';
-import { useCart } from '../pages/cartsPage/CartCountContext';
+import { useCart } from '../Context_APIs/CartCountContext';
 
 export default function All_category() {
     const { items } = useSelector((state) => state.cart);
@@ -51,11 +52,10 @@ export default function All_category() {
 
     // console.log(wishlistCount);
     
-
     return (
         <div className="">
-            <Button bg={'transparent'} color={'white'} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-100">
-                <HiOutlineMenuAlt2 className='text-xl text-white' />
+            <Button bg={'transparent'} color={{base:'gray.800', md: 'white'}} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-500">
+                <TfiMenuAlt className='text-xl' />
                 <h2 className="md:text-[15px] hidden md:block text-[10px] font-normal">Browse All</h2>
                 <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">Categories</h2>
             </Button>

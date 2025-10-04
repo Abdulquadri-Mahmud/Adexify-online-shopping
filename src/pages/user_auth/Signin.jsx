@@ -15,17 +15,18 @@ import {
 } from '@chakra-ui/react'
 
 import { FaGoogle } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signinFailure, signinStart, signinSuccess } from '../../store/userReducers';
 import Header from '../../components/Header';
 import Footer from '../../components/footer/Footer';
 
 export default function Signin() {
-
     const getLockPassIcon = useRef(null);
     const password = useRef(null);
     const email = useRef(null);
+
+    const location = useLocation();
 
     const [formData, setFormData] = useState({});
 
@@ -56,8 +57,6 @@ export default function Signin() {
                 return;
             }
 
-            const signin_api = 'https://adexify-api.vercel.app/api/user/auth/signin';
-    
             const res = await fetch('https://adexify-api.vercel.app/api/user/auth/signin', {
                 method : 'POST',
                 headers : {'Content-Type' : 'application/json'},
@@ -72,7 +71,11 @@ export default function Signin() {
             }
 
             dispatch(signinSuccess(data));
-            navigate(-1);
+            // ✅ After login, check if redirect route exists
+            const redirectPath = location.state?.from || "/";
+            const cartItems = location.state?.cartItems || [];
+
+            navigate(redirectPath, { state: { cartItems } });
             
         } catch (error) {
             console.log(error);

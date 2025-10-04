@@ -13,6 +13,7 @@ import {
 import { FaArrowRight, FaRegBookmark } from 'react-icons/fa';
 import Header from '../../../components/Header';
 import Footer from '../../../components/footer/Footer';
+import addresses from '../../../data/address';
 
 const paymentMethods = [
   {
@@ -33,6 +34,8 @@ export default function CheckOutPage() {
 
   const { currentUser } = useSelector((state) => state.user);
 
+  // console.log("Current User:", currentUser);
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
@@ -40,6 +43,8 @@ export default function CheckOutPage() {
 
   const [editCustomerAddress, setEditCustomerAddress] = useState(false);
   const [editPickUpStation, setEditPickUpStation] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
 
   const [item, setItem] = useState({});
 
@@ -76,29 +81,36 @@ export default function CheckOutPage() {
     try {
         setLoading(true);
 
-        const url = `https://hardayfunkeh-apis.vercel.app/api/order/create_orders`;
+        const payload = {
+          ...formData,
+          region: selectedRegion,
+          city: selectedCity,
+        };
 
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-        });
+        console.log("Submitting customer address:", payload);
+        // const url = `https://hardayfunkeh-apis.vercel.app/api/order/create_orders`;
 
-        const data = await res.json();
+        // const res = await fetch(url, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(formData),
+        // });
 
-        if (data.success === false) {
-            setError(data.message || 'Something went wrong');
-            // toast.error(data.message || 'Something went wrong');
-            setLoading(false);
-            return;
-        }
+        // const data = await res.json();
 
-        // Success
-        setSuccess(data.message);
-        setShowModal(true); // Show modal on success
-        //   toast.success('Order created successfully!');
-        setError('');
-        setLoading(false);
+        // if (data.success === false) {
+        //     setError(data.message || 'Something went wrong');
+        //     // toast.error(data.message || 'Something went wrong');
+        //     setLoading(false);
+        //     return;
+        // }
+
+        // // Success
+        // setSuccess(data.message);
+        // setShowModal(true); // Show modal on success
+        // //   toast.success('Order created successfully!');
+        // setError('');
+        // setLoading(false);
     } catch (error) {
       setError(error.message || 'An unexpected error occurred');
     //   toast.error(`Error: ${error.message || 'Failed to create gadget'}`);
@@ -145,32 +157,45 @@ export default function CheckOutPage() {
 
   return (
     <Box className="bg-zinc-100">
-        <Header/>
-      <Box maxW={{ base: '100%', xl: '95%', '2xl': '80%' }} px={2} mx="auto" my="8">
+      <Header/>
+      <Box maxW={{ base: '100%', xl: '95%', '2xl': '80%' }} px={2} mx="auto" mt="4">
         <Box>
-          {/* <Box border={'1px solid'} borderColor={'gray.200'} bg="white" p={4} borderRadius="lg" boxShadow="" mb={6}>
-            <Flex justify="space-between" flexWrap={'wrap'} align="center" mb={4}>
-              <HStack spacing={1} align="center">
-                <Text fontSize="13px" color="gray.500">
-                  <Link to="/">Home / </Link>
-                </Text>
-                <Text fontSize="13px" color="gray.500">
-                  <Link to="/cart">My Carts / </Link>
-                </Text>
-                <Text fontSize="13px" color="gray.500">
-                  <Link to="/create-order">Checkout</Link>
-                </Text>
+          <Box  border="1px solid"  borderColor="gray.50"  bg="white"  borderRadius="xl">
+            {/* Breadcrumb + Back */}
+            <Flex justify="space-between" align="center" flexWrap="wrap" mb={3}>
+              <HStack bg={'pink.200'} roundedTopLeft={'xl'} roundedBottomRight={'xl'} py={2} px={4} spacing={1} fontSize="12px" color="gray.600">
+                <Link to="/">
+                  <Text _hover={{ color: "pink.100", textDecor: "underline" }}>Home</Text>
+                </Link>
+                <Text>/</Text>
+                <Link to="/cart">
+                  <Text _hover={{ color: "pink.100", textDecor: "underline" }}>My Cart</Text>
+                </Link>
+                <Text>/</Text>
+                <Link to="/create-order">
+                  <Text _hover={{ color: "pink.100", textDecor: "underline" }}>Checkout</Text>
+                </Link>
               </HStack>
-              <Button onClick={handleBack} bg="pink.600" color={'white'}>Back</Button>
+
+              <Button onClick={handleBack} roundedTopRight={'xl'} roundedBottomLeft={'xl'} color={'gray.600'} size="sm" bg="pink.200" leftIcon={<span>←</span>}>
+                Back
+              </Button>
             </Flex>
-            <Box mt={4}>
-              <Heading fontSize={'5xl'} color={'pink.600'}>Checkout</Heading>
+
+            {/* Title */}
+            <Box textAlign="center" pb={3}>
+              <Heading  fontSize={{ base: "2xl", md: "4xl" }}  fontWeight="bold"  color="pink.600" letterSpacing="tight">
+                Checkout
+              </Heading>
+              <Text mt={2} fontSize="sm" color="gray.500">
+                Complete your order in just a few steps
+              </Text>
             </Box>
-          </Box> */}
+          </Box>
           {/* Basic Info */}
           <Box maxW={{'2xl' : '80%', xl : '100%', lg : '100%', base: '97%'}} mx={'auto'} py={2} px={{md:0, base: 0}}>
-            <Box mb={2} p={2} bg="pink.500" borderTopRadius="md">
-              <Heading as="h2" fontSize="2xl" fontWeight="medium" color="gray.50">
+            <Box mb={2} p={2} bg="white" borderRadius="xl">
+              <Heading as="h2" fontSize="2xl" fontWeight="medium" color="gray.600">
                 Basic Information
               </Heading>
             </Box>
@@ -192,23 +217,69 @@ export default function CheckOutPage() {
                 {
                   editCustomerAddress && (
                     <Box position={'fixed'} inset={0} bg={'blackAlpha.700'} zIndex={50} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                      <Box bg={'white'} p={5} rounded={'lg'} maxW={'md'} w={'full'} className="" pos={'relative'}>
-                        
-                        <form onSubmit={handleCustomerAddressSubmit} style={{ fontWeight: 500, width: '100%', maxWidth: '100%', backgroundColor: 'white', paddingTop: '12px', paddingBottom: '12px', borderBottomLeftRadius: '0.375rem', borderBottomRightRadius: '0.375rem', flexBasis: '55%'}}>
-                          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={3} p={3}>
+                      <Box bg={'white'} p={{md:5, base:3}} rounded={'lg'} maxW={'2xl'} w={'full'} className="" pos={'relative'}>
+                        <Flex alignItems={'center'} gap={2}>
+                          <Box className='animate-pulse' bg={'pink.300'} w={4} h={4} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
+                          <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>1.CUSTOMER ADDRESS</Heading>
+                        </Flex>
+                        <form onSubmit={handleCustomerAddressSubmit} style={{ fontWeight: 500, width: '100%', maxWidth: '100%', backgroundColor: 'white', paddingTop: '12px', borderBottomLeftRadius: '0.375rem', borderBottomRightRadius: '0.375rem', flexBasis: '55%'}}>
+                          <Grid templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(2, 1fr)' }} gap={3} p={3}>
                             <Input onChange={handleChange} defaultValue={formData.firstname} id="firstname" type="text" placeholder="First Name" fontWeight="normal" fontSize="sm" color="gray.500" border="1px solid" borderColor="gray.200" rounded="md" p={2}/>
                             <Input onChange={handleChange} defaultValue={formData.lastname} id="lastname" type="text" placeholder="Last Name" fontWeight="normal" fontSize="sm" color="gray.500" border="1px solid" borderColor="gray.200" rounded="md" p={2}/>
                           </Grid>
 
-                          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={3} p={3}>
+                          <Grid templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(2, 1fr)' }} gap={3} p={3}>
                             <Input onChange={handleChange} defaultValue={formData.phone} id="phone" type="text" placeholder="Phone Number" fontWeight="normal" fontSize="sm" color="gray.500" border="1px solid" borderColor="gray.200" rounded="md" p={2}/>
                             <Input onChange={handleChange} defaultValue={formData.email} id="email" type="email" placeholder="Email Address" fontWeight="normal" fontSize="sm" color="gray.500" border="1px solid" borderColor="gray.200" rounded="md" p={2}/>
                           </Grid>
-                          <Box p={3}>
-                            <Text mb={1}>Full Address</Text>
-                            <Textarea id="address" onChange={handleChange} defaultValue={formData.address} placeholder="Full Address" fontWeight="normal" fontSize="sm" color="gray.500" h="80px" border="1px solid" borderColor="gray.200" rounded="md" p={2}/>
+
+                          {/* Region (State) */}
+                          <Box p={3} fontSize={'14px'} color={'gray.600'} fontWeight={500}>
+                            <Text mb={1}>Select State</Text>
+                            <Select fontSize={'14px'} placeholder="Select State" value={selectedRegion} onChange={(e) => {(setSelectedRegion(e.target.value));
+                                setSelectedCity(""); // reset city when region changes
+                              }}
+                            >
+                              {addresses.map((addr) => (
+                                <option key={addr.region} value={addr.region}>
+                                  {addr.region}
+                                </option>
+                              ))}
+                            </Select>
                           </Box>
 
+                          {/* City (District) */}
+                          <Box p={3} fontSize={'14px'} color={'gray.600'} fontWeight={500}>
+                            <Text mb={1}>Select City</Text>
+                            <Select fontSize={'14px'} placeholder="Select City" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} isDisabled={!selectedRegion}>
+                              {addresses
+                                .find((addr) => addr.region === selectedRegion)
+                                ?.cities.map((city) => (
+                                  <option key={city} value={city}>
+                                    {city}
+                                  </option>
+                                ))}
+                            </Select>
+                          </Box>
+
+                          {/* Full Address */}
+                          <Box p={3}>
+                            <Text mb={1}>Full Address</Text>
+                            <Textarea
+                              id="address"
+                              onChange={handleChange}
+                              defaultValue={formData.address}
+                              placeholder="Street, House number, Landmark"
+                              fontWeight="normal"
+                              fontSize="sm"
+                              color="gray.500"
+                              h="80px"
+                              border="1px solid"
+                              borderColor="gray.200"
+                              rounded="md"
+                              p={2}
+                            />
+                          </Box>
                           <Flex justify="space-between" p={3} w={'full'}>
                             <Button onClick={() => setEditCustomerAddress(false)} bg={'red.500'} color={'white'}>Close</Button>
                             <Button type="submit" bg="pink.600" _hover={{ bg: 'red.800' }} color="white" py={3} px={4} rounded="md" transition="background-color 0.2s" isLoading={loading} loadingText="Placing Order..." >
@@ -227,25 +298,28 @@ export default function CheckOutPage() {
                     <Box className='animate-pulse' bg={'pink.300'} w={4} h={4} rounded={'full'} display={'flex'} justifyContent={'center'} alignItems={'center'}></Box>
                     <Heading as={'h3'} fontSize={'md'} fontWeight={600} color={'gray.600'}>2.PRODUCTS</Heading>
                   </Flex>
-                  <SimpleGrid columns={{ base: 2,sm: 3, md: 5, xl: 6 }} spacing={1} mt={3} px={3} py={3} bg={'gray.100'} rounded={'lg'} borderBottom={'1px solid'} borderColor={'gray.200'}>
+                  <SimpleGrid columns={{ base: 1,md: 1 }} spacing={1} mt={3} px={3} py={3} bg={'gray.100'} rounded={'lg'} borderBottom={'1px solid'} borderColor={'gray.200'}>
                     {
                       cartItems.length > 0 && (
                         cartItems.map((item) => {
                           return(
-                            <Box key={item._id} display={'flex'} width={''}
-                              flexDirection={'column'} justifyContent={'center'} 
-                              alignItems={'center'} gap={2} bg={'white'} 
-                              p={1} rounded={'lg'} border={'1px solid'} 
-                              borderColor={'gray.200'}>
+                            <Box key={item._id} display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} gap={2} bg={'white'}  p={1} rounded={'lg'} border={'1px solid'}  borderColor={'gray.200'}>
                               <Box bg={'white'} p={1} rounded={'lg'}>
-                                <Image src={item?.image?.[0]} alt={item?.name} width={{md: '70px',sm: '80px', base: '100%'}} rounded={'lg'}/>
+                                <Image src={item?.image?.[0]} alt={item?.name} border={2} borderColor={'pink.500'} width={{md: '70px', base: '80px'}} rounded={'lg'}/>
                               </Box>
                               <Text fontSize={'sm'} color={'gray.600'} isTruncated width={'full'}>{item?.name}</Text>
                               <Flex fontSize={'13px'} justifyContent={'space-between'} alignItems={'center'} width={'full'} gap={1}>
-                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'}
-                                display={'flex'} alignItems={'center'} >QTY: {item?.quantity}</Text>
-                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'}
-                                display={'flex'} alignItems={'center'} ><FaNairaSign className='text-sm'/>{item?.price.toLocaleString()}</Text>
+                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'} display={'flex'} alignItems={'center'} gap={1}>
+                                  <span className="text-pink-500">QTY:</span> {item?.quantity}
+                                </Text>
+                                
+                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'} display={'flex'} alignItems={'center'} gap={1}>
+                                  <span className="text-pink-500">Price:</span> <FaNairaSign className='text-[10px]'/>{item?.price.toLocaleString()}
+                                </Text>
+
+                                <Text roundedTopLeft={'md'} fontWeight={'bold'} bg={'white'} px={2} fontSize={'12px'} color={'gray.600'} display={'flex'} alignItems={'center'} gap={1}>
+                                  <span className="text-pink-500">Size:</span> {item?.selectedSize}
+                                </Text>
                               </Flex>
                             </Box>
                           )

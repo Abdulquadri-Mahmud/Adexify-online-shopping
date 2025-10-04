@@ -36,13 +36,15 @@ import Footer from "../../components/footer/Footer";
 import Adverts from "../../components/Adverts/Adverts";
 import { motion } from "framer-motion";
 import { setWishlistCount } from "../../store/cart/wishlishActions";
-import { useCart } from "../cartsPage/CartCountContext";
+import { useCart } from "../../Context_APIs/CartCountContext";
 import { getCartToken } from "../../store/cart/utils/cartToken";
 import { FaNairaSign } from "react-icons/fa6";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import ProductViews from "../../components/ProductViews/ProductViews";
+import AddToCartButton from "../../hooks/AddToCartButton";
+import AddToWishlistButton from "../../hooks/AddToWishlistButton";
 
 const MotionButton = motion.create(Button);
 export const quantityContext = createContext();
@@ -123,140 +125,7 @@ export default function Details({ productViews }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isLightboxOpen, images.length]);
-  // --- Add to cart (keeps your existing logic) ---
-  const handleCart = async (productArg, size, qty) => {
-    if (!productArg) return;
-
-    setLoadingProductId(productArg?._id);
-
-    const cartItem = {
-      productId: productArg?._id,
-      name: productArg?.name,
-      stock: productArg?.stock || 0,
-      price: productArg?.price,
-      discount: productArg?.discount || 0,
-      oldprice: productArg?.oldprice || 0,
-      deal: productArg?.deal || "",
-      category: productArg?.category || "",
-      image: productArg?.image || [],
-      description: productArg?.description || "",
-      discountType: productArg?.discountType || "",
-      trackingId: productArg?.trackingId || "",
-      size: productArg?.size || [],
-      selectedSize: size || productArg?.size?.[0] || "",
-      quantity: qty || 1,
-      gender: productArg?.gender || "unisex",
-    };
-
-    try {
-      const payload = {
-        userId: currentUser?._id || null,
-        cartToken: currentUser?._id ? null : getCartToken(),
-        product: cartItem,
-      };
-
-      const res = await fetch("https://adexify-api.vercel.app/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        updateCart(data.cart);
-        toast({
-          title: "Success",
-          description: "Item added to cart.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Failed to add item",
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
-    } finally {
-      setLoadingProductId(null);
-    }
-  };
-
-  // Add to wishlist (keeps your logic)
-  const handleWishlistItem = async (productArg) => {
-    if (!productArg || !currentUser?._id) return;
-    setLoadingWishlistProductId(productArg._id);
-
-    const payload = {
-      userId: currentUser._id,
-      product: {
-        productId: productArg._id,
-        name: productArg.name,
-        price: productArg.price,
-        image: productArg.image || [],
-        category: productArg.category || "",
-        gender: productArg.gender || "",
-      },
-    };
-
-    try {
-      const res = await fetch(
-        "https://adexify-api.vercel.app/api/wishlist/add-to-wishlist",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast({
-          title: "Added to wishlist",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-
-        const wishlistRes = await fetch(
-          "https://adexify-api.vercel.app/api/wishlist/get-wishlist",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: currentUser._id }),
-          }
-        );
-        const wishlistData = await wishlistRes.json();
-        const count = wishlistData?.wishlist?.products?.length || 0;
-        dispatch(setWishlistCount(count));
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: err.message,
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
-    } finally {
-      setLoadingWishlistProductId(null);
-    }
-  };
-
+  
   // Gallery helpers
   const prevImage = () =>
     setActiveIndex((i) => (i - 1 + images.length) % images.length);
@@ -275,7 +144,7 @@ export default function Details({ productViews }) {
 
       <Box pt={2} className="bg-zinc-200 md:mb-0 ">
         <Box className="mb-2">
-          <Box maxW={{ "2xl": "80%", xl: "100%", lg: "100%", base: "97%" }} mt={2} mx={"auto"} bg={"white"} py={4} px={6} rounded={"md"}>
+          <Box maxW={{ "2xl": "80%", xl: "95%", lg: "100%", base: "97%" }} mt={2} mx={"auto"} bg={"white"} py={4} px={6} rounded={"md"}>
             <div className="flex gap-1 items-center">
               <Link to={"/"} className="text-[13px] text-gray-500">
                 Home
@@ -292,236 +161,149 @@ export default function Details({ productViews }) {
         </Box>
 
         {/* Main content */}
-        <Box maxW={{ "2xl": "80%", xl: "100%", lg: "100%", base: "97%" }} mx={"auto"} className="md:p-4 p- flex justify-center gap-2 flex-wrap">
-          <Flex gap={{ md: 2, base: 2 }} wrap="wrap" className="w-full">
-            {/* Gallery column */}
-            <Box className="flex-1 bg-white p-4 rounded-md" style={{ minWidth: '100%', maxWidth: 400 }} mx={'auto'}> 
-              {/* Main large preview */}
-              {images.length > 0 && (
-                <Zoom>
-                  <motion.img
-                    ref={displayImage}
-                    src={images[activeIndex]}
-                    alt={product?.name}
-                    className="w-full h-[100%] md:h-[100%] object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
-                    onClick={() => openLightboxAt(activeIndex)}
-                  />
-                </Zoom>
-              )}
+        <Box maxW={{ "2xl": "80%", xl: "100%", lg: "100%", base: "97%" }} mx={"auto"} className="md:p-4 p-">
+          <Flex gap={2} flexWrap="wrap" className="w-full" direction={{ base: "column", md: "row" }}>
+              {/* Gallery column */}
+              <Box flex={{ base: "1", md: "0 0 30%" }} bg="white" p={4} rounded="md" minW={{ base: "100%", md: "280px" }} maxW={{ md: "350px" }}>
+                {/* Main large preview */}
+                {images.length > 0 && (
+                  <Zoom>
+                    <motion.img
+                      ref={displayImage}
+                      src={images[activeIndex]}
+                      alt={product?.name}
+                      className="w-full h-auto object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
+                      onClick={() => openLightboxAt(activeIndex)}
+                    />
+                  </Zoom>
+                )}
 
-              {/* Thumbnails */}
-              {images.length > 1 && (
-                <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
-                  {images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveIndex(idx)}
-                      className={`w-[64px] h-[64px] rounded overflow-hidden border-2 transition-transform transform hover:scale-105 focus:outline-none ${
-                        activeIndex === idx
-                          ? "border-white ring-2 ring-pink-500"
-                          : "border-gray-200"
-                      }`}
-                    >
-                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Lightbox modal */}
-              {isLightboxOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4">
-                  <button
-                    className="absolute top-5 right-5 text-white text-2xl"
-                    onClick={() => setIsLightboxOpen(false)}
-                  >
-                    <X />
-                  </button>
-
-                  <button
-                    className="absolute left-5 text-white text-3xl"
-                    onClick={() => setActiveIndex((i) => (i - 1 + images.length) % images.length)}
-                  >
-                    <ChevronLeft />
-                  </button>
-
-                  <motion.img
-                    src={images[activeIndex]}
-                    alt={`lightbox-${activeIndex}`}
-                    className="max-h-[80vh] max-w-[90vw] object-contain rounded-md"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  <button
-                    className="absolute right-5 text-white text-3xl"
-                    onClick={() => setActiveIndex((i) => (i + 1) % images.length)}
-                  >
-                    <ChevronRight />
-                  </button>
-
-                  {/* Lightbox thumbnails */}
-                  <div className="absolute bottom-5 flex gap-2 overflow-x-auto w-full px-4 scrollbar-hide justify-center">
+                {/* Thumbnails */}
+                {images.length > 1 && (
+                  <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
                     {images.map((img, idx) => (
                       <button
                         key={idx}
                         onClick={() => setActiveIndex(idx)}
-                        className={`w-16 h-16 rounded overflow-hidden border-2 focus:outline-none ${
-                          activeIndex === idx ? "border-white ring-2 ring-pink-500" : "border-gray-200"
+                        className={`w-[64px] h-[64px] rounded overflow-hidden border-2 transition-transform transform hover:scale-105 focus:outline-none ${
+                          activeIndex === idx
+                            ? "border-white ring-2 ring-pink-500"
+                            : "border-gray-200"
                         }`}
                       >
                         <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
                       </button>
                     ))}
                   </div>
-                </div>
-              )}
-            </Box>
-
-            {/* Details column */}
-            <Box flex={{ md: 2, base: 1 }} width={"100%"} bg="white" p={4} rounded="md">
-              <Heading fontSize="2xl" fontWeight={500}>
-                {product?.name}
-              </Heading>
-
-              <Text mt={4} mb={3} color={"gray.500"}>
-                Product Code: <span className="text-black font-medium">{product?.trackingId}</span>
-              </Text>
-              <Text mt={2} mb={3} color={"gray.500"}>
-                Category: <span className="text-black font-medium">{product?.category}</span>
-              </Text>
-
-              <Box>
-                {product?.stock > 0 ? (
-                  <Badge bg="pink.200" fontWeight={500} px={2} py={1} rounded="sm">
-                    In Stock
-                  </Badge>
-                ) : (
-                  <Badge colorScheme="red" px={2} py={1} rounded="md">
-                    Out of Stock
-                  </Badge>
                 )}
               </Box>
 
-              <Flex align="center" mt={2} gap={2}>
-                {[...Array(5)].map((_, i) => (
-                  <Icon key={i} as={FaStar} color="yellow.400" />
-                ))}
-                <Text fontSize="sm">20,000 Reviews</Text>
-              </Flex>
-
-              <Flex alignItems="center" justifyContent={"space-between"} mt={4} gap={3} width={"250px"} p={2} bg={"gray.100"} rounded={"md"}>
-                <Heading fontSize="2xl" display="flex" alignItems="center">
-                  <FaNairaSign /> {product?.price?.toLocaleString()}
+              {/* Details column */}
+              <Box flex={{ base: "1", md: "0 0 45%" }} bg="white" p={4} rounded="md" minW={{ base: "100%", md: "400px" }}>
+                <Heading fontSize="2xl" fontWeight={500}>
+                  {product?.name}
                 </Heading>
-                {product?.oldprice && (
-                  <Text display={"flex"} alignItems={"center"} textDecor="line-through" color="gray.500">
-                    <FaNairaSign /> {product?.oldprice?.toLocaleString()}
-                  </Text>
-                )}
-              </Flex>
 
-              {product?.oldprice && (
-                <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
-                  You save <FaNairaSign />{" "}
-                  <Text as="span" fontWeight="medium" color="green.600">
-                    {(product.oldprice - product.price).toLocaleString()}
-                  </Text>
+                <Text mt={4} mb={3} color="gray.500">
+                  Product Code: <span className="text-black font-medium">{product?.trackingId}</span>
                 </Text>
-              )}
+                <Text mt={2} mb={3} color="gray.500">
+                  Category: <span className="text-black font-medium">{product?.category}</span>
+                </Text>
 
-              <MotionButton whileTap={{ scale: 0.95 }} isDisabled={loadingProductId === product?._id} onClick={() => {
-                  if (product?.size?.length > 0) {
-                    setSelectedProduct(product);
-                    onOpen();
-                  } else {
-                    handleCart(product, "", 1);
-                  }
-                }} mt={4} bg="pink.500" color="white" w="full" _hover={{ bg: "pink.700" }}> 
-                {loadingProductId === product?._id ? (
-                  <>
-                    <Spinner size="sm" mr={2} /> Adding...
-                  </>
-                ) : (
-                  "Add to Cart"
+                <Box>
+                  {product?.stock > 0 ? (
+                    <Badge bg="pink.200" fontWeight={500} px={2} py={1} rounded="sm">
+                      In Stock
+                    </Badge>
+                  ) : (
+                    <Badge colorScheme="red" px={2} py={1} rounded="md">
+                      Out of Stock
+                    </Badge>
+                  )}
+                </Box>
+
+                <Flex align="center" mt={2} gap={2}>
+                  {[...Array(5)].map((_, i) => (
+                    <Icon key={i} as={FaStar} color="yellow.400" />
+                  ))}
+                  <Text fontSize="sm">20,000 Reviews</Text>
+                </Flex>
+
+                <Flex alignItems="center" justifyContent="space-between" mt={4} gap={3} width="250px" p={2} bg="gray.100" rounded="md">
+                  <Heading fontSize="2xl" display="flex" alignItems="center">
+                    <FaNairaSign /> {product?.price?.toLocaleString()}
+                  </Heading>
+                  {product?.oldprice && (
+                    <Text display="flex" alignItems="center" textDecor="line-through" color="gray.500">
+                      <FaNairaSign /> {product?.oldprice?.toLocaleString()}
+                    </Text>
+                  )}
+                </Flex>
+
+                {product?.oldprice && (
+                  <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
+                    You save <FaNairaSign />{" "}
+                    <Text as="span" fontWeight="medium" color="green.600">
+                      {(product.oldprice - product.price).toLocaleString()}
+                    </Text>
+                  </Text>
                 )}
-              </MotionButton>
 
-              <Button onClick={() => handleWishlistItem(product)} mt={3} size="sm" bg="gray.200" rounded="full" isDisabled={loadingWishlistProductId === product?._id}>
-                {loadingWishlistProductId === product?._id ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <IoHeart className="text-xl text-pink-500" />
-                )}
-              </Button>
+                <AddToCartButton product={product}/>
+                <AddToWishlistButton product={product} />
+              </Box>
 
-              {/* {currentAdmin && (
-                <Link to={`/admin/update-products/${product._id}`} className="block mt-3 text-pink-600">
-                  Update Product
-                </Link>
-              )} */}
-            </Box>
+              {/* Right column (info) */}
+              <Box flex={{ base: "1", md: "0 0 25%" }} bg="white" rounded="md" minW={{ base: "100%", md: "300px" }} maxW={{ md: "350px" }}>
+                {/* Delivery Section */}
+                <div className="py-2 border-b-[1px] border-b-gray-300 p-3">
+                  <Text className="text-[16px] font-medium">Delivery & Return</Text>
+                </div>
 
-            {/* Right column (info) */}
-            <div className="md:w-[350px] w-full bg-white rounded-md">
-              {/* Delivery Section */}
-              <div className="py-2 border-b-[1px] border-b-gray-300 p-3">
-                <Text className="text-[16px] font-medium">Delivery & Return</Text>
-              </div>
-
-              <div className="py-3 flex gap-2 justify-start p-3">
-                <div>
+                <div className="py-3 flex gap-2 justify-start p-3">
                   <TbTruckDelivery className="text-pink-600 text-xl" />
+                  <div>
+                    <Text className="text-[15px] font-medium">Delivery</Text>
+                    <p>Estimated delivery time 1-9 business days</p>
+                    <p className="text-[13px] pb-3">Express Delivery Available</p>
+                    <p className="text-[13px] pb-3">
+                      <span className="font-medium">For Same-Day-Delivery:</span> Place order before 11AM
+                    </p>
+                    <p className="text-[13px] pb-3">
+                      <span className="font-medium">Next-Day-Delivery:</span> Orders after 11AM → next day
+                    </p>
+                    <p className="text-[13px] pb-3">
+                      <span className="font-medium">Note:</span> Availability may vary by location
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <Text className="text-[15px] font-medium">Delivery</Text>
-                  <p>Estimated delivery time 1-9 business days</p>
-                  <p className="text-[13px] pb-3">Express Delivery Available</p>
-                  <p className="text-[13px] pb-3">
-                    <span className="font-medium">For Same-Day-Delivery:</span> Please place
-                    your order before 11AM
-                  </p>
-                  <p className="text-[13px] pb-3">
-                    <span className="font-medium">Next-Day-Delivery:</span> Orders placed
-                    after 11AM will be delivered the next day
-                  </p>
-                  <p className="text-[13px] pb-3">
-                    <span className="text-[13px] font-medium">Note: </span>Availability may
-                    vary by location
-                  </p>
-                </div>
-              </div>
 
-              {/* Return Policy */}
-              <div className="text-[13px] py-3 flex gap-2 justify-start p-3">
-                <div>
+                {/* Return Policy */}
+                <div className="text-[13px] py-3 flex gap-2 justify-start p-3">
                   <MdOutlinePolicy className="text-pink-600 text-xl" />
+                  <div>
+                    <p className="text-[15px] pb-3">Return Policy</p>
+                    <p className="text-[13px] pb-3 font-medium">Guaranteed 7-Day Return Policy</p>
+                    <p className="text-[13px] pb-3">
+                      For details about return options, visit{" "}
+                      <Link to="/" className="text-pink-600">
+                        ADEXIFY Return Policy
+                      </Link>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[15px] pb-3">Return Policy</p>
-                  <p className="text-[13px] pb-3 font-medium">
-                    Guaranteed 7-Day Return Policy
-                  </p>
-                  <p className="text-[13px] pb-3">
-                    For details about return shipping options, please visit -{" "}
-                    <Link to={"/"} className="text-pink-600">
-                      ADEXIFY Return Policy
-                    </Link>
-                  </p>
-                </div>
-              </div>
 
-              {/* Warranty */}
-              <div className="py-3 flex gap-2 justify-start p-3">
-                <div className="text-[13px]"><FaShieldAlt className="text-pink-600 text-xl" /></div>
-                <div className="text-[13px]">
-                  <p className="text-[16px] pb-3">Warranty</p>
-                  <p>Warranty information unavailable for this item.</p>
+                {/* Warranty */}
+                <div className="py-3 flex gap-2 justify-start p-3 text-[13px]">
+                  <FaShieldAlt className="text-pink-600 text-xl" />
+                  <div>
+                    <p className="text-[16px] pb-3">Warranty</p>
+                    <p>Warranty info unavailable for this item.</p>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Flex>
+              </Box>
+            </Flex>
         </Box>
 
         {/* Product description */}
