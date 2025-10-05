@@ -77,7 +77,7 @@ const AddToCartButton = ({ product }) => {
         });
         onClose(); // close modal if open
       } else {
-        if (data.message?.includes("already")) {
+        if (data.success === false) {
           toast({
             title: "Notice",
             description: "Item already in cart.",

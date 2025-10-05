@@ -1,7 +1,9 @@
-import { Badge, Box, Flex, Heading, Image, SimpleGrid, Skeleton, Text } from '@chakra-ui/react';
-import { createContext, useEffect, useState } from 'react';
+import { Badge, Box, Flex, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react';
+import {  useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaAngleRight } from 'react-icons/fa';
+import AddToCartButton from '../../hooks/AddToCartButton';
+import AddToWishlistButton from '../../hooks/AddToWishlistButton';
 
 export default function Unisex() {
   const [products, setProducts] = useState([]);
@@ -46,8 +48,8 @@ export default function Unisex() {
       <Box p={2}>
         <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={1}>
           {loading
-            ? Array.from({ length: 12 }).map((_, index) => (
-                <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
+            ? Array.from({ length: 12 }).map((index) => (
+                <SimpleGrid key={index} bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
                   {[...Array(8)].map((_, index) => (
                     <SimpleGrid key={index} bg="gray.200" p={2} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
                       <Box h="150px" bg="gray.300" mb={4} />
@@ -88,6 +90,10 @@ export default function Unisex() {
                       </Box>
                     )}
                   </Box>
+                  {/* Add to cart component */}
+                  <AddToCartButton product={product}/>
+                  {/* Add to wislist component */}
+                  <AddToWishlistButton product={product} />
                 </Box>
               ))}
         </SimpleGrid>

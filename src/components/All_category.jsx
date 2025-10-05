@@ -1,12 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Image, Text, useDisclosure } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { MdOutlineShoppingCart } from 'react-icons/md';
-import { LiaTimesSolid } from 'react-icons/lia';
-import { RiMenu5Line } from 'react-icons/ri';
-import { IoCallOutline, IoLocationOutline } from 'react-icons/io5';
-import { FaHandSparkles, FaRegStar } from 'react-icons/fa';
-import { CiShoppingTag } from 'react-icons/ci';
+import { IoCallOutline } from 'react-icons/io5';
+import { FaHandSparkles } from 'react-icons/fa';
 import { TfiMenuAlt } from "react-icons/tfi";
 import {
     Drawer,
@@ -17,21 +13,20 @@ import {
     DrawerContent,
     DrawerCloseButton,
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
 import { useSelector } from 'react-redux';
-import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { BsCart4 } from 'react-icons/bs';
 import { useCart } from '../Context_APIs/CartCountContext';
+import { useWishlist } from '../Context_APIs/WishlistCountContext';
 
 export default function All_category() {
-    const { items } = useSelector((state) => state.cart);
-    const [open, setOpen] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const firstField = useRef();
     const { currentUser } = useSelector((state) => state.user);
     const [categories, setCategories] = useState([]);
 
     const { cartCount } = useCart();
+
+    const { wishlistCount } = useWishlist();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -46,15 +41,10 @@ export default function All_category() {
         };
         fetchCategories();
     }, []);
-
-    // Select wishlist count from Redux store
-    const wishlistCount = useSelector((state) => state.wishlist.wishlistCount);
-
-    // console.log(wishlistCount);
     
     return (
         <div className="">
-            <Button bg={'transparent'} color={{base:'gray.800', md: 'white'}} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-500">
+            <Button bg={'transparent'} color={{base:'gray.800', md: 'white'}} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col cursor-pointer md:hover:text-black hover:text-pink-500">
                 <TfiMenuAlt className='text-xl' />
                 <h2 className="md:text-[15px] hidden md:block text-[10px] font-normal">Browse All</h2>
                 <h2 className="md:text-[15px] block md:hidden text-[10px] font-normal">Categories</h2>
@@ -86,14 +76,14 @@ export default function All_category() {
                     </DrawerHeader>
                     <DrawerBody>
                         {currentUser && (
-                                <Link to={`/profile/${currentUser._id}`} className='md:block'>
-                                    <Flex justifyContent={'center'} fontWeight={'600'} pb={3} className='flex items-center gap-1'>
-                                        <Text className='capitalize' >Hi {currentUser.firstname}</Text>
-                                        <FaHandSparkles className='text-pink-600' />,
-                                        <Text>Wlecome to Adexify!</Text>
-                                    </Flex>
-                                </Link>
-                            )}
+                            <Link to={`/profile`} className='md:block'>
+                                <Flex fontSize={{md: 'md', base: 'sm'}} mt={2} flexDirection={{md: 'row', base: ''}} justifyContent={'center'} fontWeight={'500'} pb={3} className=''>
+                                    <Text className='capitalize' >Hi {currentUser.firstname}</Text>
+                                    <FaHandSparkles className='text-pink-600' />,
+                                    <Text>Wlecome to Adexify!</Text>
+                                </Flex>
+                            </Link>
+                        )}
                         {!currentUser && (
                             <Flex justifyContent={'space-between'} alignItems={'center'} mt={2} borderBottom={'1px solid #e2e8f0'} pb={3}>
                                 <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'gray.800'} color={'white'} _hover={{ bg: 'gray.800' }}>
@@ -107,7 +97,7 @@ export default function All_category() {
                         {currentUser && (
                             <Flex justifyContent={'space-between'} alignItems={'center'} mt={2} borderBottom={'1px solid #e2e8f0'} pb={3}>
                                 <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'gray.800'} color={'white'} _hover={{ bg: 'gray.800' }}>
-                                    <Link to={`/profile/${currentUser._id}`}>My Account</Link>
+                                    <Link to={`/profile`}>My Account</Link>
                                 </Flex>
                                 <Flex justifyContent={'center'} alignItems={'center'} textTransform={'uppercase'} fontWeight={500} width={'47%'} py={2} rounded={'md'} bg={'pink.500'} color='white' _hover={{bg: ''}}>
                                     <Link to={'/view-wislist'}>My WishLists ({wishlistCount})</Link>

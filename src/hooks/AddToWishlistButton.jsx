@@ -4,12 +4,15 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { getCartToken } from "../store/cart/utils/cartToken";
 import MotionHeart from "../components/motion_heart/MotionHeart";
+import { useWishlist } from "../Context_APIs/WishlistCountContext";
 
 const AddToWishlistButton = ({ product }) => {
   const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
   const [likedItems, setLikedItems] = useState({});
   const { currentUser } = useSelector((state) => state.user);
   const toast = useToast();
+
+  const { updateWishlist } = useWishlist();
 
   const handleWishlistItem = async () => {
     setLoadingWishlistProductId(product._id);
@@ -48,7 +51,10 @@ const AddToWishlistButton = ({ product }) => {
 
       const data = await res.json();
 
+      console.log("Wishlist response:", data);
+
       if (res.ok && data.success) {
+        updateWishlist?.(data.cart);
         toast({
           title: "Added to Wishlist",
           description: "Item successfully added.",
@@ -57,15 +63,15 @@ const AddToWishlistButton = ({ product }) => {
           isClosable: true,
         });
         setLikedItems((prev) => ({ ...prev, [product._id]: true }));
-      } else {
+      } else if (data.success === false) {
+        toast({
+          title: "Notice",
+          description: "Item already in wishlist.",
+          status: "info",
+          duration: 2000,
+          isClosable: true,
+        });
         if (data.message?.includes("already")) {
-          toast({
-            title: "Notice",
-            description: "Item already in wishlist.",
-            status: "info",
-            duration: 2000,
-            isClosable: true,
-          });
         } else {
           throw new Error(data.message);
         }

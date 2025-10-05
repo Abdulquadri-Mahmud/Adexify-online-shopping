@@ -55,6 +55,7 @@ table td{
 
 tbody tr:hover{
     background: '#000';
+    color:#f7a1cc;
 }
 
 tr:nth-child(even) {

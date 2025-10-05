@@ -1,20 +1,14 @@
-import { Badge, Box, Flex, Heading, Image, SimpleGrid, Skeleton, Spinner, Text, useToast } from '@chakra-ui/react'
-import React, { createContext, useEffect, useState } from 'react';
+import { Badge, Box, Flex, Heading, Image, SimpleGrid, Text } from '@chakra-ui/react'
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaAngleRight } from 'react-icons/fa';
-import { AnimatePresence } from 'framer-motion';
-import MotionHeart from '../motion_heart/MotionHeart';
-import { useSelector } from 'react-redux';
-import { getCartToken } from '../../store/cart/utils/cartToken';
+import AddToCartButton from '../../hooks/AddToCartButton';
+import AddToWishlistButton from '../../hooks/AddToWishlistButton';
 
 export default function FashionXtra() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
-  const [likedItems, setLikedItems] = useState({});
-  const {currentUser} = useSelector((state) => state.user);
-  const toast = useToast();
-
+  
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -36,84 +30,6 @@ export default function FashionXtra() {
     fetchProducts();
   }, []);
 
-  // Handle Add to Wishlist
-  const handleWishlistItem = async (product) => {
-    if (!product) return;
-    setLoadingWishlistProductId(product._id);
-
-    // Build wishlist item
-    const wishlistItem = {
-      productId: product._id,
-      name: product.name,
-      stock: product.stock || 0,
-      price: product.price,
-      discount: product.discount || 0,
-      oldprice: product.oldprice || 0,
-      deal: product.deal || "",
-      category: product.category || "",
-      image: product.image || [],
-      description: product.description || "",
-      discountType: product.discountType || "",
-      trackingId: product.trackingId || "",
-      size: product.size || [],
-      selectedSize: product.size?.[0] || "",
-      quantity: product?.quantity || 1,
-      gender: product.gender || "unisex",
-    };
-
-    try {
-      const payload = {
-        userId: currentUser?._id || null,
-        cartToken: currentUser?._id ? null : getCartToken(),
-        product: wishlistItem,
-      };
-
-      const res = await fetch(
-        "https://adexify-api.vercel.app/api/wishlist/add",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        // Optionally, update Redux or local state if you track wishlist count
-        toast({
-          title: "Added to Wishlist",
-          description: "Item successfully added to wishlist.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-      } else {
-        if (data.message?.includes("already")) {
-          toast({
-            title: "Notice",
-            description: "Item already in wishlist.",
-            status: "info",
-            duration: 2000,
-            isClosable: true,
-          });
-        } else {
-          throw new Error(data.message);
-        }
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoadingWishlistProductId(null);
-    }
-  };
-
   const maxStock = 100; // Upper bound of stock
 
   return (
@@ -132,8 +48,8 @@ export default function FashionXtra() {
       <Box p={1}>
         <SimpleGrid columns={{ base: 2, sm: 3, md: 5, xl: 6 }} spacing={1}>
           {loading
-            ? Array.from({ length: 12 }).map((_, index) => (
-                <SimpleGrid bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
+            ? Array.from({ length: 12 }).map((index) => (
+                <SimpleGrid key={index} bg={"white"} rounded={"xl"} gap={2} spacing={1} py={3} px={2}>
                   {[...Array(8)].map((_, index) => (
                     <SimpleGrid key={index} bg="gray.200" p={4} borderRadius="lg" border={"1px solid"} borderColor={"gray.200"} opacity={0.6}>
                       <Box h="150px" bg="gray.300" mb={4} />
@@ -175,21 +91,10 @@ export default function FashionXtra() {
                       }
                     </Flex>
 
-                    <AnimatePresence>
-                      {loadingWishlistProductId === product._id ? (
-                        <Flex justifyContent="center" alignItems="center" bg={'pink.600'} rounded={'full'} className="absolute bg-slate-500 top-2 right-2 w-[26px] h-[26px]">
-                          <Spinner color="gray.50" size="sm" />
-                        </Flex>
-                      ) : (
-                        <MotionHeart
-                          isLiked={likedItems[product._id] || false}
-                          onClick={() => {
-                            handleWishlistItem(product);
-                            setLikedItems(prev => ({ ...prev, [product._id]: !prev[product._id] }));
-                          }}
-                        />
-                      )}
-                    </AnimatePresence>
+                    {/* Add to cart component */}
+                    <AddToCartButton product={product}/>
+                    {/* Add to wislist component */}
+                    <AddToWishlistButton product={product} />
 
                   </Box>
                 </Box>

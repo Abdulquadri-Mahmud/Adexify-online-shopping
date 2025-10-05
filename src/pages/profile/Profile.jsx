@@ -35,7 +35,7 @@ function UserMenu() {
         <Button bg={'pink.100'} rounded={'full'} color={'gray.800'} _hover={{ bg: 'transparent' }} onClick={onOpen} px={0} className="flex items-center flex-col md:flex-row cursor-pointer md:hover:text-black hover:text-pink-600">
             <HiOutlineMenuAlt2 className='text-xl' />
         </Button>
-        <Drawer isOpen={isOpen} placement='left' initialFocusRef={firstField} onClose={onClose} size={'md'}>
+        <Drawer isOpen={isOpen} placement='left' initialFocusRef={firstField} onClose={onClose} size={{md:'sm', base: 'xs'}}>
             <DrawerOverlay />
             <DrawerContent>
               <DrawerCloseButton top={3} />
@@ -148,7 +148,7 @@ export default function Profile() {
 
             const data = await res.json();
             
-            console.log(data);
+            // console.log(data);
             
             if (!res.ok) {
                 throw new Error(data.message || "Failed to update user");
@@ -185,7 +185,7 @@ export default function Profile() {
               <Box className="flex gap-1 items-center">
                 <Link to={'/'} className='text-[13px]'>Home</Link>
                 <PiGreaterThan className='text-[13px] pt-1'/>
-                <Link to={`/profile/${currentUser._id}`} className='text-[13px]'>Account Information</Link>
+                <Link to={`/profile`} className='text-[13px]'>Account Information</Link>
               </Box>
               <Box display={{md: 'none', base: 'block'}}>
                 <UserMenu/>

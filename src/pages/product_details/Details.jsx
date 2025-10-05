@@ -5,7 +5,6 @@ import {
   Flex,
   Heading,
   Icon,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,28 +15,19 @@ import {
   NumberInput,
   NumberInputField,
   Select,
-  Spinner,
-  Stack,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
-import React, { createContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FaShieldAlt, FaStar } from "react-icons/fa";
-import { IoMdCall } from "react-icons/io";
-import { IoHeart } from "react-icons/io5";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlinePolicy } from "react-icons/md";
 import { PiGreaterThan } from "react-icons/pi";
-import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/Header";
 import Footer from "../../components/footer/Footer";
 import Adverts from "../../components/Adverts/Adverts";
 import { motion } from "framer-motion";
-import { setWishlistCount } from "../../store/cart/wishlishActions";
-import { useCart } from "../../Context_APIs/CartCountContext";
-import { getCartToken } from "../../store/cart/utils/cartToken";
 import { FaNairaSign } from "react-icons/fa6";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Zoom from "react-medium-image-zoom";
@@ -46,32 +36,21 @@ import ProductViews from "../../components/ProductViews/ProductViews";
 import AddToCartButton from "../../hooks/AddToCartButton";
 import AddToWishlistButton from "../../hooks/AddToWishlistButton";
 
-const MotionButton = motion.create(Button);
-export const quantityContext = createContext();
-
 export default function Details({ productViews }) {
   const { proId } = useParams();
 
   // size modal (Chakra)
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
 
   // lightbox modal state (separate)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const openLightbox = () => setIsLightboxOpen(true);
   const closeLightbox = () => setIsLightboxOpen(false);
 
-  const { updateCart } = useCart();
-  const toast = useToast();
-  const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
-
   const [product, setProduct] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [loadingProductId, setLoadingProductId] = useState(null);
-  const [loadingWishlistProductId, setLoadingWishlistProductId] = useState(null);
-
   const displayImage = useRef(null);
   const [images, setImages] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -141,7 +120,6 @@ export default function Details({ productViews }) {
   return (
     <Box>
       <Header />
-
       <Box pt={2} className="bg-zinc-200 md:mb-0 ">
         <Box className="mb-2">
           <Box maxW={{ "2xl": "80%", xl: "95%", lg: "100%", base: "97%" }} mt={2} mx={"auto"} bg={"white"} py={4} px={6} rounded={"md"}>
@@ -150,10 +128,7 @@ export default function Details({ productViews }) {
                 Home
               </Link>
               <PiGreaterThan className="text-[13px] text-gray-500 pt-1" />
-              <Link
-                to={`/category?category=${product?.category}`}
-                className="text-[13px] text-gray-500"
-              >
+              <Link to={`/category?category=${product?.category}`} className="text-[13px] text-gray-500">
                 {product?.category}
               </Link>
             </div>
@@ -185,7 +160,7 @@ export default function Details({ productViews }) {
                       <button
                         key={idx}
                         onClick={() => setActiveIndex(idx)}
-                        className={`w-[64px] h-[64px] rounded overflow-hidden border-2 transition-transform transform hover:scale-105 focus:outline-none ${
+                        className={`w-[47px] h-[47px] rounded overflow-hidden border-2 transition-transform transform hover:scale-105 focus:outline-none ${
                           activeIndex === idx
                             ? "border-white ring-2 ring-pink-500"
                             : "border-gray-200"
@@ -200,7 +175,7 @@ export default function Details({ productViews }) {
 
               {/* Details column */}
               <Box flex={{ base: "1", md: "0 0 45%" }} bg="white" p={4} rounded="md" minW={{ base: "100%", md: "400px" }}>
-                <Heading fontSize="2xl" fontWeight={500}>
+                <Heading fontSize={{md:"2xl", base: 'md'}} fontWeight={500}>
                   {product?.name}
                 </Heading>
 

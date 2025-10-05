@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -29,6 +29,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Textarea,
+  Select,
 } from "@chakra-ui/react";
 import { FaTrash, FaEdit, FaStar, FaEllipsisV, FaCopy } from "react-icons/fa";
 import { useUserQuery } from "../../../hooks/GetUserQuery";
@@ -38,6 +39,7 @@ import Footer from "../../../components/footer/Footer";
 import { useSelector } from "react-redux";
 
 import { motion } from "framer-motion";
+import addresses from "../../../data/address";
 const MotionModalContent = motion(ModalContent);
 
 export default function AddressManager() {
@@ -48,12 +50,11 @@ export default function AddressManager() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
 
-
   const userId = currentUser?._id;
   const { data, isLoading, isError, error } = useUserQuery(userId);
   const user = data?.user || data;
 
-  const [addresses, setAddresses] = useState([]);
+  const [userAddresses, setUserAddresses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     street: "",
@@ -81,7 +82,7 @@ export default function AddressManager() {
       );
       const data = await res.json();
 
-      setAddresses(
+      setUserAddresses(
         (data || []).sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
       );
     } catch (err) {
@@ -95,7 +96,8 @@ export default function AddressManager() {
 
   // Handle input change
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   // Submit address (Create/Update)
@@ -182,7 +184,7 @@ export default function AddressManager() {
       });
 
       // reorder instantly
-      setAddresses((prev) =>
+      setUserAddresses((prev) =>
         prev.map((a) =>
           a._id === addressId
             ? { ...a, isDefault: true }
@@ -208,7 +210,6 @@ export default function AddressManager() {
       city: address.city,
       state: address.state,
       postalCode: address.postalCode,
-      type: address.type || "Home",
       notes: address.notes || "",
     });
     setEditingId(address._id);
@@ -246,7 +247,7 @@ export default function AddressManager() {
   return (
     <Box fontFamily={''} className="bg-zinc-100">
       <Header />
-      <Box maxW="5xl" mx={{ md: "auto", base: "3" }} my={10} p={5} bg="white" rounded="lg" shadow="md">
+      <Box maxW="5xl" mx={{ md: "auto", base: "3" }} my={10} p={{md:5, base: 2}} bg="white" rounded="lg" shadow="md">
         <Heading textAlign={{md: 'start', base: 'center'}} fontWeight={500} fontSize="2xl" mb={2} color="gray.700">
           Manage Addresses for {user?.firstname}
         </Heading>
@@ -264,20 +265,50 @@ export default function AddressManager() {
             {/* Add/Edit Address */}
             <TabPanel>
               <form onSubmit={handleSubmit} className="grid gap-3 md:grid-cols-2 mb-5">
+                <Select
+                  fontSize="14px"
+                  placeholder="Select State"
+                  name="state"
+                  value={form.state}
+                  onChange={(e) => {
+                    setForm({ ...form, state: e.target.value, city: "" }); // reset city
+                  }}
+                >
+                  {addresses.map((addr) => (
+                    <option key={addr.region} value={addr.region}>
+                      {addr.region}
+                    </option>
+                  ))}
+                </Select>
+
+                <Select
+                  fontSize="14px"
+                  placeholder="Select City"
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  isDisabled={!form.state}
+                >
+                  {addresses
+                    .find((addr) => addr.region === form.state)
+                    ?.cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                </Select>
                 <Input placeholder="Street" name="street" value={form.street} onChange={handleChange} className={`${isLoading ? 'bg-zinc-100 animate-pulse' : 'bg-gray-50'}`}/>
-                <Input placeholder="City" name="city" value={form.city} onChange={handleChange} className={`${isLoading ? 'bg-zinc-100 animate-pulse' : 'bg-gray-50'}`}/>
-                <Input placeholder="State" name="state" value={form.state} onChange={handleChange} className={`${isLoading ? 'bg-zinc-100 animate-pulse' : 'bg-gray-50'}`}/>
                 <Input placeholder="Postal Code" name="postalCode" value={form.postalCode} onChange={handleChange} className={`${isLoading ? 'bg-zinc-100 animate-pulse' : 'bg-gray-50'}`}/>
                 <Textarea placeholder="Delivery Notes (e.g. Leave at gate)" name="notes" value={form.notes} onChange={handleChange} className="col-span-2"/>
                 <Button type="submit" colorScheme="green" isLoading={loading} className="col-span-2" >
-                  {editingId ? "Update Address" : "Add Address"}
+                  {editingId ? "Update Address" : "Add New Address"}
                 </Button>
               </form>
             </TabPanel>
 
             {/* My Saved Addresses */}
-            <TabPanel>
-              {addresses.length === 0 ? (
+            <TabPanel w={"full"}>
+              {userAddresses.length === 0 ? (
                 <Box textAlign="center" color="gray.500">
                   <Image src="https://cdn-icons-png.flaticon.com/512/854/854866.png" alt="empty" boxSize="120px" mx="auto" mb={3}/>
                   <Text fontSize="lg" mb={3}>
@@ -288,12 +319,12 @@ export default function AddressManager() {
                   </Button>
                 </Box>
               ) : (
-                addresses.map((address) => (
+                userAddresses.map((address) => (
                   <Collapse in={true} key={address._id}>
                     <Flex
                       justify="space-between"
                       align="center"
-                      p={4}
+                      p={{md:4, base : 2}}
                       borderWidth="1px"
                       borderRadius="md"
                       mb={3}
@@ -310,8 +341,8 @@ export default function AddressManager() {
                         cursor="pointer"
                       >
                         <Box fontWeight="medium">
-                          {address.street}, {address.city}, {address.state} -{" "}
-                          {address.postalCode} ({address.type})
+                          {address.street}, {address.city}, {address.state} {" "}
+                          ({address.postalCode})
                         </Box>
                         {address.notes && (
                           <Text fontSize="sm" color="gray.600">
@@ -340,7 +371,7 @@ export default function AddressManager() {
                           </MenuItem>
                           {!address.isDefault && (
                             <MenuItem
-                              icon={<FaStar />}
+                              icon={<FaStar className="text" />}
                               onClick={() => handleSetDefault(address._id)}
                             >
                               Set Default
