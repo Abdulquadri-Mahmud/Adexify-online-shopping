@@ -88,7 +88,7 @@ export default function CheckOutPage() {
   const handleUserInput = (e) =>
     setUserForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  // 🔥 Add or Update Address
+  // Add or Update Address
   const handleSaveAddress = async () => {
     try {
       setLoading(true);
@@ -140,7 +140,7 @@ export default function CheckOutPage() {
     }
   };
 
-  // 🧩 Update User Info
+  // Update User Info
   const handleUpdateUserInfo = async () => {
     try {
       setUserLoading(true);
@@ -177,13 +177,122 @@ export default function CheckOutPage() {
   };
 
   const handleOrder = async () => {
-    const payload = {
-      userId,
-      addressId: selectedAddressId,
-      items: cartItems,
-      paymentMethod: selectedMethod,
-    };
-    console.log("Checkout Payload:", payload);
+    if (!selectedAddressId) {
+      toast({
+        title: "Select an address",
+        description: "Please choose or add an address before proceeding.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (!selectedAddress) {
+      toast({
+        title: "Address not found",
+        description: "Please select a valid address.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      toast({
+        title: "Empty cart",
+        description: "Your cart is empty. Add items before checkout.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      //Calculate total
+      const total = cartItems.reduce(
+        (acc, item) => acc + item.price * (item.quantity || 1),
+        0
+      );
+
+      // Build full payload
+      const payload = {
+        userId,
+        userInfo: {
+          firstname: user?.firstname,
+          lastname: user?.lastname,
+          email: user?.email,
+          phone: user?.phone,
+        },
+        address: {
+          addressId: selectedAddress._id,
+          street: selectedAddress.street,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          postalCode: selectedAddress.postalCode,
+          type: selectedAddress.type || "Home",
+          notes: selectedAddress.notes || "",
+        },
+        items: cartItems.map((item) => ({
+          productId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity || 1,
+          selectedSize: item.selectedSize,
+          selectedColor: item.selectedColor,
+        })),
+        orderNotes: selectedAddress.notes || "",
+        paymentMethod: selectedMethod,
+        total,
+        deliveryFee: selectedMethod === "Pay on Delivery" ? 1000 : 0, // optional logic
+        orderStatus: "pending",
+        paymentStatus: selectedMethod === "Pay Online" ? "unpaid" : "pending",
+      };
+
+      console.log("Checkout Payload:", payload);
+
+      // Send order to backend
+      // const res = await fetch(`${baseUrl}/api/orders/create`, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(payload),
+      // });
+
+      // const data = await res.json();
+      // if (!res.ok) throw new Error(data.message || "Failed to place order");
+
+      // toast({
+      //   title: "Order placed successfully!",
+      //   description:
+      //     selectedMethod === "Pay Online"
+      //       ? "Redirecting you to payment..."
+      //       : "Your order has been placed successfully!",
+      //   status: "success",
+      //   duration: 3000,
+      //   isClosable: true,
+      // });
+
+      // // Handle redirect for online payment
+      // if (selectedMethod === "Pay Online" && data?.paymentUrl) {
+      //   window.location.href = data.paymentUrl;
+      // } else {
+      //   navigate("/orders"); // go to orders page
+      // }
+    } catch (err) {
+      // toast({
+      //   title: "Order failed",
+      //   description: err.message || "Something went wrong during checkout.",
+      //   status: "error",
+      //   duration: 3000,
+      //   isClosable: true,
+      // });
+    } finally {
+      // setLoading(false);
+    }
   };
 
   const handleBack = () => navigate(-1);
