@@ -135,7 +135,7 @@ export default function Details({ productViews }) {
                       ref={displayImage}
                       src={images[activeIndex]}
                       alt={product?.name}
-                      className="w-full h-auto object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
+                      className="w-full h-[350px] object-cover rounded-md cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
                       onClick={() => openLightboxAt(activeIndex)}
                     />
                   </Zoom>
