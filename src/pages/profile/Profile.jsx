@@ -68,7 +68,7 @@ function UserMenu() {
                     <Box width={'full'}>
                       <Heading fontWeight={500} fontSize={18}>My Order</Heading>
                       <Box my={2} ml={3} p={2} rounded={'md'} bg={'pink.50'} _hover={{bg: 'pink.200'}} transitionDuration={'0.3s'} width={'full'}>
-                        <Link to={'/'} fontWeight={500} py={2} color={'red.500'}>Order History</Link>
+                        <Link to={'/my-orders'} fontWeight={500} py={2} color={'red.500'}>Order History</Link>
                       </Box>
                       <Box my={2} ml={3} p={2} rounded={'md'} bg={'pink.50'} _hover={{bg: 'pink.200'}} transitionDuration={'0.3s'} width={'full'}>
                         <Link to={'/'} fontWeight={500} color={'gray.600'} fontSize={15}>Pending Rating</Link>

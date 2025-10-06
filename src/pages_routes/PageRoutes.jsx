@@ -30,6 +30,8 @@ import Wishlist_Page from '../pages/wishlist_page/Wishlist_Page';
 import CheckOutPage from '../pages/cartsPage/CheckoutPage/CheckOutPage';
 import Profile from '../pages/profile/Profile';
 import AddressManager from '../pages/profile/address/AddressManager';
+import PaymentVerify from '../pages/cartsPage/CheckoutPage/PaymentVerify';
+import UserOrders from '../pages/profile/order/UserOrders';
 
 export default function PageRoutes() {
   return (
@@ -39,6 +41,8 @@ export default function PageRoutes() {
         <Route path='/' element={<Home/>}/>
         <Route element={<Private_Routes/>}>
           <Route path='/profile' element={<Profile/>}/>
+          <Route path="/my-orders" element={<UserOrders />} />
+          <Route path="/order-details" element={<UserOrders />} />
           <Route path='/address' element={<AddressManager/>}/>
         </Route>
         <Route path='/product-details/:proId' element={<Details/>}/>
@@ -46,7 +50,7 @@ export default function PageRoutes() {
         <Route path='/view-carts' element={<Carts_Page/>}/>
         <Route path='/view-wishlist' element={<Wishlist_Page/>}/>
         <Route path='/checkout/summary' element={<CheckOutPage/>}/>
-
+        <Route path="/payment/verify" element={<PaymentVerify />} />
         {/* <Route path="/mens-clothing" element={<Men_Clothing_page/>}/>
         <Route path="/womens-clothing" element={<Women_Clothing_page/>}/> */}
         <Route path="/category" element={<ProductsByCategory/>}/>

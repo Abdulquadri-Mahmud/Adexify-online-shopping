@@ -36,7 +36,7 @@ export default function CheckOutPage() {
   const user = data?.user || data;
 
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [selectedMethod, setSelectedMethod] = useState("Pay on Delivery");
+  const [selectedMethod, setSelectedMethod] = useState("Pay Online");
   const [modalOpen, setModalOpen] = useState(false);
   const [editUserOpen, setEditUserOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -253,45 +253,47 @@ export default function CheckOutPage() {
         paymentStatus: selectedMethod === "Pay Online" ? "unpaid" : "pending",
       };
 
-      console.log("Checkout Payload:", payload);
-
+      
       // Send order to backend
-      // const res = await fetch(`${baseUrl}/api/orders/create`, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(payload),
-      // });
+      const res = await fetch(`${baseUrl}/api/orders/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      
+      const data = await res.json();
 
-      // const data = await res.json();
-      // if (!res.ok) throw new Error(data.message || "Failed to place order");
+      console.log("Checkout Payload:", data);
 
-      // toast({
-      //   title: "Order placed successfully!",
-      //   description:
-      //     selectedMethod === "Pay Online"
-      //       ? "Redirecting you to payment..."
-      //       : "Your order has been placed successfully!",
-      //   status: "success",
-      //   duration: 3000,
-      //   isClosable: true,
-      // });
+      if (!res.ok) throw new Error(data.message || "Failed to place order");
 
-      // // Handle redirect for online payment
-      // if (selectedMethod === "Pay Online" && data?.paymentUrl) {
-      //   window.location.href = data.paymentUrl;
-      // } else {
-      //   navigate("/orders"); // go to orders page
-      // }
+      toast({
+        title: "Order placed successfully!",
+        description:
+          selectedMethod === "Pay Online"
+            ? "Redirecting you to payment..."
+            : "Your order has been placed successfully!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // Handle redirect for online payment
+      if (selectedMethod === "Pay Online" && data?.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        navigate("/orders"); // go to orders page
+      }
     } catch (err) {
-      // toast({
-      //   title: "Order failed",
-      //   description: err.message || "Something went wrong during checkout.",
-      //   status: "error",
-      //   duration: 3000,
-      //   isClosable: true,
-      // });
+      toast({
+        title: "Order failed",
+        description: err.message || "Something went wrong during checkout.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -410,7 +412,7 @@ export default function CheckOutPage() {
             {/* PAYMENT METHOD */}
             <Box bg="white" p={4} rounded="xl" mt={{md:5, base:3}}>
               <Heading fontSize="md" color="gray.700">4. PAYMENT METHOD</Heading>
-              {["Pay on Delivery", "Pay Online"].map((method) => (
+              {["Pay Online","Pay on Delivery"].map((method) => (
                 <Box key={method} mt={3} p={3} bg={selectedMethod === method ? "pink.100" : "gray.100"} border="1px solid"
                   borderColor={selectedMethod === method ? "pink.200" : "gray.200"} rounded="md" cursor="pointer"
                   onClick={() => setSelectedMethod(method)}>
@@ -438,7 +440,7 @@ export default function CheckOutPage() {
               <Text fontWeight="700" color="pink.600">₦{total.toLocaleString()}</Text>
             </Flex>
             <Button mt={4} w="full" bg="pink.600" color="white" _hover={{ bg: "pink.700" }} onClick={handleOrder}>
-              Confirm Order
+              {selectedMethod === "Pay Online" ? "Proceed to Payment" : "Place Order"}
             </Button>
           </Box>
         </Flex>
