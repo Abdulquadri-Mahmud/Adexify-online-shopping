@@ -1,22 +1,14 @@
 import {
   Badge,
   Box,
-  Button,
   Flex,
   Heading,
   Icon,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
-  NumberInput,
-  NumberInputField,
-  Select,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -39,8 +31,7 @@ import AddToWishlistButton from "../../hooks/AddToWishlistButton";
 export default function Details({ productViews }) {
   const { proId } = useParams();
 
-  // size modal (Chakra)
-  const { isOpen, onClose } = useDisclosure();
+  console.log("Product ID from URL:", proId); 
 
   // lightbox modal state (separate)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -48,9 +39,6 @@ export default function Details({ productViews }) {
   const closeLightbox = () => setIsLightboxOpen(false);
 
   const [product, setProduct] = useState(null);
-  const [selectedProduct] = useState(null);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [quantity, setQuantity] = useState(1);
   const displayImage = useRef(null);
   const [images, setImages] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -152,7 +140,7 @@ export default function Details({ productViews }) {
                     />
                   </Zoom>
                 )}
-
+                
                 {/* Thumbnails */}
                 {images.length > 1 && (
                   <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
@@ -344,85 +332,6 @@ export default function Details({ productViews }) {
               </div>
             </div>
           </ModalBody>
-        </ModalContent>
-      </Modal>
-
-      {/* Size & Quantity Modal (existing) */}
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent mx={3}>
-          <ModalHeader>Select Size & Quantity</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text isTruncated mb={4}>{product?.name}</Text>
-            <Flex bg={'pink.50'} alignItems="center" justifyContent={"space-between"} mt={4} gap={3} width={"100%"} p={2} rounded={"md"}>
-              <Heading fontSize="md" fontWeight={500} display="flex" alignItems="center">
-                <FaNairaSign /> {product?.price?.toLocaleString()}
-              </Heading>
-              {product?.oldprice && (
-                <Text fontSize="md" display={"flex"} alignItems={"center"} textDecor="line-through" color="gray.500">
-                  <FaNairaSign /> {product?.oldprice?.toLocaleString()}
-                </Text>
-              )}
-            </Flex>
-
-            <Box my={4}>
-                {product?.stock > 0 ? (
-                  <Badge bg="pink.500" color={'white'} fontWeight={500} px={2} py={1} rounded="sm">
-                    In Stock
-                  </Badge>
-                ) : (
-                  <Badge colorScheme="red" px={2} py={1} rounded="md">
-                    Out of Stock
-                  </Badge>
-                )}
-              </Box>
-
-            {selectedProduct?.size?.length > 0 && (
-              <Select
-                placeholder="Select size"
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
-              >
-                {selectedProduct.size.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </Select>
-            )}
-            <NumberInput mt={4} min={1} value={quantity} onChange={(val) => setQuantity(Number(val))}>
-              <NumberInputField />
-            </NumberInput>
-
-            {product?.oldprice && (
-              <Text mt={4} display="flex" alignItems="center" gap={1} color="gray.500">
-                You save <FaNairaSign />{" "}
-                <Text as="span" fontWeight="medium" color="green.600">
-                  {(product.oldprice - product.price).toLocaleString()}
-                </Text>
-              </Text>
-            )}
-            <Flex justifyContent={'space-between'} fontSize={'sm'} rounded={'md'} px={3} mt={4} bg={'pink.50'} alignItems={'center'}>
-              <Text mt={4} mb={3} color={"gray.700"}>
-                Product Code: <span className="text-pink-600 font-medium">{product?.trackingId}</span>
-              </Text>
-              <Text mt={2} mb={3} color={"gray.700"}>
-                Category: <span className="text-pink-600 font-medium">{product?.category}</span>
-              </Text>
-            </Flex>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              colorScheme="pink"
-              onClick={() => {
-                handleCart(selectedProduct, selectedSize, quantity);
-                onClose();
-              }}
-            >
-              Add to Cart
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
 

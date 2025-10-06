@@ -3,23 +3,12 @@ import {
   Button,
   Flex,
   Heading,
-  Image,
   Text,
   VStack,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  Select,
-  NumberInput,
-  NumberInputField,
   Spinner,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiLeftArrowAlt } from 'react-icons/bi';
 import { PiGreaterThan } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
@@ -44,13 +33,10 @@ export default function Carts_Page() {
   const [cartItems, setCartItems] = useState([]);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const guestCart = useSelector((state) => state.guestCart.items);
   const cartItemsToRender = currentUser ? cartItems : cartItems;
 
   const navigate = useNavigate();
 
-  // Modal for selecting size & quantity on no-size items
-  const { isOpen, onOpen, onClose } = useDisclosure();
   // Modal for alert messages
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
   const { isOpen: isOpenUpdateSize, onOpen: onOpenUpdateSize, onClose: onCloseUpdateSize } = useDisclosure();

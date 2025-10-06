@@ -394,10 +394,12 @@ export default function CheckOutPage() {
                 {cartItems.map((item) => (
                   <Flex key={item._id} bg="gray.50" p={2} rounded="md" align="center" gap={3}>
                     <Image src={item.image?.[0]} alt={item.name} boxSize="70px" rounded="md" />
+                    {/* <Link to={`/product-details/${item?._id}`} className="w-[70px] h-[70px] flex-shrink-0">
+                    </Link> */}
                     <Box>
-                      <Text fontSize="sm" fontWeight="600">{item.name}</Text>
+                      <Text fontSize="12px" fontWeight="500">{item.name}</Text>
                       <Text fontSize="xs" color="gray.600">
-                        ₦{item.price.toLocaleString()} • Size: {item.selectedSize}
+                        ₦{item.price.toLocaleString()} {item.selectedSize && `• Size: ${item.selectedSize}`}  {}
                       </Text>
                     </Box>
                   </Flex>
@@ -421,7 +423,7 @@ export default function CheckOutPage() {
           </Box>
 
           {/* SUMMARY */}
-          <Box w={{ md: "350px", base: "full" }} h={{ md: "250px", base: "full" }} bg="white" p={4} rounded="xl">
+          <Box w={{ md: "350px", base: "full" }} h={{ md: "250px", base: "full" }} bg="white" p={4} mb={{md: 0, base: 5}} rounded="xl">
             <Heading fontSize="md">Order Summary</Heading>
             <Flex justify="space-between" mt={2}>
               <Text>Subtotal</Text>
