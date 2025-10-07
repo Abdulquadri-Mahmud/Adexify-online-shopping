@@ -221,7 +221,7 @@ export default function Header() {
     
   return (
     <Box className="sticky top-0 z-20 bg-white">
-        <Box className='bg-pink-800 hidden md:block'>
+        <Box className='bg-pink-500 hidden md:block'>
           <TopBar/>
         </Box>
         <Box top={0} position={'sticky'} className='bg-white text-white'>

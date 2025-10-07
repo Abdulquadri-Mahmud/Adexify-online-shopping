@@ -164,7 +164,7 @@ const OrderDetails = () => {
         </Box>
       </Box>
 
-      <Footer />
+      {/* <Footer /> */}
     </Box>
   );
 };

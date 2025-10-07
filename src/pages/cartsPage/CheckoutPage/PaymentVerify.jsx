@@ -78,7 +78,7 @@ const PaymentVerify = () => {
     return (
         <Box className="bg-zinc-100">
             <Header/>
-            <Box my={'20'} py={10} maxW={'md'} mx={{md:'auto', base:2}} bg={'white'} rounded={'xl'} display="flex" alignItems="center" justifyContent="center">
+            <Box my={'20'} py={10} maxW={'md'} mx={{md:'auto', sm:'auto', base: 2}} bg={'white'} rounded={'xl'} display="flex" alignItems="center" justifyContent="center">
                 <VStack spacing={4}>
                     <Spinner size="xl" color="pink.500" />
                     <Text fontSize="lg" color="gray.600">
@@ -95,14 +95,14 @@ const PaymentVerify = () => {
     return (
         <Box className="bg-zinc-100">
             <Header/>
-            <Box my={'20'} py={10} maxW={'md'} mx={{md:'auto', base:2}} bg={'white'} rounded={'xl'} display="flex" alignItems="center" justifyContent="center">
+            <Box my={'20'} py={10} maxW={'md'} mx={{md:'auto', sm:'auto', base: 2}} bg={'white'} rounded={'xl'} display="flex" alignItems="center" justifyContent="center">
                 <VStack spacing={4}>
                     <CheckCircleIcon boxSize={16} color="green.400" />
                     <Text fontSize="2xl" fontWeight="bold">
                         Payment Successful 🎉
                     </Text>
                     <Text color="gray.600">
-                        Your order <b>#{order?._id?.slice(-6)}</b> has been placed successfully!
+                        Your order <b>#{order?.orderId}</b> has been placed successfully!
                     </Text>
                     <Button colorScheme="pink" onClick={() => navigate("/my-orders")}>
                         View My Orders

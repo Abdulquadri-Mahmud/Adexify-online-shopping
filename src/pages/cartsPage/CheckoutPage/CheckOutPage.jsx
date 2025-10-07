@@ -241,6 +241,7 @@ export default function CheckOutPage() {
           productId: item._id,
           name: item.name,
           price: item.price,
+          image: item.image?.[0] || "",
           quantity: item.quantity || 1,
           selectedSize: item.selectedSize,
           selectedColor: item.selectedColor,
